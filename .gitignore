@@ -1,3 +1,15 @@
+# local ignoring
+*.json
+*.ini
+*.xls
+*.xlsx
+*.httml
+*.html
+*.xml
+*.txt
+.DS_Store
+token.pickle
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
