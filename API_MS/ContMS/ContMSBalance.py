@@ -9,30 +9,21 @@ class ContMSBalance(ContMSMainClass):
     """ controller for MoiSklad balance
     get info from configfile and request information
     from ConnMSBalance connector
-    return sum of acccounts balance
+    return sum of accounts balance
     and return {dictionary account:bal}"""
 
     def __init__(self):
         super().__init__()
 
     def get_config(self):
-        """ return data from config file"""
-        try:
-            conf = configparser.ConfigParser()
-            # CONF_FILE_PATH = os.path.join(os.path.dirname(os.getcwd()), "config", "config.ini")
-            CONF_FILE_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "config", "config.ini")
-            if not os.path.exists(CONF_FILE_PATH):
-                self.logger.error(f"config file {CONF_FILE_PATH} doesnt exist")
-            conf.read(CONF_FILE_PATH)
+        """ return (url, token) from config file"""
+        conf = self.get_config_data()
+        if conf:
             url_balance = conf['MoiSklad']['url_money']
             access_token = conf['MoiSklad']['access_token']
-            self.logger.info("got info from configfile")
-            return (url_balance, access_token)
-        except Exception as e:
-            self.logger.error("Cant read file", e)
-            print(e)
-            return (None, None)
-        return None
+            return url_balance, access_token
+        else:
+            return None, None
 
     def get_sum(self):
         """ getting sum accounts from balance connector"""

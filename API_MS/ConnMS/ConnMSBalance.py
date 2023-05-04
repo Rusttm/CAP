@@ -9,7 +9,7 @@ class ConnMSBalance(ConnMSMainClass):
 
     def get_accounts_bal(self):
         """ return dict with acconts and balance
-        example {'ПАО РОСБАНК (40702840997960000004)': 0.0, ..}"""
+        Example {'ПАО РОСБАНК (40702840997960000004)': 0.0, ..}"""
         json_data = self.get_api_data()
         accounts_dict = dict()
         # try to get entity accounts dict

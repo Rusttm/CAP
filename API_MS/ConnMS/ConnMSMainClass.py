@@ -6,9 +6,9 @@ import os
 class ConnMSMainClass(CAPMainClass):
     """ superclass for all MoiSklad connectors """
     id = 0
-    __api_url = ""
-    __api_token = ""
-    __api_param_line = ""
+    __api_url = str()
+    __api_token = str()
+    __api_param_line = "?"
     __to_file = False
 
     def __init__(self):
@@ -32,10 +32,24 @@ class ConnMSMainClass(CAPMainClass):
         self.__api_url = api_url
 
     def set_api_param_line(self, api_param_line=None):
-        self.__api_param_line = api_param_line
+        if api_param_line:
+            if self.__api_param_line == "?":
+                self.__api_param_line += api_param_line
+            elif self.__api_param_line != "?":
+                self.__api_param_line = "?" + api_param_line
+        else:
+            self.__api_param_line = "?"
+        # self.__api_param_line = api_param_line
 
-    def get_api_data(self):
-        """ api connect and get data
+    def add_api_param_line(self, api_param_line=None):
+        if self.__api_param_line == "?":
+            self.__api_param_line += api_param_line
+        elif self.__api_param_line != "?":
+            self.__api_param_line += "&" + api_param_line
+
+
+    def get_single_req_data(self):
+        """ api connect and get data in one request
         return dictionary!"""
         header_for_token_auth = {'Authorization': f'Bearer {self.__api_token}'}
         api_url = self.__api_url + self.__api_param_line
@@ -43,7 +57,9 @@ class ConnMSMainClass(CAPMainClass):
             acc_req = requests.get(url=api_url, headers=header_for_token_auth)
             # if write to file and checked to_file==True
             if self.__to_file:
-                DATA_FILE_PATH = os.path.join(os.path.dirname(os.getcwd()), "data", f"{__file__}_req.json")
+                file = os.path.dirname(os.path.dirname(__file__))
+                DATA_FILE_PATH = os.path.join(file, "data", f"{__name__}_req.json")
+                # open(DATA_FILE_PATH, "x")
                 if os.path.exists(DATA_FILE_PATH):
                     with open(DATA_FILE_PATH, 'w') as ff:
                         json.dump(acc_req.json(), ff, ensure_ascii=False)
@@ -60,3 +76,24 @@ class ConnMSMainClass(CAPMainClass):
             print('Cant read account data', Exception)
             self.logger.warning("cant connect to balance")
             return None
+
+    def get_api_data(self):
+        """ if there are more than 1000 positions
+        needs to form request for getting full data"""
+        offset = 1000
+        data = self.get_single_req_data()
+        delta = 0
+        try:
+            delta = int(data['meta']['size']) - int(data['meta']['offset'])
+        except Exception as e:
+            print(e)
+        if delta > offset:
+            self.logger.info(f"request from {__file__} have more than 1000rows")
+            requests_num = delta//offset
+            for i in range(requests_num):
+                self.add_api_param_line(f"offset={(i+1)*1000}")
+                next_data = self.get_single_req_data()
+                for pos_num, pos in enumerate(next_data['rows']):
+                    data['rows'].append(pos)
+        return data
+
