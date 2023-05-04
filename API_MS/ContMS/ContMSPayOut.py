@@ -17,7 +17,7 @@ class ContMSPayOut(ContMSMainClass):
         else:
             return None, None
 
-    def get_data(self):
+    def get_payout_data(self):
         """ return full payouts data """
         connector = ConnMSPayOut()
         url, token = self.get_config()
@@ -25,7 +25,7 @@ class ContMSPayOut(ContMSMainClass):
         payouts = connector.get_api_data()
         return payouts
 
-    def get_filtered_by_date(self, from_date=None, to_date=None):
+    def get_payout_filtered_by_date(self, from_date=None, to_date=None):
         """ filterred by date from to or just
         date format '2022-12-08' """
         connector = ConnMSPayOut()
@@ -48,7 +48,7 @@ class ContMSPayOut(ContMSMainClass):
 
 if __name__ == '__main__':
     controller = ContMSPayOut()
-    data = controller.get_filtered_by_date(from_date="2023-01-01", to_date="2023-02-01")
+    data = controller.get_payout_filtered_by_date(from_date="2023-01-01", to_date="2023-02-01")
     # print(data)
     # balance_acc = controller.get_account_bal()
     # print(balance_acc)

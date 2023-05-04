@@ -1,5 +1,6 @@
 from Main.ContMain.ContCAPMainClass import ContCAPMainClass
 from API_MS.ContMS.ContMSBalance import ContMSBalance
+from API_MS.ContMS.ContMSPayOut import ContMSPayOut
 
 class ContCAPMS(ContCAPMainClass):
     """ MoiSklad API controller"""
@@ -17,12 +18,21 @@ class ContCAPMS(ContCAPMainClass):
         balance_acc = controller.get_account_bal()
         return balance_acc
 
+    def get_payouts(self):
+        controller = ContMSPayOut()
+        payouts = controller.get_payout_data()
+        return payouts
 
 if __name__ == '__main__':
+    # check balances
     controller = ContCAPMS()
     balance_sum = controller.get_entity_bal_sum()
     print(balance_sum)
     balance_acc = controller.get_entity_acc_bal()
     print(balance_acc)
+
+    #check payouts
+    payouts = controller.get_payouts()
+    print(payouts)
 
 

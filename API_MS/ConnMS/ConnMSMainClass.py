@@ -2,6 +2,8 @@ from Main.CAPMainClass import CAPMainClass
 import requests
 import json
 import os
+import re
+
 
 class ConnMSMainClass(CAPMainClass):
     """ superclass for all MoiSklad connectors """
@@ -41,11 +43,17 @@ class ConnMSMainClass(CAPMainClass):
             self.__api_param_line = "?"
         # self.__api_param_line = api_param_line
 
-    def add_api_param_line(self, api_param_line=None):
+    def add_api_param_line(self, add_param_line=None):
         if self.__api_param_line == "?":
-            self.__api_param_line += api_param_line
+            self.__api_param_line += add_param_line
+        elif self.__api_param_line == "":
+            self.__api_param_line += "?" + add_param_line
         elif self.__api_param_line != "?":
-            self.__api_param_line += "&" + api_param_line
+            # checking and exclude offset in request string
+            x = re.split("&offset", self.__api_param_line)
+            self.__api_param_line = x[0] + "&" + add_param_line
+        else:
+            self.__api_param_line = ""
 
 
     def get_single_req_data(self):
