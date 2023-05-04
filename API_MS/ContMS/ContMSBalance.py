@@ -19,7 +19,6 @@ class ContMSBalance(ContMSMainClass):
         """ return data from config file"""
         try:
             conf = configparser.ConfigParser()
-
             # CONF_FILE_PATH = os.path.join(os.path.dirname(os.getcwd()), "config", "config.ini")
             CONF_FILE_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "config", "config.ini")
             if not os.path.exists(CONF_FILE_PATH):
@@ -44,7 +43,7 @@ class ContMSBalance(ContMSMainClass):
         return sum_accounts
 
     def get_account_bal(self):
-        """ getting sum accounts from balance connector"""
+        """ getting accounts balances from balance connector"""
         connector = ConnMSBalance()
         url, token = self.get_config()
         connector.set_api_config(api_url=url, api_token=token, to_file=False)
