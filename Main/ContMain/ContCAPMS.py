@@ -1,6 +1,7 @@
 from Main.ContMain.ContCAPMainClass import ContCAPMainClass
 from API_MS.ContMS.ContMSBalance import ContMSBalance
 from API_MS.ContMS.ContMSPayOut import ContMSPayOut
+import json
 
 class ContCAPMS(ContCAPMainClass):
     """ MoiSklad API controller"""
@@ -23,6 +24,7 @@ class ContCAPMS(ContCAPMainClass):
         payouts = controller.get_payout_data()
         return payouts
 
+
 if __name__ == '__main__':
     # check balances
     controller = ContCAPMS()
@@ -31,8 +33,9 @@ if __name__ == '__main__':
     balance_acc = controller.get_entity_acc_bal()
     print(balance_acc)
 
-    #check payouts
+    # check payouts
     payouts = controller.get_payouts()
-    print(payouts)
-
+    FILE_PATH = "payouts.json"
+    with open(FILE_PATH, 'w') as ff:
+        json.dump(payouts, ff, ensure_ascii=False)
 
