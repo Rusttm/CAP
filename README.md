@@ -4,6 +4,8 @@ Company Analitics with Python (SermanLTD on MoiSklad)
 This project is for analitics automation in SermanLTD Company
 It includes Telegram bot and Django website to maximize data reperesent. 
 
+Main - main module
+
 API_MS - module for work with API MoiSklad https://dev.moysklad.ru/doc/api/remap/1.2/#mojsklad-json-api
 
 API_Tbot - module for work with API Telegram https://core.telegram.org
