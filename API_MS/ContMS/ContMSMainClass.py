@@ -1,4 +1,3 @@
-import logging
 from Main.CAPMainClass import CAPMainClass
 
 

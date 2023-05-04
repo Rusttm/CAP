@@ -1,4 +1,6 @@
-class ContCAPMainClass(object):
+from Main.CAPMainClass import CAPMainClass
+
+class ContCAPMainClass(CAPMainClass):
     """ programm controllers super class"""
     id = 0
 

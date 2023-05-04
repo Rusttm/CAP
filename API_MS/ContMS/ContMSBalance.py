@@ -6,7 +6,11 @@ import os
 
 
 class ContMSBalance(ContMSMainClass):
-    """ controller for MoiSklad balance """
+    """ controller for MoiSklad balance
+    get info from configfile and request information
+    from ConnMSBalance connector
+    return sum of acccounts balance
+    and return {dictionary account:bal}"""
 
     def __init__(self):
         super().__init__()
@@ -37,8 +41,18 @@ class ContMSBalance(ContMSMainClass):
         sum_accounts = connector.get_sum()
         return sum_accounts
 
+    def get_account_bal(self):
+        """ getting sum accounts from balance connector"""
+        connector = ConnMSBalance()
+        url, token = self.get_config()
+        connector.set_api_config(api_url=url, api_token=token, to_file=False)
+        bal_accounts = connector.get_accounts_bal()
+        return bal_accounts
+
 
 if __name__ == '__main__':
     controller = ContMSBalance()
     balance_sum = controller.get_sum()
     print(balance_sum)
+    balance_acc = controller.get_account_bal()
+    print(balance_acc)
