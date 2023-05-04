@@ -1,6 +1,7 @@
 from API_MS.ContMS.ContMSMainClass import ContMSMainClass
 from API_MS.ConnMS.ConnMSPayOut import ConnMSPayOut
-import json
+
+
 class ContMSPayOut(ContMSMainClass):
     """ controller class to get PaymentsOut data"""
 
