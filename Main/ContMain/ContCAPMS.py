@@ -4,18 +4,25 @@ from API_MS.ContMS.ContMSBalance import ContMSBalance
 class ContCAPMS(ContCAPMainClass):
     """ MoiSklad API controller"""
 
-    def __init__(self, *args):
+    def __init__(self):
         super().__init__()
-        self.id = ContCAPMS.id = super().get_cont_id()
-        print(self.id)
 
-    def get_balance(self):
+    def get_entity_bal_sum(self):
         controller = ContMSBalance()
-        return None
+        balance_sum = controller.get_sum()
+        return balance_sum
+
+    def get_entity_acc_bal(self):
+        controller = ContMSBalance()
+        balance_acc = controller.get_account_bal()
+        return balance_acc
 
 
 if __name__ == '__main__':
-    controller1 = ContCAPMS()
-    controller1.get_balance()
+    controller = ContCAPMS()
+    balance_sum = controller.get_entity_bal_sum()
+    print(balance_sum)
+    balance_acc = controller.get_entity_acc_bal()
+    print(balance_acc)
 
 

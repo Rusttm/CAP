@@ -10,6 +10,3 @@ class ContMSMainClass(CAPMainClass):
         self.id += 1
         """ all controllers have own id"""
 
-    def get_cont_id(self):
-        return self.id
-

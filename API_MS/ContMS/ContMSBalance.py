@@ -19,7 +19,9 @@ class ContMSBalance(ContMSMainClass):
         """ return data from config file"""
         try:
             conf = configparser.ConfigParser()
-            CONF_FILE_PATH = os.path.join(os.path.dirname(os.getcwd()), "config", "config.ini")
+
+            # CONF_FILE_PATH = os.path.join(os.path.dirname(os.getcwd()), "config", "config.ini")
+            CONF_FILE_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "config", "config.ini")
             if not os.path.exists(CONF_FILE_PATH):
                 self.logger.error(f"config file {CONF_FILE_PATH} doesnt exist")
             conf.read(CONF_FILE_PATH)

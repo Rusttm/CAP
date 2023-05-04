@@ -1,9 +1,15 @@
 from Main.CAPMainClass import CAPMainClass
-
+import requests
+import json
+import os
 
 class ConnMSMainClass(CAPMainClass):
     """ superclass for all MoiSklad connectors """
     id = 0
+    __api_url = ""
+    __api_token = ""
+    __api_param_line = ""
+    __to_file = False
 
     def __init__(self):
         super().__init__()
@@ -12,3 +18,45 @@ class ConnMSMainClass(CAPMainClass):
 
     def get_conn_id(self):
         return self.id
+
+    def set_api_config(self, api_url="", api_token="", api_param_line="", to_file=False):
+        self.__api_url = api_url
+        self.__api_token = api_token
+        self.__api_param_line = api_param_line
+        self.__to_file = to_file
+
+    def set_api_token(self, api_token=None):
+        self.__api_token = api_token
+
+    def set_api_url(self, api_url=None):
+        self.__api_url = api_url
+
+    def set_api_param_line(self, api_param_line=None):
+        self.__api_param_line = api_param_line
+
+    def get_api_data(self):
+        """ api connect and get data
+        return dictionary!"""
+        header_for_token_auth = {'Authorization': f'Bearer {self.__api_token}'}
+        api_url = self.__api_url + self.__api_param_line
+        try:
+            acc_req = requests.get(url=api_url, headers=header_for_token_auth)
+            # if write to file and checked to_file==True
+            if self.__to_file:
+                DATA_FILE_PATH = os.path.join(os.path.dirname(os.getcwd()), "data", f"{__file__}_req.json")
+                if os.path.exists(DATA_FILE_PATH):
+                    with open(DATA_FILE_PATH, 'w') as ff:
+                        json.dump(acc_req.json(), ff, ensure_ascii=False)
+                    self.logger.info("request was wrote to file")
+                else:
+                    self.logger.error(f"file {DATA_FILE_PATH} doesnt exist")
+                return None
+            # if data return not in file
+            else:
+                self.logger.info("requested successful")
+                return acc_req.json()
+
+        except IndexError:
+            print('Cant read account data', Exception)
+            self.logger.warning("cant connect to balance")
+            return None
