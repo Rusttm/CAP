@@ -55,7 +55,6 @@ class ConnMSMainClass(CAPMainClass):
         else:
             self.__api_param_line = ""
 
-
     def get_single_req_data(self):
         """ api connect and get data in one request
         return dictionary!"""
@@ -104,4 +103,3 @@ class ConnMSMainClass(CAPMainClass):
                 for pos_num, pos in enumerate(next_data['rows']):
                     data['rows'].append(pos)
         return data
-
