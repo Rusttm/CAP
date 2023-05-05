@@ -9,22 +9,22 @@ class ContMSStockRemains(ContMSMainClass):
     def __init__(self):
         super().__init__()
         self.connector = ConnMSStockRemains()
-        self.logger.debug("module ContMSBalance started")
+        self.logger.debug("module ContMSStockRemains started")
 
     def get_stock_remains(self, to_file=False):
         """ getting stock remains"""
-        sum_accounts = self.connector.get_stock_remains(to_file=to_file)
-        return sum_accounts
+        stock = self.connector.get_stock_remains(to_file=to_file)
+        return stock
 
-    def get_account_bal(self):
-        """ getting stock remains sum"""
-        bal_accounts = self.connector.get_stock_remains_sum()
-        return bal_accounts
+    def get_stock_remains_sum(self):
+        """ getting stock remains"""
+        stock_sum = self.connector.get_stock_remains_sum()
+        return stock_sum
 
 
 if __name__ == '__main__':
     controller = ContMSStockRemains()
-    stock_sum = controller.get_account_bal()
-    print(balance_sum)
-    stock = controller.get_account_bal()
-    print(stock)
+    stock_sum = controller.get_stock_remains_sum()
+    print(stock_sum)
+    # stock = controller.get_stock_remains(to_file=True)
+    # print(stock)

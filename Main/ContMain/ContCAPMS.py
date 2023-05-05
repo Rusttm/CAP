@@ -34,29 +34,34 @@ class ContCAPMS(ContCAPMainClass):
         payins = controller.get_payin_filtered_by_date(from_date, to_date)
         return payins
 
+    def get_stock_remains(self):
+        from API_MS.ContMS.ContMSStockRemains import ContMSStockRemains
+        controller_ms = ContMSStockRemains()
+        stock_remains = controller_ms.get_stock_remains()
+        return stock_remains
 
 if __name__ == '__main__':
     controller = ContCAPMS()
 
     # check balances
-    controller = ContCAPMS()
-    balance_sum = controller.get_entity_bal_sum()
-    print(balance_sum)
+    # controller = ContCAPMS()
+    # balance_sum = controller.get_entity_bal_sum()
+    # print(balance_sum)
     # balance_acc = controller.get_entity_acc_bal()
     # print(balance_acc)
 
     # check payouts
-    payouts = controller.get_payouts_filtered()
-    FILE_PATH = "payouts.json"
-    with open(FILE_PATH, 'w') as ff:
-        json.dump(payouts, ff, ensure_ascii=False)
+    # payouts = controller.get_payouts_filtered()
+    # FILE_PATH = "payouts.json"
+    # with open(FILE_PATH, 'w') as ff:
+    #     json.dump(payouts, ff, ensure_ascii=False)
 
     # check payins all
     # payins = controller.get_payin_filtered()
     # FILE_PATH = "../../API_MS/data/payins.json"
     # with open(FILE_PATH, 'w') as ff:
     #     json.dump(payins, ff, ensure_ascii=False)
-    #
+
     # check payins filtered
     # payins = controller.get_payin_filtered(from_date="2023-01-01", to_date="2023-02-01")
     # FILE_PATH = "../../API_MS/data/payins_fitered.json"
@@ -68,3 +73,9 @@ if __name__ == '__main__':
     # FILE_PATH = "/Users/johnlennon/RusttmGDrive/Python/CAP/API_MS/data/payins_half_fitered.json"
     # with open(FILE_PATH, 'w') as ff:
     #     json.dump(payins, ff, ensure_ascii=False)
+
+    # check stock remains
+    stock_remains = controller.get_stock_remains()
+    FILE_PATH = "/Users/johnlennon/RusttmGDrive/Python/CAP/API_MS/data/stock_all.json"
+    with open(FILE_PATH, 'w') as ff:
+        json.dump(stock_remains, ff, ensure_ascii=False)
