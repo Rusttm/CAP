@@ -20,26 +20,17 @@ class ConnMSStockRemains(ConnMSMainClass):
 
     def get_stock_remains(self, to_date=None, to_file=False):
         """ return dict with stock remains"""
-        param = ""
+        param = "filter=quantityMode=all"
         if to_date:
-            param += f"filter=moment={to_date}"
+            param += f"&filter=moment={to_date}"
         else:
             self.logger.warning("StockRemains request not specified to_date parameter")
+            self.set_api_param_line(param)
             return self.get_api_data(to_file=to_file)
         self.set_api_param_line(param)
         new_data_dict = self.get_api_data(to_file=to_file)
         return new_data_dict
 
-    # def get_stock_remains_sum(self, to_date=None):
-    #     data_dict = self.get_stock_remains(to_date=to_date)
-    #     result_sum = 0
-    #     if data_dict:
-    #         for prod in data_dict['rows']:
-    #             try:
-    #                 result_sum += prod['stock'] * prod['price']
-    #             except Exception as e:
-    #                 self.logger.warning(f"for {prod['name']} summ not considered. error {e}")
-    #     return result_sum
 
 
 if __name__ == '__main__':

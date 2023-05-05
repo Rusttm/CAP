@@ -33,7 +33,7 @@ class ContMSStores(ContMSMainClass, ConnMSStores, ConnMSStockByStore, ConnMSStoc
     def get_stores_dict(self, to_file=False):
         """ return stores data as dictionary {store_name:0}"""
         stores_dict = dict()
-        stores = self.get_stores(to_file=to_file)
+        stores = ConnMSStores().get_stores(to_file=to_file)
         if stores:
             for store in stores['rows']:
                 # stores_dict[store['name']] = store['meta']['href']
@@ -43,23 +43,31 @@ class ContMSStores(ContMSMainClass, ConnMSStores, ConnMSStockByStore, ConnMSStoc
         return stores_dict
     def stores_sum(self, to_date=None, to_file=False):
         """ return dict {store:sum}"""
-        stock_remains = self.get_stock_remains(to_date=to_date)
+        # stock_remains = self.get_stock_remains(to_date=to_date)
+        stock_remains = ConnMSStockRemains().get_stock_remains(to_date=to_date)
         self.write_to_file(data_dict=stock_remains, file_name="unknown_remains")
-        stock_by_stores = self.get_stock_by_store(to_date=to_date)
+        stock_by_stores = ConnMSStockByStore().get_stock_by_store(to_date=to_date)
         stock_stores = self.get_stores_dict()
-        prod_href_dict = dict() # {href:{name:name, cost:cost, quantity:quantity}}
+        prod_href_dict = dict() # {href:{name:name, price:price, quantity:quantity}}
+        # collect remains to dict
         if stock_remains:
             for prod in stock_remains['rows']:
                 prod_dict_temp = dict()
                 prod_dict_temp['name'] = prod['name']
-                prod_dict_temp['cost'] = prod['cost']
+                prod_dict_temp['price'] = prod['price']
                 prod_dict_temp['quantity'] = prod['quantity']
                 prod_href_dict[prod['meta']['href']] = prod_dict_temp
+
         if stock_by_stores:
-            for prod in stock_remains['rows']:
+            for prod in stock_by_stores['rows']:
                 prod_href = prod['meta']['href']
+                prod_cost = 0
+                store_quantity = 0
                 for prod_store in prod['stockByStore']:
-                    prod_cost = prod_href_dict[prod_href]['cost']
+                    try:
+                        prod_cost = prod_href_dict[prod_href]['price']/100
+                    except Exception as e:
+                        print(e)
                     store_name = prod_store['name']
                     store_quantity = prod_store['stock']
                     stock_stores[store_name] = stock_stores.get(store_name, 0) + store_quantity * prod_cost
@@ -72,7 +80,7 @@ class ContMSStores(ContMSMainClass, ConnMSStores, ConnMSStockByStore, ConnMSStoc
 
 if __name__ == '__main__':
     controller = ContMSStores()
-    stores = controller.get_stock_remains(to_file=True)
+    stores = controller.stores_sum(to_file=True)
     print(stores)
     # stock = controller.get_stock_remains(to_file=True)
     # print(stock)
