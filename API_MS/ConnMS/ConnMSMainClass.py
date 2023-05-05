@@ -66,7 +66,7 @@ class ConnMSMainClass(CAPMainClass):
             try:
                 errors_request = acc_req.json()['errors']
                 for error in errors_request:
-                    self.logger.warning(f"{pathlib.PurePath(__file__).name} requested information has errors: {error['error']} ({error['code']}) ")
+                    self.logger.error(f"{pathlib.PurePath(__file__).name} requested information has errors: {error['error']} ({error['code']}) ")
             except Exception as e:
                 self.logger.info(f"{pathlib.PurePath(__file__).name} request successful - data has context ")
             return acc_req.json()

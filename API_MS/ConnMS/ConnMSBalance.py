@@ -41,11 +41,10 @@ class ConnMSBalance(ConnMSMainClass):
 
     def get_sum(self):
         self.logger.debug("balance sum requested")
-        json_data = self.get_api_data()
+        data_dict = self.get_api_data()
         accounts_list = [0]
-        for acc in json_data['rows']:
+        for acc in data_dict['rows']:
             accounts_list.append(acc['balance'] / 100)
-
         return sum(accounts_list)
 
 
