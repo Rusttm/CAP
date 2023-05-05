@@ -76,7 +76,7 @@ class ConnMSMainClass(CAPMainClass):
                 return None
             # if data return not in file
             else:
-                self.logger.info("requested successful")
+                self.logger.info("data requested successful")
                 return acc_req.json()
 
         except IndexError:

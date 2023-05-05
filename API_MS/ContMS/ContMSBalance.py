@@ -1,8 +1,5 @@
 from API_MS.ContMS.ContMSMainClass import ContMSMainClass
 from API_MS.ConnMS.ConnMSBalance import ConnMSBalance
-import configparser
-import logging
-import os
 
 
 class ContMSBalance(ContMSMainClass):
@@ -11,9 +8,11 @@ class ContMSBalance(ContMSMainClass):
     from ConnMSBalance connector
     return sum of accounts balance
     and return {dictionary account:bal}"""
+    connector = None
 
     def __init__(self):
         super().__init__()
+        self.connector = ConnMSBalance()
 
     def get_config(self):
         """ return (url, token) from config file"""
@@ -27,18 +26,18 @@ class ContMSBalance(ContMSMainClass):
 
     def get_sum(self):
         """ getting sum accounts from balance connector"""
-        connector = ConnMSBalance()
+        # connector = ConnMSBalance()
         url, token = self.get_config()
-        connector.set_api_config(api_url=url, api_token=token, to_file=False)
-        sum_accounts = connector.get_sum()
+        self.connector.set_api_config(api_url=url, api_token=token, to_file=False)
+        sum_accounts = self.connector.get_sum()
         return sum_accounts
 
     def get_account_bal(self):
         """ getting accounts balances from balance connector"""
-        connector = ConnMSBalance()
+        # connector = ConnMSBalance()
         url, token = self.get_config()
-        connector.set_api_config(api_url=url, api_token=token, to_file=False)
-        bal_accounts = connector.get_accounts_bal()
+        self.connector.set_api_config(api_url=url, api_token=token, to_file=False)
+        bal_accounts = self.connector.get_accounts_bal()
         return bal_accounts
 
 

@@ -35,7 +35,7 @@ class ConnMSBalance(ConnMSMainClass):
                     accounts_dict[account_name] = acc['balance'] / 100
                 except Exception as e:
                     print(e)
-        self.logger.info("Accounts sum successfully downloaded")
+        self.logger.info("Accounts balance successfully downloaded")
         return dict(sorted(accounts_dict.items()))
 
     def get_sum(self):
@@ -43,7 +43,7 @@ class ConnMSBalance(ConnMSMainClass):
         accounts_list = [0]
         for acc in json_data['rows']:
             accounts_list.append(acc['balance'] / 100)
-        self.logger.info("Balance successfully downloaded")
+        self.logger.info("balance sum successfully downloaded")
         return sum(accounts_list)
 
 
