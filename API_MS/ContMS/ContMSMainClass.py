@@ -24,5 +24,5 @@ class ContMSMainClass(CAPMainClass):
             return conf
         except Exception as e:
             self.logger.error("Cant read config file", e)
-            print(e)
+            # print(e)
             return None

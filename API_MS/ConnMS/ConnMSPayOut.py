@@ -6,6 +6,7 @@ class ConnMSPayOut(ConnMSMainClass):
 
     def __init__(self):
         super().__init__()
+        self.logger.debug("module ConnMSPayOut started")
 
 
 if __name__ == '__main__':

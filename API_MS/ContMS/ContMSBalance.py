@@ -13,6 +13,7 @@ class ContMSBalance(ContMSMainClass):
     def __init__(self):
         super().__init__()
         self.connector = ConnMSBalance()
+        self.logger.debug("module ContMSBalance started")
 
     def get_config(self):
         """ return (url, token) from config file"""

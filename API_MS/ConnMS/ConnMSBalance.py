@@ -6,6 +6,7 @@ class ConnMSBalance(ConnMSMainClass):
 
     def __init__(self):
         super().__init__()
+        self.logger.debug("module ConnMSBalance started")
 
     def get_accounts_bal(self):
         """ return dict with acconts and balance
@@ -20,10 +21,10 @@ class ConnMSBalance(ConnMSMainClass):
         try:
             entity_accounts = self.get_api_data()
         except Exception as e:
-            self.logger.error("cant request entity accounts")
-            print(e)
+            self.logger.error(f"cant request entity accounts {e}")
 
         for i, acc in enumerate(json_data['rows']):
+            # checking rows and matching with data from entity
             if i != 0:
                 try:
                     account_name = acc['account']['name']
@@ -34,7 +35,9 @@ class ConnMSBalance(ConnMSMainClass):
                                 account_name = f"{account['bankName']} ({account_name})"
                     accounts_dict[account_name] = acc['balance'] / 100
                 except Exception as e:
-                    print(e)
+                    # print(e)
+                    self.logger.error(f"matching accounts error {e}")
+
         self.logger.info("Accounts balance successfully downloaded")
         return dict(sorted(accounts_dict.items()))
 

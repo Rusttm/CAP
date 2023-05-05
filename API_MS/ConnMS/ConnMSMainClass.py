@@ -79,9 +79,9 @@ class ConnMSMainClass(CAPMainClass):
                 self.logger.info("data requested successful")
                 return acc_req.json()
 
-        except IndexError:
-            print('Cant read account data', Exception)
-            self.logger.warning("cant connect to balance")
+        except Exception as e:
+            # print('Cant read account data', Exception)
+            self.logger.critical(f"cant connect to balance {e}")
             return None
 
     def get_api_data(self):
@@ -93,7 +93,8 @@ class ConnMSMainClass(CAPMainClass):
         try:
             delta = int(data['meta']['size']) - int(data['meta']['offset'])
         except Exception as e:
-            print(e)
+            # print(e)
+            self.logger.warning(f"cant find key for data['meta']['size'] {e}")
         if delta > offset:
             self.logger.info(f"request from {__file__} have more than 1000rows")
             requests_num = delta//offset

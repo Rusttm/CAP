@@ -7,6 +7,7 @@ class ContMSPayOut(ContMSMainClass):
 
     def __init__(self):
         super().__init__()
+        self.logger.debug("module ContMSPayOut started")
 
     def get_config(self):
         """ return (url, token) from config file"""
