@@ -16,10 +16,11 @@ class ContMSPayIn(ContMSMainClass):
         """ return (url, token) from config file"""
         conf = self.get_config_data()
         if conf:
-            url_payin = conf['MoiSklad']['url_ininvoices_list']
+            url_payin = conf['MoiSklad']['url_inpayments_list']
             access_token = conf['MoiSklad']['access_token']
             return url_payin, access_token
         else:
+            self.logger.warning("cant get info from configfile url_payin or access_token")
             return None, None
 
     def get_payin_data(self):

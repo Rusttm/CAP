@@ -23,6 +23,7 @@ class ContMSBalance(ContMSMainClass):
             access_token = conf['MoiSklad']['access_token']
             return url_balance, access_token
         else:
+            self.logger.warning("cant get info from configfile url_balance or access_token")
             return None, None
 
     def get_sum(self):

@@ -94,7 +94,7 @@ class ConnMSMainClass(CAPMainClass):
             delta = int(data['meta']['size']) - int(data['meta']['offset'])
         except Exception as e:
             # print(e)
-            self.logger.warning(f"cant find key for data['meta']['size'] {e}")
+            self.logger.warning(f"cant find key {e} for data['meta']['size'] ")
         if delta > offset:
             self.logger.info(f"request from {__file__} have more than 1000rows")
             requests_num = delta//offset
