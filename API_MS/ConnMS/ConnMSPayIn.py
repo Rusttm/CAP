@@ -16,7 +16,7 @@ class ConnMSPayIn(ConnMSMainClass):
             self.set_api_url(conf['MoiSklad']['url_inpayments_list'])
             self.set_api_token(conf['MoiSklad']['access_token'])
         else:
-            self.logger.warning("cant get info from configfile url_balance or access_token")
+            self.logger.warning("cant get info from configfile url or access_token")
 
     def get_payin_filtered_by_date(self, from_date=None, to_date=None, to_file=False):
         """ filterred by date from to or just

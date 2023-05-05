@@ -32,16 +32,17 @@ class ConnMSStockByStore(ConnMSMainClass):
 
     def get_stock_by_store_sum(self, to_date=None):
         """ return dict {store:sum}"""
-        data_dict = self.get_stock_by_store(to_date=to_date)
-        result_array = dict()
-        result_sum = 0
-        if data_dict:
-            for prod in data_dict['rows']:
-                try:
-                    result_sum += prod['stock'] * prod['price']
-                except Exception as e:
-                    self.logger.warning(f"for {prod['name']} summ not considered. error {e}")
-        return result_sum
+        # !!! under construction
+        # data_dict = self.get_stock_by_store(to_date=to_date)
+        result_dict = dict()
+        # result_sum = 0
+        # if data_dict:
+        #     for prod in data_dict['rows']:
+        #         try:
+        #             result_sum += prod['stock'] * prod['price']
+        #         except Exception as e:
+        #             self.logger.warning(f"for {prod['name']} summ not considered. error {e}")
+        return result_dict
 
 
 if __name__ == '__main__':

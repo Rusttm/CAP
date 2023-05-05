@@ -16,7 +16,7 @@ class ConnMSPayOut(ConnMSMainClass):
             self.set_api_url(conf['MoiSklad']['url_outpayments_list'])
             self.set_api_token(conf['MoiSklad']['access_token'])
         else:
-            self.logger.warning("cant get info from configfile url_balance or access_token")
+            self.logger.warning("cant get info from configfile url or access_token")
 
     def get_payout_data(self, to_file=False):
         """ return full payouts data """
