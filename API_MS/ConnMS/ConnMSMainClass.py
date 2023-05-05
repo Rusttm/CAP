@@ -90,7 +90,7 @@ class ConnMSMainClass(CAPMainClass):
             self.logger.warning(f"cant find key {e} for data['meta']['size'] ")
         # if there is more than 1000 positions in row ..
         if delta > offset:
-            self.logger.info(f"request from {pathlib.PurePath(__file__).name} have more than 1000rows")
+            self.logger.info(f"{pathlib.PurePath(__file__).name} request contains more than 1000rows")
             requests_num = delta//offset
             for i in range(requests_num):
                 # .. request data until it ends
