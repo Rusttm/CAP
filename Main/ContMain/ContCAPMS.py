@@ -3,7 +3,7 @@ import json
 import logging
 
 class ContCAPMS(ContCAPMainClass):
-    """ MoiSklad API controller"""
+    """ MoiSklad API main controller"""
 
     def __init__(self):
         super().__init__()
@@ -21,10 +21,10 @@ class ContCAPMS(ContCAPMainClass):
         balance_acc = controller.get_account_bal()
         return balance_acc
 
-    def get_payouts(self):
+    def get_payouts_filtered(self, from_date=None, to_date=None):
         from API_MS.ContMS.ContMSPayOut import ContMSPayOut
         controller = ContMSPayOut()
-        payouts = controller.get_payout_data()
+        payouts = controller.get_payout_filtered_by_date(from_date, to_date)
         return payouts
 
     def get_payin_filtered(self, from_date=None, to_date=None):
@@ -36,11 +36,10 @@ class ContCAPMS(ContCAPMainClass):
 
 
 if __name__ == '__main__':
-    # controller = ContCAPMS()
-    # logger = logging.getLogger("CAPMainClass")
-    # logger.debug("main module is working")
-    # check balances
     controller = ContCAPMS()
+
+    # check balances
+    # controller = ContCAPMS()
     balance_sum = controller.get_entity_bal_sum()
     print(balance_sum)
     # balance_acc = controller.get_entity_acc_bal()
@@ -58,8 +57,14 @@ if __name__ == '__main__':
     # with open(FILE_PATH, 'w') as ff:
     #     json.dump(payins, ff, ensure_ascii=False)
     #
-    # # check payins filtered
+    # check payins filtered
     # payins = controller.get_payin_filtered(from_date="2023-01-01", to_date="2023-02-01")
     # FILE_PATH = "../../API_MS/data/payins_fitered.json"
+    # with open(FILE_PATH, 'w') as ff:
+    #     json.dump(payins, ff, ensure_ascii=False)
+
+    # check payins half filtered
+    # payins = controller.get_payin_filtered(from_date="2023-01-01")
+    # FILE_PATH = "/Users/johnlennon/RusttmGDrive/Python/CAP/API_MS/data/payins_half_fitered.json"
     # with open(FILE_PATH, 'w') as ff:
     #     json.dump(payins, ff, ensure_ascii=False)

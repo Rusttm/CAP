@@ -61,8 +61,14 @@ class ConnMSMainClass(CAPMainClass):
         header_for_token_auth = {'Authorization': f'Bearer {self.__api_token}'}
         api_url = self.__api_url + self.__api_param_line
         try:
+            self.logger.info(f"{pathlib.PurePath(__file__).name} make request")
             acc_req = requests.get(url=api_url, headers=header_for_token_auth)
-            self.logger.debug("data request successful")
+            try:
+                errors_request = acc_req.json()['errors']
+                for error in errors_request:
+                    self.logger.warning(f"{pathlib.PurePath(__file__).name} requested information has errors: {error['error']} ({error['code']}) ")
+            except Exception as e:
+                self.logger.info(f"{pathlib.PurePath(__file__).name} request successful - data has context ")
             return acc_req.json()
         except Exception as e:
             # print('Cant read account data', Exception)

@@ -34,7 +34,7 @@ class ContMSPayOut(ContMSMainClass):
         date format '2022-12-08' """
         # connector = ConnMSPayOut()
         url, token = self.get_config()
-        self.connector.set_api_config(api_url=url, api_token=token, to_file=True)
+        self.connector.set_api_config(api_url=url, api_token=token, to_file=False)
         param = ""
         if from_date or to_date:
             if from_date:

@@ -3,7 +3,9 @@ import logging
 
 class CAPMainClass(object):
     """ main logger file """
+
     logger = None
+    """ main class logger in CAP project"""
 
     def __init__(self, file_name="cap.log"):
         self.set_logger("CAPMainClass")
