@@ -44,3 +44,4 @@ class ConnMSStockRemains(ConnMSMainClass):
 
 if __name__ == '__main__':
     connector = ConnMSStockRemains()
+    connector.get_stock_remains(to_file=True)
