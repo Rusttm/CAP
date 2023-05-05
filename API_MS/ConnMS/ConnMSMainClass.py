@@ -4,6 +4,7 @@ import json
 import os
 import re
 import pathlib
+import configparser
 
 class ConnMSMainClass(CAPMainClass):
     """ superclass for all MoiSklad connectors """
@@ -19,8 +20,25 @@ class ConnMSMainClass(CAPMainClass):
         """ all connector have own id"""
 
     def get_conn_id(self):
+        """ return connectors id"""
         return self.id
 
+    def set_config(self):
+        """it sets url and token in configuration"""
+        try:
+            conf = self.get_config_data()
+            if conf:
+                self.set_api_url(conf['MoiSklad']['url_money'])
+                self.set_api_token(conf['MoiSklad']['access_token'])
+            else:
+                # self.logger.warning("cant get info from configfile url_balance or access_token")
+                self.logger.critical("Please redefine method set_config in child class!!!")
+            self.set_api_config()
+        except Exception as e:
+            # self.logger.warning("cant get info from configfile url_balance or access_token")
+            self.logger.critical("Please redefine method set_config in child class!!!")
+
+            pass
     def set_api_config(self, api_url="", api_token="", api_param_line="", to_file=False):
         self.__api_url = api_url
         self.__api_token = api_token
@@ -34,6 +52,7 @@ class ConnMSMainClass(CAPMainClass):
         self.__api_url = api_url
 
     def set_api_param_line(self, api_param_line=None):
+        """ set new request parameters in url line """
         if api_param_line:
             if self.__api_param_line == "?":
                 self.__api_param_line += api_param_line
@@ -44,6 +63,7 @@ class ConnMSMainClass(CAPMainClass):
         # self.__api_param_line = api_param_line
 
     def add_api_param_line(self, add_param_line=None):
+        """ add request parameters in current url line"""
         if self.__api_param_line == "?":
             self.__api_param_line += add_param_line
         elif self.__api_param_line == "":
@@ -110,3 +130,19 @@ class ConnMSMainClass(CAPMainClass):
             else:
                 self.logger.error(f"file {DATA_FILE_PATH} doesnt exist")
         return data
+
+    def get_config_data(self):
+        """ extract data from config file
+        return keys and values """
+        try:
+            conf = configparser.ConfigParser()
+            file = os.path.dirname(os.path.dirname(__file__))
+            CONF_FILE_PATH = os.path.join(file, "config", "config.ini")
+            if not os.path.exists(CONF_FILE_PATH):
+                self.logger.error(f"config file {CONF_FILE_PATH} doesnt exist")
+            conf.read(CONF_FILE_PATH)
+            self.logger.info(f"{pathlib.PurePath(__file__).name} got info from configfile")
+            return conf
+        except Exception as e:
+            self.logger.error("Cant read config file", e)
+            return None

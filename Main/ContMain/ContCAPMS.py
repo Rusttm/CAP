@@ -46,10 +46,10 @@ if __name__ == '__main__':
     # print(balance_acc)
 
     # check payouts
-    # payouts = controller.get_payouts_filtered()
-    # FILE_PATH = "payouts.json"
-    # with open(FILE_PATH, 'w') as ff:
-    #     json.dump(payouts, ff, ensure_ascii=False)
+    payouts = controller.get_payouts_filtered()
+    FILE_PATH = "payouts.json"
+    with open(FILE_PATH, 'w') as ff:
+        json.dump(payouts, ff, ensure_ascii=False)
 
     # check payins all
     # payins = controller.get_payin_filtered()

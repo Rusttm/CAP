@@ -12,22 +12,8 @@ class ContMSPayIn(ContMSMainClass):
         self.connector = ConnMSPayIn()
         self.logger.debug("module ContMSPayIn started")
 
-    def get_config(self):
-        """ return (url, token) from config file"""
-        conf = self.get_config_data()
-        if conf:
-            url_payin = conf['MoiSklad']['url_inpayments_list']
-            access_token = conf['MoiSklad']['access_token']
-            return url_payin, access_token
-        else:
-            self.logger.warning("cant get info from configfile url_payin or access_token")
-            return None, None
-
     def get_payin_data(self):
         """ return full payouts data """
-        # self.connector = ConnMSPayOut()
-        url, token = self.get_config()
-        self.connector.set_api_config(api_url=url, api_token=token, to_file=False)
         payouts = self.connector.get_api_data()
         return payouts
 
@@ -35,8 +21,8 @@ class ContMSPayIn(ContMSMainClass):
         """ filterred by date from to or just
         date format '2022-12-08' """
         # connector = ConnMSPayOut()
-        url, token = self.get_config()
-        self.connector.set_api_config(api_url=url, api_token=token, to_file=False)
+        # url, token = self.get_config()
+        # self.connector.set_api_config(api_url=url, api_token=token, to_file=False)
         param = ""
         if from_date or to_date:
             if from_date:
@@ -56,9 +42,6 @@ class ContMSPayIn(ContMSMainClass):
     def get_payin_filtered_by_create(self, from_date=None, to_date=None):
         """ filterred by create from to or just
         date format '2022-12-08' """
-        # connector = ConnMSPayOut()
-        url, token = self.get_config()
-        self.connector.set_api_config(api_url=url, api_token=token, to_file=False)
         param = ""
         if from_date:
             param = f"filter=created>={from_date} 00:00:00.000"

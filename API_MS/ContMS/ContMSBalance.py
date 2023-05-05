@@ -15,30 +15,13 @@ class ContMSBalance(ContMSMainClass):
         self.connector = ConnMSBalance()
         self.logger.debug("module ContMSBalance started")
 
-    def get_config(self):
-        """ return (url, token) from config file"""
-        conf = self.get_config_data()
-        if conf:
-            url_balance = conf['MoiSklad']['url_money']
-            access_token = conf['MoiSklad']['access_token']
-            return url_balance, access_token
-        else:
-            self.logger.warning("cant get info from configfile url_balance or access_token")
-            return None, None
-
     def get_sum(self):
         """ getting sum accounts from balance connector"""
-        # connector = ConnMSBalance()
-        url, token = self.get_config()
-        self.connector.set_api_config(api_url=url, api_token=token, to_file=False)
         sum_accounts = self.connector.get_sum()
         return sum_accounts
 
     def get_account_bal(self):
         """ getting accounts balances from balance connector"""
-        # connector = ConnMSBalance()
-        url, token = self.get_config()
-        self.connector.set_api_config(api_url=url, api_token=token, to_file=False)
         bal_accounts = self.connector.get_accounts_bal()
         return bal_accounts
 
