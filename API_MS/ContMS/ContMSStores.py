@@ -14,7 +14,7 @@ class ContMSStores(ContMSMainClass, ConnMSStores, ConnMSStockByStore, ConnMSStoc
     def __init__(self):
         super().__init__()
         # self.connector = ConnMSStockRemains()
-        self.logger.debug("module ContMSStockRemains started")
+        self.logger.debug("module ContMSStores started")
 
     def write_to_file(self, data_dict=None, file_name="stores_dict"):
         file = os.path.dirname(os.path.dirname(__file__))
