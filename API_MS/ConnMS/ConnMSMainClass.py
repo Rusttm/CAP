@@ -3,7 +3,7 @@ import requests
 import json
 import os
 import re
-
+import pathlib
 
 class ConnMSMainClass(CAPMainClass):
     """ superclass for all MoiSklad connectors """
@@ -62,45 +62,45 @@ class ConnMSMainClass(CAPMainClass):
         api_url = self.__api_url + self.__api_param_line
         try:
             acc_req = requests.get(url=api_url, headers=header_for_token_auth)
-            # if write to file and checked to_file==True
-            if self.__to_file:
-                file = os.path.dirname(os.path.dirname(__file__))
-                DATA_FILE_PATH = os.path.join(file, "data", f"{__name__}_req.json")
-                # open(DATA_FILE_PATH, "x")
-                if os.path.exists(DATA_FILE_PATH):
-                    with open(DATA_FILE_PATH, 'w') as ff:
-                        json.dump(acc_req.json(), ff, ensure_ascii=False)
-                    self.logger.info("request was wrote to file")
-                else:
-                    self.logger.error(f"file {DATA_FILE_PATH} doesnt exist")
-                return None
-            # if data return not in file
-            else:
-                self.logger.info("data requested successful")
-                return acc_req.json()
-
+            self.logger.debug("data request successful")
+            return acc_req.json()
         except Exception as e:
             # print('Cant read account data', Exception)
-            self.logger.critical(f"cant connect to balance {e}")
+            self.logger.critical(f"cant connect to request data: {e}")
             return None
 
     def get_api_data(self):
         """ if there are more than 1000 positions
         needs to form request for getting full data"""
         offset = 1000
+        # starts first request
         data = self.get_single_req_data()
         delta = 0
         try:
+            # check full lenth of data by data['meta']['size']
             delta = int(data['meta']['size']) - int(data['meta']['offset'])
         except Exception as e:
-            # print(e)
+            # if there is no data in data['meta']['size']
             self.logger.warning(f"cant find key {e} for data['meta']['size'] ")
+        # if there is more than 1000 positions in row ..
         if delta > offset:
-            self.logger.info(f"request from {__file__} have more than 1000rows")
+            self.logger.info(f"request from {pathlib.PurePath(__file__).name} have more than 1000rows")
             requests_num = delta//offset
             for i in range(requests_num):
+                # .. request data until it ends
                 self.add_api_param_line(f"offset={(i+1)*1000}")
                 next_data = self.get_single_req_data()
-                for pos_num, pos in enumerate(next_data['rows']):
-                    data['rows'].append(pos)
+                data['rows'] += next_data['rows']
+                # for pos_num, pos in enumerate(next_data['rows']):
+                #     data['rows'].append(pos)
+        if self.__to_file:
+            file = os.path.dirname(os.path.dirname(__file__))
+            DATA_FILE_PATH = os.path.join(file, "data", "requested_data.json")
+            if os.path.exists(DATA_FILE_PATH):
+                self.logger.debug(f"start write request to file {pathlib.PurePath(DATA_FILE_PATH).name}")
+                with open(DATA_FILE_PATH, 'w') as ff:
+                    json.dump(data, ff, ensure_ascii=False)
+                self.logger.debug(f"request was wrote to file {pathlib.PurePath(DATA_FILE_PATH).name}")
+            else:
+                self.logger.error(f"file {DATA_FILE_PATH} doesnt exist")
         return data

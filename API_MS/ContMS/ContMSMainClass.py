@@ -1,6 +1,7 @@
 from Main.CAPMainClass import CAPMainClass
 import configparser
 import os
+import pathlib
 
 class ContMSMainClass(CAPMainClass):
     """ superclass for all MoiSklad controllers """
@@ -20,7 +21,8 @@ class ContMSMainClass(CAPMainClass):
             if not os.path.exists(CONF_FILE_PATH):
                 self.logger.error(f"config file {CONF_FILE_PATH} doesnt exist")
             conf.read(CONF_FILE_PATH)
-            self.logger.info(f"{__file__} got info from configfile")
+
+            self.logger.info(f"{pathlib.PurePath(__file__).name} got info from configfile")
             return conf
         except Exception as e:
             self.logger.error("Cant read config file", e)

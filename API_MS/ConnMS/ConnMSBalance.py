@@ -37,16 +37,15 @@ class ConnMSBalance(ConnMSMainClass):
                 except Exception as e:
                     # print(e)
                     self.logger.error(f"matching accounts error {e}")
-
-        self.logger.info("Accounts balance successfully downloaded")
         return dict(sorted(accounts_dict.items()))
 
     def get_sum(self):
+        self.logger.debug("balance sum requested")
         json_data = self.get_api_data()
         accounts_list = [0]
         for acc in json_data['rows']:
             accounts_list.append(acc['balance'] / 100)
-        self.logger.info("balance sum successfully downloaded")
+
         return sum(accounts_list)
 
 

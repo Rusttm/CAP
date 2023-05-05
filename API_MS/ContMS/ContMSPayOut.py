@@ -1,6 +1,6 @@
 from API_MS.ContMS.ContMSMainClass import ContMSMainClass
 from API_MS.ConnMS.ConnMSPayOut import ConnMSPayOut
-
+import json
 
 class ContMSPayOut(ContMSMainClass):
     """ controller class to get PaymentsOut data"""
@@ -34,7 +34,7 @@ class ContMSPayOut(ContMSMainClass):
         date format '2022-12-08' """
         # connector = ConnMSPayOut()
         url, token = self.get_config()
-        self.connector.set_api_config(api_url=url, api_token=token, to_file=False)
+        self.connector.set_api_config(api_url=url, api_token=token, to_file=True)
         param = ""
         if from_date or to_date:
             if from_date:
@@ -46,7 +46,7 @@ class ContMSPayOut(ContMSMainClass):
             return self.connector.get_api_data()
         self.connector.set_api_param_line(param)
         payouts = self.connector.get_api_data()
-        # FILE_PATH = "payouts5.json"
+        # FILE_PATH = "payouts_full.json"
         # with open(FILE_PATH, 'w') as ff:
         #     json.dump(payouts, ff, ensure_ascii=False)
         return payouts
@@ -54,7 +54,7 @@ class ContMSPayOut(ContMSMainClass):
 
 if __name__ == '__main__':
     controller = ContMSPayOut()
-    data = controller.get_payout_filtered_by_date(from_date="2023-01-01", to_date="2023-02-01")
+    data = controller.get_payout_filtered_by_date()
     # print(data)
     # balance_acc = controller.get_account_bal()
     # print(balance_acc)
