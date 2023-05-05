@@ -6,6 +6,7 @@ import re
 import pathlib
 import configparser
 
+
 class ConnMSMainClass(CAPMainClass):
     """ superclass for all MoiSklad connectors """
     id = 0
@@ -38,7 +39,6 @@ class ConnMSMainClass(CAPMainClass):
             # self.logger.warning("cant get info from configfile url_balance or access_token")
             self.logger.critical("Please redefine method set_config in child class!!!")
 
-            pass
     def set_api_config(self, api_url="", api_token="", api_param_line="", to_file=False):
         self.__api_url = api_url
         self.__api_token = api_token
@@ -84,9 +84,11 @@ class ConnMSMainClass(CAPMainClass):
             self.logger.info(f"{pathlib.PurePath(__file__).name} make request")
             acc_req = requests.get(url=api_url, headers=header_for_token_auth)
             try:
+                # check errors in request
                 errors_request = acc_req.json()['errors']
                 for error in errors_request:
-                    self.logger.error(f"{pathlib.PurePath(__file__).name} requested information has errors: {error['error']} ({error['code']}) ")
+                    self.logger.error(
+                        f"{pathlib.PurePath(__file__).name} requested information has errors: {error['error']} (code {error['code']}) ")
             except Exception as e:
                 self.logger.info(f"{pathlib.PurePath(__file__).name} request successful - data has context ")
             return acc_req.json()
@@ -95,9 +97,10 @@ class ConnMSMainClass(CAPMainClass):
             self.logger.critical(f"cant connect to request data: {e}")
             return None
 
-    def get_api_data(self):
+    def get_api_data(self, to_file=False):
         """ if there are more than 1000 positions
         needs to form request for getting full data"""
+        self.__to_file = to_file
         offset = 1000
         # starts first request
         data = self.get_single_req_data()
@@ -111,10 +114,10 @@ class ConnMSMainClass(CAPMainClass):
         # if there is more than 1000 positions in row ..
         if delta > offset:
             self.logger.info(f"{pathlib.PurePath(__file__).name} request contains more than 1000rows")
-            requests_num = delta//offset
+            requests_num = delta // offset
             for i in range(requests_num):
                 # .. request data until it ends
-                self.add_api_param_line(f"offset={(i+1)*1000}")
+                self.add_api_param_line(f"offset={(i + 1) * 1000}")
                 next_data = self.get_single_req_data()
                 data['rows'] += next_data['rows']
                 # for pos_num, pos in enumerate(next_data['rows']):
