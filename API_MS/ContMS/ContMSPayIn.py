@@ -20,9 +20,6 @@ class ContMSPayIn(ContMSMainClass):
     def get_payin_filtered_by_date(self, from_date=None, to_date=None):
         """ filterred by date from to or just
         date format '2022-12-08' """
-        # connector = ConnMSPayOut()
-        # url, token = self.get_config()
-        # self.connector.set_api_config(api_url=url, api_token=token, to_file=False)
         param = ""
         if from_date or to_date:
             if from_date:
