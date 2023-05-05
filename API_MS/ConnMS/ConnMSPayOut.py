@@ -18,6 +18,25 @@ class ConnMSPayOut(ConnMSMainClass):
         else:
             self.logger.warning("cant get info from configfile url_balance or access_token")
 
+    def get_payout_data(self, to_file=False):
+        """ return full payouts data """
+        return self.get_api_data(to_file=to_file)
+
+    def get_payout_filtered_by_date(self, from_date=None, to_date=None, to_file=False):
+        """ filterred by date from to or just
+        date format '2022-12-08' """
+        param = ""
+        if from_date or to_date:
+            if from_date:
+                param = f"filter=moment>={from_date}"
+            if to_date:
+                param += f"&filter=moment<={to_date}"
+        else:
+            self.logger.warning(f"paymentsOut request not specified from_date={from_date} and to_date={to_date} parameter")
+            return self.get_api_data(to_file=to_file)
+        self.set_api_param_line(param)
+        return self.get_api_data(to_file=to_file)
+
 
 if __name__ == '__main__':
     connector = ConnMSPayOut()

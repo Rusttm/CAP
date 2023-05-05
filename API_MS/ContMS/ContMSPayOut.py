@@ -13,27 +13,12 @@ class ContMSPayOut(ContMSMainClass):
 
     def get_payout_data(self):
         """ return full payouts data """
-        payouts = self.connector.get_api_data()
-        return payouts
+        return self.connector.get_payout_data()
 
-    def get_payout_filtered_by_date(self, from_date=None, to_date=None):
+    def get_payout_filtered_by_date(self, from_date=None, to_date=None, to_file=False):
         """ filterred by date from to or just
         date format '2022-12-08' """
-        param = ""
-        if from_date or to_date:
-            if from_date:
-                param = f"filter=moment>={from_date}"
-            if to_date:
-                param += f"&filter=moment<={to_date}"
-        else:
-            self.logger.warning("paymentsOut request not specified from_date or to_date parameter")
-            return self.connector.get_api_data()
-        self.connector.set_api_param_line(param)
-        payouts = self.connector.get_api_data()
-        # FILE_PATH = "payouts_full.json"
-        # with open(FILE_PATH, 'w') as ff:
-        #     json.dump(payouts, ff, ensure_ascii=False)
-        return payouts
+        return self.connector.get_api_data(from_date=from_date, to_date=to_date, to_file=to_file)
 
 
 if __name__ == '__main__':
