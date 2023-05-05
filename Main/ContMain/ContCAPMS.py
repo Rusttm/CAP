@@ -75,7 +75,7 @@ if __name__ == '__main__':
     #     json.dump(payins, ff, ensure_ascii=False)
 
     # check stock remains
-    stock_remains = controller.get_stock_remains()
-    FILE_PATH = "/Users/johnlennon/RusttmGDrive/Python/CAP/API_MS/data/stock_all.json"
-    with open(FILE_PATH, 'w') as ff:
-        json.dump(stock_remains, ff, ensure_ascii=False)
+    # stock_remains = controller.get_stock_remains()
+    # FILE_PATH = "/Users/johnlennon/RusttmGDrive/Python/CAP/API_MS/data/stock_all.json"
+    # with open(FILE_PATH, 'w') as ff:
+    #     json.dump(stock_remains, ff, ensure_ascii=False)

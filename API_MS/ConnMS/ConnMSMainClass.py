@@ -125,6 +125,8 @@ class ConnMSMainClass(CAPMainClass):
         if self.__to_file:
             file = os.path.dirname(os.path.dirname(__file__))
             DATA_FILE_PATH = os.path.join(file, "data", "requested_data.json")
+            if not os.path.exists(DATA_FILE_PATH):
+                open(DATA_FILE_PATH, 'x')
             if os.path.exists(DATA_FILE_PATH):
                 self.logger.debug(f"start write request to file {pathlib.PurePath(DATA_FILE_PATH).name}")
                 with open(DATA_FILE_PATH, 'w') as ff:
