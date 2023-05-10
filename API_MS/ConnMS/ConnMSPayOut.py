@@ -35,7 +35,8 @@ class ConnMSPayOut(ConnMSMainClass):
             if to_date:
                 param += f"&filter=moment<={to_date}"
         else:
-            self.logger.warning(f"paymentsOut request not specified from_date={from_date} and to_date={to_date} parameter")
+            self.logger.warning(f"paymentsOut request not specified from_date={from_date} "
+                                f"and to_date={to_date} parameter")
             return self.get_api_data(to_file=to_file)
         self.set_api_param_line(param)
         return self.get_api_data(to_file=to_file)

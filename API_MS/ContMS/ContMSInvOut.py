@@ -5,11 +5,9 @@ from API_MS.ConnMS.ConnMSInvOut import ConnMSInvOut
 
 class ContMSInvOut(ContMSMainClass, ConnMSInvOut):
     """ controller class to get PaymentsIn data"""
-    connector = None
 
     def __init__(self):
         super().__init__()
-        # self.connector = ConnMSPayIn()
         self.logger.debug(f"module {__class__.__name__} started")
 
 
