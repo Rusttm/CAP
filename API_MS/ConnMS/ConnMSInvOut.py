@@ -1,9 +1,9 @@
 from API_MS.ConnMS.ConnMSMainClass import ConnMSMainClass
 
 
-class ConnMSPayIn(ConnMSMainClass):
-    """class to connect payments out"""
-    request_url = 'url_inpayments_list'
+class ConnMSInvOut(ConnMSMainClass):
+    """class to connect outer invoices"""
+    request_url = 'url_outinvoices_list'
     request_token = 'access_token'
 
     def __init__(self):
@@ -21,7 +21,7 @@ class ConnMSPayIn(ConnMSMainClass):
     #     else:
     #         self.logger.warning("cant get info from configfile url or access_token")
 
-    def get_payin_filtered_by_date(self, from_date=None, to_date=None, to_file=False):
+    def get_invout_filtered_by_date(self, from_date=None, to_date=None, to_file=False):
         """ filterred by date from to or just
         date format '2022-12-08' """
         param = ""
@@ -31,13 +31,13 @@ class ConnMSPayIn(ConnMSMainClass):
             if to_date:
                 param += f"&filter=moment<={to_date}"
         else:
-            self.logger.warning(f"paymentsIn request not specified from_date={from_date} and to_date={to_date} parameter")
+            self.logger.warning(f"InvoicesIn request not specified from_date={from_date} and to_date={to_date} parameter")
             return self.get_api_data(to_file=to_file)
         self.set_api_param_line(param)
         payouts = self.get_api_data(to_file=to_file)
         return payouts
 
-    def get_payin_filtered_by_create(self, from_date=None, to_date=None, to_file=False):
+    def get_invout_filtered_by_create(self, from_date=None, to_date=None, to_file=False):
         """ filterred by create from to or just
         date format '2022-12-08' """
         param = ""
@@ -47,11 +47,12 @@ class ConnMSPayIn(ConnMSMainClass):
             if to_date:
                 param += f"&filter=moment<={to_date}"
         else:
-            self.logger.warning(f"paymentsIn request not specified from_date={from_date} and to_date={to_date} parameter")
+            self.logger.warning(f"InvoicesIn request not specified from_date={from_date} and to_date={to_date} parameter")
             return self.get_api_data(to_file=to_file)
         self.set_api_param_line(param)
         payouts = self.get_api_data(to_file=to_file)
         return payouts
 
 if __name__ == '__main__':
-    connector = ConnMSPayIn()
+    connector = ConnMSInvOut()
+    connector.get_invout_filtered_by_date(from_date="2023-01-01", to_date="2023-02-01", to_file=True)

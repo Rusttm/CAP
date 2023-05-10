@@ -9,7 +9,7 @@ class ConnMSStockByStore(ConnMSMainClass):
     """ API token"""
     def __init__(self):
         super().__init__()
-        self.logger.debug("module ConnMSStockByStore started")
+        self.logger.debug(f"module {__class__.__name__} started")
         super().set_config(url_conf_key=self.request_url, token_conf_key=self.request_token)
         # self.set_config()
 

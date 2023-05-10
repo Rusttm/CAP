@@ -4,7 +4,7 @@ import requests
 import json
 import os
 import re
-import pathlib
+# import pathlib
 
 
 class ConnMSMainClass(CAPMainClass, ConnMSConfig):
@@ -97,7 +97,8 @@ class ConnMSMainClass(CAPMainClass, ConnMSConfig):
         header_for_token_auth = {'Authorization': f'Bearer {self.__api_token}'}
         api_url = self.__api_url + self.__api_param_line
         try:
-            self.logger.info(f"{pathlib.PurePath(__file__).name} make request")
+            # self.logger.info(f"{pathlib.PurePath(__file__).name} make request")
+            self.logger.info(f"{__class__.__name__} make request")
             acc_req = requests.get(url=api_url, headers=header_for_token_auth)
             req_data = dict(acc_req.json())
             req_err = req_data.get('errors', False)
@@ -106,15 +107,17 @@ class ConnMSMainClass(CAPMainClass, ConnMSConfig):
                 errors_request = acc_req.json()['errors']
                 for error in errors_request:
                     self.logger.error(
-                        f"{pathlib.PurePath(__file__).name} requested information has errors: "
+                        # f"{pathlib.PurePath(__file__).name} requested information has errors: "
+                        f"{__class__.__name__} requested information has errors: "
                         f"{error['error']} (code {error['code']}) ")
             else:
-                self.logger.info(f"{pathlib.PurePath(__file__).name} request successful - data has context ")
+                # self.logger.info(f"{pathlib.PurePath(__file__).name} request successful - data has context ")
+                self.logger.info(f"{__class__.__name__} request successful - data has context ")
 
             return acc_req.json()
         except Exception as e:
             # print('Cant read account data', Exception)
-            self.logger.critical(f"cant connect to request data: {e}")
+            self.logger.critical(f"{__class__.__name__} cant connect to request data: {e}")
             return None
 
     def get_api_data(self, to_file=False):
@@ -130,28 +133,30 @@ class ConnMSMainClass(CAPMainClass, ConnMSConfig):
             delta = int(data['meta']['size']) - int(data['meta']['offset'])
         except Exception as e:
             # if there is no data in data['meta']['size']
-            self.logger.warning(f"cant find key {e} for data['meta']['size'] ")
+            self.logger.warning(f"{__class__.__name__} cant find key {e} for data['meta']['size'] ")
         # if there is more than 1000 positions in row
         if delta > offset:
-            self.logger.info(f"{pathlib.PurePath(__file__).name} request contains more than 1000rows")
+            # self.logger.info(f"{pathlib.PurePath(__file__).name} request contains more than 1000rows")
+            self.logger.info(f"{__class__.__name__} request contains more than 1000rows")
             requests_num = delta // offset
             for i in range(requests_num):
                 # .. request data until it ends
                 self.add_api_param_line(f"offset={(i + 1) * 1000}")
                 next_data = self.get_single_req_data()
                 data['rows'] += next_data['rows']
-                # for pos_num, pos in enumerate(next_data['rows']):
-                #     data['rows'].append(pos)
+
         if self.__to_file:
             file = os.path.dirname(os.path.dirname(__file__))
             DATA_FILE_PATH = os.path.join(file, "data", self.__file_name)
             if not os.path.exists(DATA_FILE_PATH):
                 open(DATA_FILE_PATH, 'x')
             if os.path.exists(DATA_FILE_PATH):
-                self.logger.debug(f"start write request to file {pathlib.PurePath(DATA_FILE_PATH).name}")
+                # self.logger.debug(f"start write request to file {pathlib.PurePath(DATA_FILE_PATH).name}")
+                self.logger.debug(f"{__name__} starts write request to file {self.__file_name}")
                 with open(DATA_FILE_PATH, 'w') as ff:
                     json.dump(data, ff, ensure_ascii=False)
-                self.logger.debug(f"request was wrote to file {pathlib.PurePath(DATA_FILE_PATH).name}")
+                # self.logger.debug(f"request was wrote to file {pathlib.PurePath(DATA_FILE_PATH).name}")
+                self.logger.debug(f"request was wrote to file {self.__file_name}")
             else:
                 self.logger.error(f"file {DATA_FILE_PATH} doesnt exist")
         return data

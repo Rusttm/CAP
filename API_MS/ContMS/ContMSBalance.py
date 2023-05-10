@@ -12,7 +12,7 @@ class ContMSBalance(ContMSMainClass, ConnMSBalance):
 
     def __init__(self):
         super().__init__()
-        self.logger.debug("module ContMSBalance started")
+        self.logger.debug(f"module {__class__.__name__} started")
 
 
 if __name__ == '__main__':

@@ -10,7 +10,7 @@ class ContMSPayIn(ContMSMainClass, ConnMSPayIn):
     def __init__(self):
         super().__init__()
         # self.connector = ConnMSPayIn()
-        self.logger.debug("module ContMSPayIn started")
+        self.logger.debug(f"module {__class__.__name__} started")
 
 
 if __name__ == '__main__':

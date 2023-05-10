@@ -42,7 +42,6 @@ class ContCAPMS(ContCAPMainClass):
 
 if __name__ == '__main__':
     controller = ContCAPMS()
-
     # check balances
     controller = ContCAPMS()
     balance_sum = controller.get_entity_bal_sum()

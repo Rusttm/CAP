@@ -8,7 +8,7 @@ class ContMSPayOut(ContMSMainClass, ConnMSPayOut):
 
     def __init__(self):
         super().__init__()
-        self.logger.debug("module ContMSPayOut started")
+        self.logger.debug(f"module {__class__.__name__} started")
 
 
 if __name__ == '__main__':
