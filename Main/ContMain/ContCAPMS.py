@@ -18,7 +18,7 @@ class ContCAPMS(ContCAPMainClass):
     def get_entity_acc_bal(self):
         from API_MS.ContMS.ContMSBalance import ContMSBalance
         controller = ContMSBalance()
-        balance_acc = controller.get_account_bal()
+        balance_acc = controller.get_accounts_bal()
         return balance_acc
 
     def get_payouts_filtered(self, from_date=None, to_date=None):
@@ -44,11 +44,11 @@ if __name__ == '__main__':
     controller = ContCAPMS()
 
     # check balances
-    # controller = ContCAPMS()
-    # balance_sum = controller.get_entity_bal_sum()
-    # print(balance_sum)
-    # balance_acc = controller.get_entity_acc_bal()
-    # print(balance_acc)
+    controller = ContCAPMS()
+    balance_sum = controller.get_entity_bal_sum()
+    print(balance_sum)
+    balance_acc = controller.get_entity_acc_bal()
+    print(balance_acc)
 
     # check payouts
     # payouts = controller.get_payouts_filtered()
@@ -70,7 +70,7 @@ if __name__ == '__main__':
 
     # check payins half filtered
     # payins = controller.get_payin_filtered(from_date="2023-01-01")
-    # FILE_PATH = "/Users/johnlennon/RusttmGDrive/Python/CAP/API_MS/data/payins_half_fitered.json"
+    # FILE_PATH = "/Users/johnlennon/RusttmGDrive/Python/CAP/API_MS/data/payins_half_fitered2.json"
     # with open(FILE_PATH, 'w') as ff:
     #     json.dump(payins, ff, ensure_ascii=False)
 

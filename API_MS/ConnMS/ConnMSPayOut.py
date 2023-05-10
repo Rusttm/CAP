@@ -3,20 +3,23 @@ from API_MS.ConnMS.ConnMSMainClass import ConnMSMainClass
 
 class ConnMSPayOut(ConnMSMainClass):
     """class to connect payments out"""
+    request_url = 'url_outpayments_list'
+    request_token = 'access_token'
 
     def __init__(self):
         super().__init__()
         self.logger.debug("module ConnMSPayOut started")
-        self.set_config()
+        # self.set_config()
+        super().set_config(url_conf_key=self.request_url, token_conf_key=self.request_token)
 
-    def set_config(self):
-        """ sets api_url and api_token from config file"""
-        conf = self.get_config_data()
-        if conf:
-            self.set_api_url(conf['MoiSklad']['url_outpayments_list'])
-            self.set_api_token(conf['MoiSklad']['access_token'])
-        else:
-            self.logger.warning("cant get info from configfile url or access_token")
+    # def set_config(self):
+    #     """ sets api_url and api_token from config file"""
+    #     conf = self.get_config_data()
+    #     if conf:
+    #         self.set_api_url(conf['MoiSklad']['url_outpayments_list'])
+    #         self.set_api_token(conf['MoiSklad']['access_token'])
+    #     else:
+    #         self.logger.warning("cant get info from configfile url or access_token")
 
     def get_payout_data(self, to_file=False):
         """ return full payouts data """

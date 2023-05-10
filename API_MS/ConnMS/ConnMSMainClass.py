@@ -14,23 +14,24 @@ class ConnMSMainClass(CAPMainClass, ConnMSConfig):
     __api_token = str()
     __api_param_line = "?"
     __to_file = False
-    __config = None
+    __file_name = "requested_data.json"
+    # __config = None
 
     def __init__(self):
         super().__init__()
         self.id += 1
-        self.__config
+        # self.__config
         """ all connector have own id"""
 
     def get_conn_id(self):
         """ return connectors id"""
         return self.id
 
-    def set_config(self):
-        """it sets url and token in configuration"""
+    def set_config(self, url_conf_key=None, token_conf_key=None):
+        """it sets requested url and token in configuration """
         try:
             conf_connector = ConnMSConfig()
-            configuration = conf_connector.get_config()
+            configuration = conf_connector.get_config(url_conf_key=url_conf_key, token_conf_key=token_conf_key)
             self.set_api_url(configuration['url'])
             self.set_api_token(configuration['token'])
 
@@ -98,14 +99,18 @@ class ConnMSMainClass(CAPMainClass, ConnMSConfig):
         try:
             self.logger.info(f"{pathlib.PurePath(__file__).name} make request")
             acc_req = requests.get(url=api_url, headers=header_for_token_auth)
-            try:
+            req_data = dict(acc_req.json())
+            req_err = req_data.get('errors', False)
+            if req_err:
                 # check errors in request
                 errors_request = acc_req.json()['errors']
                 for error in errors_request:
                     self.logger.error(
-                        f"{pathlib.PurePath(__file__).name} requested information has errors: {error['error']} (code {error['code']}) ")
-            except Exception as e:
+                        f"{pathlib.PurePath(__file__).name} requested information has errors: "
+                        f"{error['error']} (code {error['code']}) ")
+            else:
                 self.logger.info(f"{pathlib.PurePath(__file__).name} request successful - data has context ")
+
             return acc_req.json()
         except Exception as e:
             # print('Cant read account data', Exception)
@@ -126,7 +131,7 @@ class ConnMSMainClass(CAPMainClass, ConnMSConfig):
         except Exception as e:
             # if there is no data in data['meta']['size']
             self.logger.warning(f"cant find key {e} for data['meta']['size'] ")
-        # if there is more than 1000 positions in row ..
+        # if there is more than 1000 positions in row
         if delta > offset:
             self.logger.info(f"{pathlib.PurePath(__file__).name} request contains more than 1000rows")
             requests_num = delta // offset
@@ -139,7 +144,7 @@ class ConnMSMainClass(CAPMainClass, ConnMSConfig):
                 #     data['rows'].append(pos)
         if self.__to_file:
             file = os.path.dirname(os.path.dirname(__file__))
-            DATA_FILE_PATH = os.path.join(file, "data", "requested_data.json")
+            DATA_FILE_PATH = os.path.join(file, "data", self.__file_name)
             if not os.path.exists(DATA_FILE_PATH):
                 open(DATA_FILE_PATH, 'x')
             if os.path.exists(DATA_FILE_PATH):

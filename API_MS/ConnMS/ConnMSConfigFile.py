@@ -1,27 +1,24 @@
 # from Main.CAPMainClass import CAPMainClass
 import os
-import re
-import pathlib
 import configparser
 
 
 class ConnMSConfigFile(object):
     """ configfile connector"""
+    dir_name = "config"
+    file_name = "msconfig.ini"
 
-    def get_config_data(self):
+
+    def get_config_data(self, sector='MoiSklad'):
         """ extract data from MoiSklad config file
-        return config MoiSklad section"""
+        return config section MoiSklad """
         try:
             conf = configparser.ConfigParser()
             file = os.path.dirname(os.path.dirname(__file__))
-            CONF_FILE_PATH = os.path.join(file, "config", "msconfig.ini")
-            # if not os.path.exists(CONF_FILE_PATH):
-                # self.logger.error(f"config file {CONF_FILE_PATH} doesnt exist")
+            CONF_FILE_PATH = os.path.join(file, self.dir_name, self.file_name)
             conf.read(CONF_FILE_PATH)
-            # self.logger.info(f"{pathlib.PurePath(__file__).name} got info from configfile")
-            return conf['MoiSklad']
+            return conf[sector]
         except Exception as e:
-            # self.logger.error("Cant read config file", e)
             return None
 
 

@@ -3,20 +3,25 @@ from API_MS.ConnMS.ConnMSMainClass import ConnMSMainClass
 
 class ConnMSBalance(ConnMSMainClass):
     """ connector to MoiSklad balance """
+    request_url = 'url_money'
+    """ requested api url"""
+    request_token = 'access_token'
+    """ API token"""
 
     def __init__(self):
         super().__init__()
         self.logger.debug("module ConnMSBalance started")
-        self.set_config()
-
-    def set_config(self):
-        """ sets api_url and api_token from config file"""
-        conf = self.get_config_data()
-        if conf:
-            self.set_api_url(conf['MoiSklad']['url_money'])
-            self.set_api_token(conf['MoiSklad']['access_token'])
-        else:
-            self.logger.warning("cant get info from configfile url_balance or access_token")
+        super().set_config(url_conf_key=self.request_url, token_conf_key=self.request_token)
+    #     self.set_config()
+    #
+    # def set_config(self):
+    #     """ sets api_url and api_token from config file"""
+    #     conf = self.get_config_data()
+    #     if conf:
+    #         self.set_api_url(conf['MoiSklad']['url_money'])
+    #         self.set_api_token(conf['MoiSklad']['access_token'])
+    #     else:
+    #         self.logger.warning("cant get info from configfile url_balance or access_token")
 
     def get_accounts_bal(self):
         """ return dict with acconts and balance
