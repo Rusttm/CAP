@@ -1,5 +1,6 @@
 # Python 3.10.10
 
 configparser==5.3.0
-logging==0.4.9.6
+# logging==0.4.9.6
 requests==2.29.0
+docker~=6.1.1
