@@ -80,11 +80,11 @@ class ContMSStores(ContMSMainClass, ConnMSStores, ConnMSStockByStore, ConnMSStoc
                         print(e)
                     store_name = prod_store['name']
                     store_quantity = prod_store['stock']
-                    stock_stores_sum["stores"][store_name] = stock_stores.get(store_name, 0) + store_quantity * prod_cost
-                    stock_stores_sum["sum"] += store_quantity * prod_cost
+                    stock_stores_sum["stores"][store_name] = stock_stores_sum["stores"].get(store_name, 0) + round(store_quantity * prod_cost, 2)
+                    stock_stores_sum["sum"] += round(store_quantity * prod_cost, 2)
         if to_file:
-            ConnMSSaveFile().save_data_json_file(data_dict=stock_stores, file_name=self.sum_file_name)
-        return stock_stores
+            ConnMSSaveFile().save_data_json_file(data_dict=stock_stores_sum, file_name=self.sum_file_name)
+        return stock_stores_sum
 
 
 if __name__ == '__main__':

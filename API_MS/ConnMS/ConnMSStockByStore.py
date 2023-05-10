@@ -2,7 +2,7 @@ from API_MS.ConnMS.ConnMSMainClass import ConnMSMainClass
 
 
 class ConnMSStockByStore(ConnMSMainClass):
-    """ connector to MoiSklad stock remains(ненулевые остатки) by store"""
+    """ connector to MoiSklad stock remains(ненулевые остатки) products by store"""
     request_url = 'url_stock_stores'
     """ requested api url"""
     request_token = 'access_token'
@@ -23,7 +23,7 @@ class ConnMSStockByStore(ConnMSMainClass):
     #         self.logger.warning("cant get info from configfile url or access_token")
 
     def get_stock_by_store(self, to_date=None, to_file=False):
-        """ return dict with stock by store remains"""
+        """ return dict with stock products with store remains"""
         param = ""
         if to_date:
             param += f"filter=moment={to_date}"
@@ -44,4 +44,5 @@ class ConnMSStockByStore(ConnMSMainClass):
 if __name__ == '__main__':
     connector = ConnMSStockByStore()
     data = connector.get_stock_by_store(to_file=True)
+    # data2 = connector.get_stock_by_store_sum(to_file=True)
     print(data)

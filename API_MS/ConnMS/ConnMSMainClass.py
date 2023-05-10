@@ -115,7 +115,7 @@ class ConnMSMainClass(CAPMainClass, ConnMSConfig, ConnMSSaveFile):
                 # self.logger.info(f"{pathlib.PurePath(__file__).name} request successful - data has context ")
                 self.logger.info(f"{__class__.__name__} request successful - data has context ")
 
-            return acc_req.json()
+            return dict(acc_req.json())
         except Exception as e:
             # print('Cant read account data', Exception)
             self.logger.critical(f"{__class__.__name__} cant connect to request data: {e}")
@@ -127,7 +127,7 @@ class ConnMSMainClass(CAPMainClass, ConnMSConfig, ConnMSSaveFile):
         self.__to_file = to_file
         offset = 1000
         # starts first request
-        data = self.get_single_req_data()
+        data = dict(self.get_single_req_data())
         delta = 0
         try:
             # check full lenth of data by data['meta']['size']
@@ -147,7 +147,7 @@ class ConnMSMainClass(CAPMainClass, ConnMSConfig, ConnMSSaveFile):
                 data['rows'] += next_data['rows']
 
         if self.__to_file:
-            self.save_requested_data_2file(self, data)
+            self.save_requested_data_2file(data_dict=data)
         return data
 
     def save_requested_data_2file(self, data_dict=None, file_name=None):
@@ -157,7 +157,7 @@ class ConnMSMainClass(CAPMainClass, ConnMSConfig, ConnMSSaveFile):
         self.logger.debug(f"{__name__} starts write request to file {self.__file_name}")
         result = False
         try:
-            result = ConnMSSaveFile().save_data_json_file(data_dict, self.__file_name)
+            result = ConnMSSaveFile().save_data_json_file(data_dict=data_dict, file_name=self.__file_name)
         except Exception as e:
             self.logger.error(f"{__class__.__name__} request wasn't wrote to file {self.__file_name} exception {e}")
         if result:
