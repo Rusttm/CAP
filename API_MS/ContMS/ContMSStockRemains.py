@@ -13,7 +13,7 @@ class ContMSStockRemains(ContMSMainClass, ConnMSStockRemains):
 
 if __name__ == '__main__':
     controller = ContMSStockRemains()
-    stock_sum = controller.get_stock_remains_sum(to_date="2022-12-08")
-    print(stock_sum)
+    stock_remains = controller.get_stock_remains(to_date="2022-12-08")
+    print(stock_remains["sum"])
     # stock = controller.get_stock_remains(to_file=True)
     # print(stock)

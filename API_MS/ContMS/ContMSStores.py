@@ -61,7 +61,7 @@ class ContMSStores(ContMSMainClass, ConnMSStores, ConnMSStockByStore, ConnMSStoc
         prod_href_dict = dict()  # {href:{name:name, price:price, quantity:quantity}}
         # collect remains to dict
         if stock_remains:
-            for prod in stock_remains['rows']:
+            for prod in stock_remains['stock']['rows']:
                 prod_dict_temp = dict()
                 prod_dict_temp['name'] = prod['name']
                 prod_dict_temp['price'] = prod['price']

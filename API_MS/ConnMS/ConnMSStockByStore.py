@@ -34,15 +34,8 @@ class ConnMSStockByStore(ConnMSMainClass):
         new_data_dict = self.get_api_data(to_file=to_file)
         return new_data_dict
 
-    def get_stock_by_store_sum(self, to_date=None):
-        """ return dict {store:sum}"""
-        # !!! under construction
-        result_dict = dict()
-        return result_dict
-
 
 if __name__ == '__main__':
     connector = ConnMSStockByStore()
     data = connector.get_stock_by_store(to_file=True)
-    # data2 = connector.get_stock_by_store_sum(to_file=True)
     print(data)
