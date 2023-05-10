@@ -28,7 +28,7 @@ class ConnMSStockByStore(ConnMSMainClass):
         if to_date:
             param += f"filter=moment={to_date}"
         else:
-            self.logger.warning("Stock remains by store request not specified to_date parameter")
+            self.logger.warning(f"{__class__.__name__} request not specified to_date parameter")
             return self.get_api_data(to_file=to_file)
         self.set_api_param_line(param)
         new_data_dict = self.get_api_data(to_file=to_file)
@@ -37,15 +37,7 @@ class ConnMSStockByStore(ConnMSMainClass):
     def get_stock_by_store_sum(self, to_date=None):
         """ return dict {store:sum}"""
         # !!! under construction
-        # data_dict = self.get_stock_by_store(to_date=to_date)
         result_dict = dict()
-        # result_sum = 0
-        # if data_dict:
-        #     for prod in data_dict['rows']:
-        #         try:
-        #             result_sum += prod['stock'] * prod['price']
-        #         except Exception as e:
-        #             self.logger.warning(f"for {prod['name']} summ not considered. error {e}")
         return result_dict
 
 
