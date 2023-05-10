@@ -60,3 +60,4 @@ class ConnMSBalance(ConnMSMainClass):
 
 if __name__ == '__main__':
     connector = ConnMSBalance()
+    print(connector.get_sum())

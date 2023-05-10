@@ -1,23 +1,25 @@
 from Main.CAPMainClass import CAPMainClass
+from API_MS.ConnMS.ConnMSConfig import ConnMSConfig
 import requests
 import json
 import os
 import re
 import pathlib
-import configparser
 
 
-class ConnMSMainClass(CAPMainClass):
+class ConnMSMainClass(CAPMainClass, ConnMSConfig):
     """ superclass for all MoiSklad connectors """
     id = 0
     __api_url = str()
     __api_token = str()
     __api_param_line = "?"
     __to_file = False
+    __config = None
 
     def __init__(self):
         super().__init__()
         self.id += 1
+        self.__config
         """ all connector have own id"""
 
     def get_conn_id(self):
@@ -27,19 +29,32 @@ class ConnMSMainClass(CAPMainClass):
     def set_config(self):
         """it sets url and token in configuration"""
         try:
-            conf = self.get_config_data()
-            if conf:
-                self.set_api_url(conf['MoiSklad']['url_money'])
-                self.set_api_token(conf['MoiSklad']['access_token'])
-            else:
-                # self.logger.warning("cant get info from configfile url_balance or access_token")
-                self.logger.critical("Please redefine method set_config in child class!!!")
-            self.set_api_config()
-        except Exception as e:
-            # self.logger.warning("cant get info from configfile url_balance or access_token")
-            self.logger.critical("Please redefine method set_config in child class!!!")
+            conf_connector = ConnMSConfig()
+            configuration = conf_connector.get_config()
+            self.set_api_url(configuration['url'])
+            self.set_api_token(configuration['token'])
 
-    def set_api_config(self, api_url="", api_token="", api_param_line="", to_file=False):
+        except Exception as e:
+            self.logger.error("Cant read configuration!", e)
+
+        # try:
+        #     conf = None
+        #     try:
+        #         conf = self.get_config_data()
+        #     except Exception as e:
+        #         self.logger.error("Cant read configuration!", e)
+        #     if conf:
+        #         self.set_api_url(conf['MoiSklad']['url_money'])
+        #         self.set_api_token(conf['MoiSklad']['access_token'])
+        #     else:
+        #         # self.logger.warning("cant get info from configfile url_balance or access_token")
+        #         self.logger.critical("Please redefine method set_config in child class!!!")
+        #     self.set_api_config()
+        # except Exception as e:
+        #     # self.logger.warning("cant get info from configfile url_balance or access_token")
+        #     self.logger.critical("Please redefine method set_config in child class!!!")
+
+    def set_api_config(self, api_url=None, api_token=None, api_param_line=None, to_file=False):
         self.__api_url = api_url
         self.__api_token = api_token
         self.__api_param_line = api_param_line
@@ -135,19 +150,3 @@ class ConnMSMainClass(CAPMainClass):
             else:
                 self.logger.error(f"file {DATA_FILE_PATH} doesnt exist")
         return data
-
-    def get_config_data(self):
-        """ extract data from config file
-        return keys and values """
-        try:
-            conf = configparser.ConfigParser()
-            file = os.path.dirname(os.path.dirname(__file__))
-            CONF_FILE_PATH = os.path.join(file, "config", "config.ini")
-            if not os.path.exists(CONF_FILE_PATH):
-                self.logger.error(f"config file {CONF_FILE_PATH} doesnt exist")
-            conf.read(CONF_FILE_PATH)
-            self.logger.info(f"{pathlib.PurePath(__file__).name} got info from configfile")
-            return conf
-        except Exception as e:
-            self.logger.error("Cant read config file", e)
-            return None
