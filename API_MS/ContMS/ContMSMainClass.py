@@ -1,9 +1,11 @@
 from Main.CAPMainClass import CAPMainClass
+from API_MS.ConnMS.ConnMSConfig import ConnMSConfig
 import configparser
 import os
 import pathlib
 
-class ContMSMainClass(CAPMainClass):
+
+class ContMSMainClass(CAPMainClass, ConnMSConfig):
     """ superclass for all MoiSklad controllers """
     id = 0
 
@@ -12,19 +14,19 @@ class ContMSMainClass(CAPMainClass):
         self.id += 1
         """ all controllers have own id"""
 
-    def get_config_data(self):
-        """ return data from config file"""
-        try:
-            conf = configparser.ConfigParser()
-            file = os.path.dirname(os.path.dirname(__file__))
-            CONF_FILE_PATH = os.path.join(file, "config", "config.ini")
-            if not os.path.exists(CONF_FILE_PATH):
-                self.logger.error(f"config file {CONF_FILE_PATH} doesnt exist")
-            conf.read(CONF_FILE_PATH)
-
-            self.logger.info(f"{pathlib.PurePath(__file__).name} got info from configfile")
-            return conf
-        except Exception as e:
-            self.logger.error("Cant read config file", e)
-            # print(e)
-            return None
+    # def get_config_data(self):
+    #     """ return data from config file"""
+    #     try:
+    #         conf = configparser.ConfigParser()
+    #         file = os.path.dirname(os.path.dirname(__file__))
+    #         CONF_FILE_PATH = os.path.join(file, "config", "config.ini")
+    #         if not os.path.exists(CONF_FILE_PATH):
+    #             self.logger.error(f"config file {CONF_FILE_PATH} doesnt exist")
+    #         conf.read(CONF_FILE_PATH)
+    #
+    #         self.logger.info(f"{pathlib.PurePath(__file__).name} got info from configfile")
+    #         return conf
+    #     except Exception as e:
+    #         self.logger.error("Cant read config file", e)
+    #         # print(e)
+    #         return None

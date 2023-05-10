@@ -3,7 +3,7 @@ from API_MS.ConnMS.ConnMSMainClass import ConnMSMainClass
 
 class ConnMSStores(ConnMSMainClass):
     """get stores"""
-    request_url = 'url_stock_all'
+    request_url = 'url_stores'
     """ requested api url"""
     request_token = 'access_token'
     """ API token"""

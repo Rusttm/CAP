@@ -1,5 +1,6 @@
 from Main.CAPMainClass import CAPMainClass
 from API_MS.ConnMS.ConnMSConfig import ConnMSConfig
+from API_MS.ConnMS.ConnMSSaveFile import ConnMSSaveFile
 import requests
 import json
 import os
@@ -7,7 +8,7 @@ import re
 # import pathlib
 
 
-class ConnMSMainClass(CAPMainClass, ConnMSConfig):
+class ConnMSMainClass(CAPMainClass, ConnMSConfig, ConnMSSaveFile):
     """ superclass for all MoiSklad connectors """
     id = 0
     __api_url = str()
@@ -146,17 +147,20 @@ class ConnMSMainClass(CAPMainClass, ConnMSConfig):
                 data['rows'] += next_data['rows']
 
         if self.__to_file:
-            file = os.path.dirname(os.path.dirname(__file__))
-            DATA_FILE_PATH = os.path.join(file, "data", self.__file_name)
-            if not os.path.exists(DATA_FILE_PATH):
-                open(DATA_FILE_PATH, 'x')
-            if os.path.exists(DATA_FILE_PATH):
-                # self.logger.debug(f"start write request to file {pathlib.PurePath(DATA_FILE_PATH).name}")
-                self.logger.debug(f"{__name__} starts write request to file {self.__file_name}")
-                with open(DATA_FILE_PATH, 'w') as ff:
-                    json.dump(data, ff, ensure_ascii=False)
-                # self.logger.debug(f"request was wrote to file {pathlib.PurePath(DATA_FILE_PATH).name}")
-                self.logger.debug(f"request was wrote to file {self.__file_name}")
-            else:
-                self.logger.error(f"file {DATA_FILE_PATH} doesnt exist")
+            self.save_requested_data_2file(self, data)
         return data
+
+    def save_requested_data_2file(self, data_dict=None, file_name=None):
+        """ method save dict data to file in class ConnMSSaveFile"""
+        if not file_name:
+            self.__file_name = file_name
+        self.logger.debug(f"{__name__} starts write request to file {self.__file_name}")
+        result = False
+        try:
+            result = ConnMSSaveFile().save_data_json_file(data_dict, self.__file_name)
+        except Exception as e:
+            self.logger.error(f"{__class__.__name__} request wasn't wrote to file {self.__file_name} exception {e}")
+        if result:
+            self.logger.debug(f"request was wrote to file {self.__file_name}")
+        else:
+            self.logger.error(f"{__class__.__name__} request wasn't wrote to file {self.__file_name}")
