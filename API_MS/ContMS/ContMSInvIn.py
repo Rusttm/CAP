@@ -4,7 +4,7 @@ from API_MS.ConnMS.ConnMSInvIn import ConnMSInvIn
 
 
 class ContMSInvIn(ContMSMainClass, ConnMSInvIn):
-    """ controller class to get PaymentsIn data"""
+    """ controller class to get inner invoices data"""
     connector = None
 
     def __init__(self):
