@@ -6,7 +6,7 @@ services:
       POSTGRES_DB: "capdb"
       POSTGRES_USER: "capuser"
       POSTGRES_PASSWORD: "capuser_pass"
-      PGDATA: "/usr/share/postgress/bases"
+      PGDATA: "/usr/share/postgres/bases"
     ports:
       - "5433:5432"
     volumes:
