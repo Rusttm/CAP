@@ -7,7 +7,7 @@ class ConnPsqlInit(ConnPsqlMainClass):
         super().__init__()
         # self.pgsql_conn = psycopg2.connect("dbname=capdb user=capuser password=cap_pass")
         self.pgsql_conn = psycopg2.connect(
-            host="127.0.0.1:5432",
+            host="192.168.1.80:5432",
             database="capdb",
             user="capuser",
             password="cap_pass")
