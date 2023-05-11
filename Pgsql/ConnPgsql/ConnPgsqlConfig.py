@@ -1,10 +1,10 @@
 # from Main.CAPMainClass import CAPMainClass
-from Pgsql.ConnPgsql.ConnPgsqlConfigFile import ConnPgsqlConfigFile
+import Pgsql.ConnPgsql.ConnPgsqlConfigFile
 
-import os
-import re
-import pathlib
-import configparser
+# import os
+# import re
+# import pathlib
+# import configparser
 
 
 class ConnPgsqlConfig(ConnPgsqlConfigFile):
