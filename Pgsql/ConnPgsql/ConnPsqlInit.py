@@ -7,7 +7,7 @@ class ConnPsqlInit(ConnPsqlMainClass):
         super().__init__()
         # self.pgsql_conn = psycopg2.connect("dbname=capdb user=capuser password=cap_pass")
         self.pgsql_conn = psycopg2.connect(
-            host="localhost:5432",
+            host="127.0.0.1:5432",
             database="capdb",
             user="capuser",
             password="cap_pass")
@@ -17,6 +17,7 @@ class ConnPsqlInit(ConnPsqlMainClass):
         self.cursor.execute('SELECT version()')
         db_version = self.cursor.fetchone()
         print(db_version)
+        self.cursor.close()
 
 if __name__ == '__main__':
     connector = ConnPsqlInit()
