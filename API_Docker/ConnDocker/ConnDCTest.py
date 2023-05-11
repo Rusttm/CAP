@@ -1,6 +1,7 @@
 from API_Docker.ConnDocker.ConnDCMainClass import ConnDCMainClass
 import docker
 class ConnDCTest(ConnDCMainClass):
+    """ from https://docker-py.readthedocs.io/en/stable/client.html"""
     client = None
     def __init__(self):
         super().__init__()
