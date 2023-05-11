@@ -5,3 +5,4 @@ configparser==5.3.0
 requests==2.29.0
 docker==6.1.1
 python-on-whales
+psycopg2==2.9.6
