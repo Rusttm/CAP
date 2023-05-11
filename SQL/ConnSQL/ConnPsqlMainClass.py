@@ -1,6 +1,6 @@
 from Main.CAPMainClass import CAPMainClass
 
-class ConnMainClass(CAPMainClass):
+class ConnPsqlMainClass(CAPMainClass):
     """ Connector"""
 
     def __init__(self):
