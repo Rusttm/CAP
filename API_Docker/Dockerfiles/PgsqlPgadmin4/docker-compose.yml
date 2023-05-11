@@ -8,7 +8,7 @@ services:
       POSTGRES_PASSWORD: "capuser_pass"
       PGDATA: "/usr/share/postgres/bases"
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
       - ../../data/postgres:/usr/share/postgres
     restart: unless-stopped
