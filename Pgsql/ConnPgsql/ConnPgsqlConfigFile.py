@@ -14,8 +14,8 @@ class ConnPgsqlConfigFile(object):
         return config section POSTGRESQL """
         try:
             conf = configparser.ConfigParser()
-            file = os.path.dirname(os.path.dirname(__file__))
-            CONF_FILE_PATH = os.path.join(file, self.dir_name, self.file_name)
+            up_up_dir = os.path.dirname(os.path.dirname(__file__))
+            CONF_FILE_PATH = os.path.join(up_up_dir, self.dir_name, self.file_name)
             conf.read(CONF_FILE_PATH)
             return conf[sector]
         except Exception as e:
