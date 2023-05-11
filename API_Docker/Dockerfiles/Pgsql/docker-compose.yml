@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_DB: "capdb"
+      POSTGRES_USER: "capuser"
+      POSTGRES_PASSWORD: "capuser_pass"
+      PGDATA: "/usr/share/postgres/bases"
+    ports:
+      - "5432:5432"
+    volumes:
+      - ../../data/postgres:/usr/share/postgres
+    restart: unless-stopped
