@@ -1,3 +1,6 @@
+""" this docker-compose library from
+https://gabrieldemarmiesse.github.io/python-on-whales/sub-commands/compose/#some-notes-about-the-compose-functions"""
+
 from API_Docker.ConnDocker.ConnDCMainClass import ConnDCMainClass
 import docker
 from python_on_whales import docker as docker2
@@ -13,7 +16,10 @@ class ConnDCTest(ConnDCMainClass):
         self.docker_compose = DockerClient(compose_files=["../Dockerfiles/Pgsql/docker-compose.yml"])
 
     def get_cont_list(self):
-        return self.client.containers.list()
+        cont_list = self.client.containers.list()
+        container = cont_list[0]
+        print(f"Container id:{container.attrs['Id']}, Name:{container.attrs['Name']}")
+        return cont_list
 
     def up_docker_compose(self):
         # docker_compose = DockerClient(compose_files=["../Dockerfiles/Pgsql/docker-compose.yml"])
@@ -27,5 +33,5 @@ class ConnDCTest(ConnDCMainClass):
 if __name__ == '__main__':
     connector = ConnDCTest()
     print(connector.get_cont_list())
-    print(connector.build_docker_compose())
-    print(connector.up_docker_compose())
+    # print(connector.build_docker_compose())
+    # print(connector.up_docker_compose())
