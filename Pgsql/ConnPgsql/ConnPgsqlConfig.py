@@ -1,5 +1,5 @@
 # from Main.CAPMainClass import CAPMainClass
-import Pgsql.ConnPgsql.ConnPgsqlConfigFile
+from Pgsql.ConnPgsql.ConnPgsqlConfigFile import ConnPgsqlConfigFile
 
 # import os
 # import re
@@ -19,16 +19,17 @@ class ConnPgsqlConfig(ConnPgsqlConfigFile):
     def __init__(self):
         super().__init__()
 
-    def get_config(self, url='url', port='port', user='user', user_pass='user_pass'):
+    def get_config(self, url='url', port='port', user='user', user_pass='user_pass', db_name='db_name'):
         """ return information from config file"""
         if self.method == "file":
             self.conf = ConnPgsqlConfigFile().get_config_data()
         return {'url': self.conf[url],
                 'port': self.conf[port],
                 'user': self.conf[user],
-                'user_pass': self.conf[user_pass]}
+                'user_pass': self.conf[user_pass],
+                'db_name': self.conf[db_name]}
 
 
 if __name__ == '__main__':
-    connector = ConnMSConfig()
+    connector = ConnPgsqlConfig()
     print(connector.get_config())
