@@ -6,4 +6,4 @@ requests==2.29.0
 docker==6.1.1
 python-on-whales
 # psycopg2==2.9.6
-psycopg2-binary==2.9.6
+# psycopg2-binary==2.9.6
