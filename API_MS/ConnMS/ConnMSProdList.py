@@ -2,7 +2,7 @@ from API_MS.ConnMS.ConnMSMainClass import ConnMSMainClass
 
 
 class ConnMSProdList(ConnMSMainClass):
-    """class to connect inner invoices"""
+    """class to connect """
     request_url = 'url_prod_list'
     request_token = 'access_token'
 
@@ -55,4 +55,4 @@ class ConnMSProdList(ConnMSMainClass):
 
 if __name__ == '__main__':
     connector = ConnMSProdList()
-    connector.get_invin_filtered_by_date(from_date="2023-01-01", to_date="2023-02-01", to_file=True)
+    connector.get_prod_list_filtered_by_date(from_date="2023-01-01", to_date="2023-02-01", to_file=True)

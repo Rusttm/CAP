@@ -16,7 +16,7 @@ class ConnMSReadExcell(object):
     def get_excell_data(self, file_name=None):
         """ extract data from excell file
         return dictionary """
-        result = dict({"type": "product", "data": {}})
+        result = dict({"table": file_name, "data": {}})
         if file_name:
             if not re.search('xlsx', file_name):
                 file_name += '.xlsx'
@@ -28,9 +28,21 @@ class ConnMSReadExcell(object):
                 else:
                     file = __file__
                 CONF_FILE_PATH = os.path.join(file, self.dir_name, file_name)
-                file_data = pd.read_excel(CONF_FILE_PATH, index_col=0)
+                file_data = pd.read_excel(CONF_FILE_PATH, index_col=0, header=None)
                 file_data = file_data.where(pd.notnull, None)
                 file_data = file_data.replace(r'\n', ' ', regex=True)
+                # some tables copied with wrong hat
+                row_index = 1
+                while row_index < file_data.shape[0]-1:
+                    # print(file_data.iloc[row_index, 0])
+                    if file_data.iloc[0, 0] == "UUID":
+                        break
+                    else:
+                        file_data = file_data.drop(file_data.index[0])
+                        # file_data.drop(labels=0, axis=0)
+                        row_index += 1
+                if row_index == file_data.shape[0]-2:
+                    print(f"Excell file {CONF_FILE_PATH} not contain necessary data")
                 file_data.columns = ["type", "filters", "descr"]
                 test_dict = file_data.to_dict('index')
                 result['data'] = test_dict
@@ -45,4 +57,4 @@ class ConnMSReadExcell(object):
 
 if __name__ == '__main__':
     connector = ConnMSReadExcell()
-    print(connector.get_excell_data(file_name='prod_fields.xlsx'))
+    print(connector.get_excell_data(file_name='invin_fields.xlsx'))
