@@ -9,15 +9,17 @@ class ConnMSReadExcell(object):
     """ read api fields convertor from excell and return json:
     {"type":"product", "data":{"id":{"type":"UUID", "filters":"=,!=", "descr":"ID товара"}}} """
     dir_name = "data"
-
+    names_dict = {"Название": "name", "Тип": "type", "Фильтрация": "filter", "Описание": "descr"}
+    table_columns = []
     def __init__(self):
         super().__init__()
 
     def get_excell_data(self, file_name=None):
         """ extract data from excell file
         return dictionary """
-        result = dict({"table": file_name, "data": {}})
+        result = dict({"table": file_name.split('.')[0], "data": {}})
         if file_name:
+            self.table_columns = []
             if not re.search('xlsx', file_name):
                 file_name += '.xlsx'
             try:
@@ -34,8 +36,13 @@ class ConnMSReadExcell(object):
                 # some tables copied with wrong hat
                 row_index = 1
                 while row_index < file_data.shape[0]-1:
-                    # print(file_data.iloc[row_index, 0])
-                    if file_data.iloc[0, 0] == "UUID":
+                    # print(file_data.iloc[0, :])
+                    if file_data.iloc[0, 0] == "Тип":
+                        for col in range(file_data.shape[1]):
+                            # print()
+                            col_name = file_data.iloc[0, col]
+                            self.table_columns.append(self.names_dict[col_name])
+                        file_data = file_data.drop(file_data.index[0])
                         break
                     else:
                         file_data = file_data.drop(file_data.index[0])
@@ -43,7 +50,8 @@ class ConnMSReadExcell(object):
                         row_index += 1
                 if row_index == file_data.shape[0]-2:
                     print(f"Excell file {CONF_FILE_PATH} not contain necessary data")
-                file_data.columns = ["type", "filters", "descr"]
+                # file_data.columns = ["type", "filters", "descr"]
+                file_data.columns = self.table_columns
                 test_dict = file_data.to_dict('index')
                 result['data'] = test_dict
                 return result
