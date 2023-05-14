@@ -43,7 +43,6 @@ class ConnMSReadExcell(object):
             raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), "Please declare existing excell file name")
 
 
-
 if __name__ == '__main__':
     connector = ConnMSReadExcell()
     print(connector.get_excell_data(file_name='prod_fields.xlsx'))

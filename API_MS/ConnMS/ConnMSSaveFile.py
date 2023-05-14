@@ -29,8 +29,13 @@ class ConnMSSaveFile(object):
             else:
                 print(f"{__class__.__name__} can't write data to file {self.file_name}")
                 return False
+                # import errno
+                # raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT),
+                #                         f"{__class__.__name__} can't write data to file {self.file_name}")
         except Exception as e:
             print(e)
+
+        finally:
             return False
 
     def corrected_file_name(self, file_name):

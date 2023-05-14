@@ -19,6 +19,7 @@ class ConnMSConfigFile(object):
             conf.read(CONF_FILE_PATH)
             return conf[sector]
         except Exception as e:
+            print(e)
             return None
 
 
