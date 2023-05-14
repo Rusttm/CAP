@@ -14,13 +14,18 @@ class ConnMSExcell(ConnMSMainClass, ConnMSSaveFile):
     def __init__(self):
         super().__init__()
 
-    def get_excell_data(self, sector='MoiSklad'):
+    def get_excell_data(self):
         """ extract data from excell file
         return dictionary """
         result = dict({"type": "product", "data": {}})
         if self.file_name:
             try:
-                file = os.path.dirname(os.path.dirname(__file__))
+                if self.dir_name == "config":
+                    file = os.path.dirname(__file__)
+                elif self.dir_name == "data":
+                    file = os.path.dirname(os.path.dirname(__file__))
+                else:
+                    file = __file__
                 CONF_FILE_PATH = os.path.join(file, self.dir_name, self.file_name)
                 file_data = pd.read_excel(CONF_FILE_PATH, index_col=0)
                 file_data = file_data.where(pd.notnull, None)
@@ -28,9 +33,10 @@ class ConnMSExcell(ConnMSMainClass, ConnMSSaveFile):
                 file_data.columns = ["type", "filters", "descr"]
                 test_dict = file_data.to_dict('index')
                 result['data'] = test_dict
-                self.save_data_json_file(data_dict=result, file_name='product')
+                self.save_data_json_file(data_dict=result, file_name='product_fields')
                 return result
             except Exception as e:
+                print(e)
                 return None
         else:
             return None
