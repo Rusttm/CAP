@@ -17,8 +17,10 @@ class ConnDCTest(ConnDCMainClass):
 
     def get_cont_list(self):
         cont_list = self.client.containers.list()
-        container = cont_list[0]
-        print(f"Container id:{container.attrs['Id']}, Name:{container.attrs['Name']}")
+        cont_info_list = []
+        for i, cont in enumerate(cont_list):
+            cont_info_list.append({'id': cont.attrs['Id'], 'Name': cont.attrs['Name'],})
+        print(f"Container id:{cont_info_list}")
         return cont_list
 
     def up_docker_compose(self):
