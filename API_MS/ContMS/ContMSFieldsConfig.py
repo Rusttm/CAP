@@ -35,7 +35,8 @@ if __name__ == '__main__':
                    'packin_fields', 'packout_fields',
                    'invout_fields', 'invin_fields',
                    'stockall_fields', 'stockstore_fields',
-                   'customers_bal_fields', 'customers_fields']
+                   'customers_bal_fields', 'customers_fields',
+                   'profit_byprod_fields', 'profit_bycust_fields']
     for file in tables_list:
         print(connector.read_product_fields_from_excell(to_file=True,
                                                         excell_file_name=f'{file}.xlsx',
