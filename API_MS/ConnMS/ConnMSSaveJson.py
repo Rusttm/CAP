@@ -33,7 +33,7 @@ class ConnMSSaveJson(ConnMSMainClass):
                 # print(f"{__class__.__name__} can't write data to file {self.file_name}")
                 return False
         except Exception as e:
-            self.logger.error(f"{__class__.__name__} can't write to json file!", e)
+            self.logger.error(f"{__class__.__name__} can't write to json file! {e}")
             # print(e)
         # finally:
         #     return False

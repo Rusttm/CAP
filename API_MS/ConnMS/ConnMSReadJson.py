@@ -23,7 +23,7 @@ class ConnMSReadJson(ConnMSMainClass):
                 return data
             except Exception as e:
                 # print(e)
-                self.logger.error(f"{__class__.__name__} can't read json file!", e)
+                self.logger.error(f"{__class__.__name__} can't read json file!{e}")
                 return None
         else:
             import errno

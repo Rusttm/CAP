@@ -59,7 +59,7 @@ class ConnMSReadExcell(ConnMSMainClass):
                 return result
             except Exception as e:
                 # print(e)
-                self.logger.error(f"{__class__.__name__} can't read excell file", e)
+                self.logger.error(f"{__class__.__name__} can't read excell file {e}")
                 return None
         else:
             import errno
