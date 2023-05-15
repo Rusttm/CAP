@@ -136,13 +136,13 @@ class ConnMSMainClass(CAPMainClass):
 
     def save_requested_data_2file(self, data_dict=None, file_name=None):
         """ method save dict data to file in class ConnMSSaveFile"""
-        from API_MS.ConnMS.ConnMSSaveJson import ConnMSSaveFile
-        if not file_name:
+        from API_MS.ConnMS.ConnMSSaveJson import ConnMSSaveJson
+        if file_name:
             self.__file_name = file_name
         self.logger.debug(f"{__name__} starts write request to file {self.__file_name}")
         result = False
         try:
-            result = ConnMSSaveFile().save_data_json_file(data_dict=data_dict, file_name=self.__file_name)
+            result = ConnMSSaveJson().save_data_json_file(data_dict=data_dict, file_name=self.__file_name)
         except Exception as e:
             self.logger.error(f"{__class__.__name__} request wasn't wrote to file {self.__file_name} exception {e}")
         if result:
