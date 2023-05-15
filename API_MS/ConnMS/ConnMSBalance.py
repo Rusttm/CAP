@@ -12,16 +12,6 @@ class ConnMSBalance(ConnMSMainClass):
         super().__init__()
         self.logger.debug(f"module {__class__.__name__} started")
         super().set_config(url_conf_key=self.request_url, token_conf_key=self.request_token)
-    #     self.set_config()
-    #
-    # def set_config(self):
-    #     """ sets api_url and api_token from config file"""
-    #     conf = self.get_config_data()
-    #     if conf:
-    #         self.set_api_url(conf['MoiSklad']['url_money'])
-    #         self.set_api_token(conf['MoiSklad']['access_token'])
-    #     else:
-    #         self.logger.warning("cant get info from configfile url_balance or access_token")
 
     def get_accounts_bal(self):
         """ return dict with acconts and balance
