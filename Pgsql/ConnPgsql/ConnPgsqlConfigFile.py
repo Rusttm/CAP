@@ -1,9 +1,10 @@
 # from Main.CAPMainClass import CAPMainClass
+from Pgsql.ConnPgsql.ConnPgsqlConfig import ConnPgsqlConfig
 import os
 import configparser
 
 
-class ConnPgsqlConfigFile(object):
+class ConnPgsqlConfigFile(ConnPgsqlConfig):
     """ configfile connector"""
     dir_name = "config"
     file_name = "sqlconfig.ini"
@@ -17,8 +18,10 @@ class ConnPgsqlConfigFile(object):
             up_up_dir = os.path.dirname(os.path.dirname(__file__))
             CONF_FILE_PATH = os.path.join(up_up_dir, self.dir_name, self.file_name)
             conf.read(CONF_FILE_PATH)
+            self.logger.debug(f"module {__class__.__name__} started, configfile read")
             return conf[sector]
         except Exception as e:
+            self.logger.error(f"{__class__.__name__} can't read config file", e)
             return None
 
 

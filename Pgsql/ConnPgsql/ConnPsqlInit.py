@@ -1,13 +1,13 @@
 from Pgsql.ConnPgsql.ConnPsqlMainClass import ConnPsqlMainClass
-from Pgsql.ConnPgsql.ConnPgsqlConfig import ConnPgsqlConfig
 import psycopg2
 
 
-class ConnPsqlInit(ConnPsqlMainClass, ConnPgsqlConfig):
+class ConnPsqlInit(ConnPsqlMainClass):
     pgsql_conn = None
 
     def __init__(self):
         super().__init__()
+        from Pgsql.ConnPgsql.ConnPgsqlConfig import ConnPgsqlConfig
         # self.pgsql_conn = psycopg2.connect("dbname=capdb user=capuser password=cap_pass")
         try:
             conf = ConnPgsqlConfig().get_config()

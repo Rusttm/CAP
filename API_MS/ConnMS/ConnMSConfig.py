@@ -1,13 +1,13 @@
-# from Main.CAPMainClass import CAPMainClass
-from API_MS.ConnMS.ConnMSConfigFile import ConnMSConfigFile
+from API_MS.ConnMS.ConnMSMainClass import ConnMSMainClass
+
 
 import os
 import re
-import pathlib
+
 import configparser
 
 
-class ConnMSConfig(ConnMSConfigFile):
+class ConnMSConfig(ConnMSMainClass):
     """ configfile connector"""
     conf = None
     method = 'file'
@@ -31,6 +31,7 @@ class ConnMSConfig(ConnMSConfigFile):
     #         return None
 
     def get_config(self, url_conf_key='url_money', token_conf_key='access_token'):
+        from API_MS.ConnMS.ConnMSConfigFile import ConnMSConfigFile
         if self.method == "file":
             self.conf = ConnMSConfigFile().get_config_data()
         return {'url': self.conf[url_conf_key], 'token': self.conf[token_conf_key]}

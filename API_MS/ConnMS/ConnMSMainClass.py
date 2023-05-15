@@ -1,6 +1,6 @@
 from Main.CAPMainClass import CAPMainClass
-from API_MS.ConnMS.ConnMSConfig import ConnMSConfig
-from API_MS.ConnMS.ConnMSSaveFile import ConnMSSaveFile
+
+
 import requests
 import json
 import os
@@ -8,7 +8,7 @@ import re
 # import pathlib
 
 
-class ConnMSMainClass(CAPMainClass, ConnMSConfig, ConnMSSaveFile):
+class ConnMSMainClass(CAPMainClass):
     """ superclass for all MoiSklad connectors """
     id = 0
     __api_url = str()
@@ -30,6 +30,7 @@ class ConnMSMainClass(CAPMainClass, ConnMSConfig, ConnMSSaveFile):
 
     def set_config(self, url_conf_key=None, token_conf_key=None):
         """it sets requested url and token in configuration """
+        from API_MS.ConnMS.ConnMSConfig import ConnMSConfig
         try:
             conf_connector = ConnMSConfig()
             configuration = conf_connector.get_config(url_conf_key=url_conf_key, token_conf_key=token_conf_key)
@@ -152,6 +153,7 @@ class ConnMSMainClass(CAPMainClass, ConnMSConfig, ConnMSSaveFile):
 
     def save_requested_data_2file(self, data_dict=None, file_name=None):
         """ method save dict data to file in class ConnMSSaveFile"""
+        from API_MS.ConnMS.ConnMSSaveFile import ConnMSSaveFile
         if not file_name:
             self.__file_name = file_name
         self.logger.debug(f"{__name__} starts write request to file {self.__file_name}")
