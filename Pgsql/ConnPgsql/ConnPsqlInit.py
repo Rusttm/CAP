@@ -3,8 +3,10 @@ import psycopg2
 
 
 class ConnPsqlInit(ConnPsqlMainClass):
+    """initialise connection to pgsql database
+    keys from config file"""
     pgsql_conn = None
-    cursor = None
+    # cursor = None
 
     def __init__(self):
         super().__init__()
@@ -17,7 +19,6 @@ class ConnPsqlInit(ConnPsqlMainClass):
                 database=conf['db_name'],
                 user=conf['user'],
                 password=conf['user_pass'])
-
             # self.cursor = self.pgsql_conn.cursor()
             self.logger.debug(f"{__class__.__name__} connector for PostgreSQL created")
         except Exception as e:
@@ -37,6 +38,8 @@ class ConnPsqlInit(ConnPsqlMainClass):
         else:
             return None
         return db_version
+
+
 
 
 if __name__ == '__main__':
