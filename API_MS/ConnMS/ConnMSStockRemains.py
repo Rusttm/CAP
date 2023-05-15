@@ -15,7 +15,9 @@ class ConnMSStockRemains(ConnMSMainClass):
         super().set_config(url_conf_key=self.request_url, token_conf_key=self.request_token)
 
     def get_stock_remains(self, to_date=None, to_file=False):
-        """ return dict with stock remains"""
+        """ return dict with stock remains
+        has 'to_date' parameter
+        date format '2022-12-08' or '2019-07-10 12:00:00'"""
         param = "filter=quantityMode=all"
         if to_date:
             param += f"&filter=moment={to_date}"

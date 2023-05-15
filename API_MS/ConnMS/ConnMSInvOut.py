@@ -23,7 +23,7 @@ class ConnMSInvOut(ConnMSMainClass):
 
     def get_invout_filtered_by_date(self, from_date=None, to_date=None, to_file=False):
         """ filterred by date from to or just
-        date format '2022-12-08' """
+        date format '2022-12-08'  or '2019-07-10 12:00:00'"""
         param = ""
         if from_date or to_date:
             if from_date:

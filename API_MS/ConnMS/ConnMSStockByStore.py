@@ -14,7 +14,9 @@ class ConnMSStockByStore(ConnMSMainClass):
         # self.set_config()
 
     def get_stock_by_store(self, to_date=None, to_file=False):
-        """ return dict with stock products with store remains"""
+        """ return dict with stock products with store remains
+        has 'to_date' parameter
+        date format '2022-12-08' or '2019-07-10 12:00:00'"""
         param = ""
         if to_date:
             param += f"filter=moment={to_date}"
