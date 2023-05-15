@@ -15,11 +15,11 @@ class ContMSCustBal(ContMSMainClass):
         # self.connector = ConnMSStockRemains()
         self.logger.debug(f"module {__class__.__name__} started")
 
-    def get_cust_group_dict(self, to_file=False):
+    def get_cust_group_dict(self, from_date=None, to_date=None, to_file=False):
         """ return customers data as dictionary {customers_name:customer_group_href}"""
         from API_MS.ConnMS.ConnMSCustList import ConnMSCustList
         customers_group_dict = dict()
-        customers = ConnMSCustList().get_custom_list_filtered_by_updated(to_file=to_file)
+        customers = ConnMSCustList().get_custom_list_filtered_by_updated(from_date=from_date, to_date=to_date, to_file=to_file)
         if customers:
             for customer in customers['rows']:
                 # stores_dict[store['name']] = store['meta']['href']
