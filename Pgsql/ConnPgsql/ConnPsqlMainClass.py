@@ -27,7 +27,6 @@ class ConnPsqlMainClass(CAPMainClass):
             self.logger.error(f"{__class__.__name__} can't create connector for PostgreSQL! {e}")
 
     def send_get_request(self, req_line=None):
-        db_answer = None
         self.init_connection()
         if req_line:
             req_line = req_line.replace("\n", "")
@@ -42,6 +41,10 @@ class ConnPsqlMainClass(CAPMainClass):
                             self.logger.debug(f"{__class__.__name__} fetch cursor -'{req_line}'")
                             my_cursor.close()
                             self.logger.debug(f"{__class__.__name__} closed cursor -'{req_line}'")
+                    return db_answer
+                except Exception as e:
+                    self.logger.error(f"{__class__.__name__} can't request: '{e}'")
+                    return False
                 finally:
                     self.pgsql_conn.close()
                     self.logger.debug(f"{__class__.__name__} closed connector")
@@ -49,7 +52,7 @@ class ConnPsqlMainClass(CAPMainClass):
                 return None
         else:
             self.logger.error(f"{__class__.__name__} command line for request is not valid-'{req_line}'")
-        return db_answer
+            return None
 
     def send_set_request(self, req_line=None):
         self.init_connection()
@@ -65,8 +68,10 @@ class ConnPsqlMainClass(CAPMainClass):
                             self.logger.debug(f"{__class__.__name__} fetch cursor -'{req_line}'")
                             my_cursor.close()
                             self.logger.debug(f"{__class__.__name__} closed cursor -'{req_line}'")
+                    return True
                 except Exception as e:
                     self.logger.error(f"{__class__.__name__} request error'{e}'")
+                    return False
                 finally:
                     self.pgsql_conn.close()
                     self.logger.debug(f"{__class__.__name__} closed connector")
@@ -75,9 +80,11 @@ class ConnPsqlMainClass(CAPMainClass):
                 return None
         else:
             self.logger.error(f"{__class__.__name__} command line for request is not valid-'{req_line}'")
+            return None
+
 
 if __name__ == '__main__':
     connector = ConnPsqlMainClass()
     ans = connector.send_get_request("SELECT version()")
-    ans = connector.send_set_request("CREATE TABLE testtable (i integer);")
+    # ans = connector.send_set_request("CREATE TABLE testtable (i integer);")
     print(ans)

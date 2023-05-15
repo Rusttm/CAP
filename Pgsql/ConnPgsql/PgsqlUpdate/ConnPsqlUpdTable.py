@@ -3,8 +3,6 @@ from Pgsql.ConnPgsql.ConnPsqlMainClass import ConnPsqlMainClass
 
 class ConnPsqlUpdTable(ConnPsqlMainClass):
     """connector for saving data to table"""
-    pgsql_conn = None
-    # cursor = None
 
     def __init__(self):
         super().__init__()
