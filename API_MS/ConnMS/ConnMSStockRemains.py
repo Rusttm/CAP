@@ -1,8 +1,8 @@
 from API_MS.ConnMS.ConnMSMainClass import ConnMSMainClass
-from API_MS.ConnMS.ConnMSSaveJson import ConnMSSaveFile
 
 
-class ConnMSStockRemains(ConnMSMainClass, ConnMSSaveFile):
+
+class ConnMSStockRemains(ConnMSMainClass):
     """ connector to MoiSklad stock remains(ненулевые остатки)"""
     request_url = 'url_stock_all'
     """ requested api url"""
@@ -34,7 +34,8 @@ class ConnMSStockRemains(ConnMSMainClass, ConnMSSaveFile):
             # if sum_prod > 1000000:
             #     print(f"{i=}, {prod['name']}, {cost=} * {num=} = {sum_prod=}")
         if to_file:
-            ConnMSSaveFile().save_data_json_file(data_dict=new_data_dict, file_name="remains_sum.json")
+            from API_MS.ConnMS.ConnMSSaveJson import ConnMSSaveJson
+            ConnMSSaveJson().save_data_json_file(data_dict=new_data_dict, file_name="remains_sum.json")
         return new_data_dict
 
 

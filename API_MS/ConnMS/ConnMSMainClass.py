@@ -114,7 +114,7 @@ class ConnMSMainClass(CAPMainClass):
         data = dict(self.get_single_req_data())
         delta = 0
         try:
-            # check full lenth of data by data['meta']['size']
+            # check full length of data by data['meta']['size']
             delta = int(data['meta']['size']) - int(data['meta']['offset'])
         except Exception as e:
             # if there is no data in data['meta']['size']
