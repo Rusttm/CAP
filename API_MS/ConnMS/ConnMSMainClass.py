@@ -40,23 +40,6 @@ class ConnMSMainClass(CAPMainClass):
         except Exception as e:
             self.logger.error("Cant read configuration!", e)
 
-        # try:
-        #     conf = None
-        #     try:
-        #         conf = self.get_config_data()
-        #     except Exception as e:
-        #         self.logger.error("Cant read configuration!", e)
-        #     if conf:
-        #         self.set_api_url(conf['MoiSklad']['url_money'])
-        #         self.set_api_token(conf['MoiSklad']['access_token'])
-        #     else:
-        #         # self.logger.warning("cant get info from configfile url_balance or access_token")
-        #         self.logger.critical("Please redefine method set_config in child class!!!")
-        #     self.set_api_config()
-        # except Exception as e:
-        #     # self.logger.warning("cant get info from configfile url_balance or access_token")
-        #     self.logger.critical("Please redefine method set_config in child class!!!")
-
     def set_api_config(self, api_url=None, api_token=None, api_param_line=None, to_file=False):
         self.__api_url = api_url
         self.__api_token = api_token
@@ -153,7 +136,7 @@ class ConnMSMainClass(CAPMainClass):
 
     def save_requested_data_2file(self, data_dict=None, file_name=None):
         """ method save dict data to file in class ConnMSSaveFile"""
-        from API_MS.ConnMS.ConnMSSaveFile import ConnMSSaveFile
+        from API_MS.ConnMS.ConnMSSaveJson import ConnMSSaveFile
         if not file_name:
             self.__file_name = file_name
         self.logger.debug(f"{__name__} starts write request to file {self.__file_name}")

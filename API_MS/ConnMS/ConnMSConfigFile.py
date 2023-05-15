@@ -22,7 +22,7 @@ class ConnMSConfigFile(ConnMSConfig):
             return conf[sector]
         except Exception as e:
             self.logger.error(f"{__class__.__name__} can't read msconfig file", e)
-            print(e)
+            # print(e)
             return None
 
 

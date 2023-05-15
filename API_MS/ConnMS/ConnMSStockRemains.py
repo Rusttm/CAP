@@ -1,5 +1,5 @@
 from API_MS.ConnMS.ConnMSMainClass import ConnMSMainClass
-from API_MS.ConnMS.ConnMSSaveFile import ConnMSSaveFile
+from API_MS.ConnMS.ConnMSSaveJson import ConnMSSaveFile
 
 
 class ConnMSStockRemains(ConnMSMainClass, ConnMSSaveFile):

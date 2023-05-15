@@ -18,7 +18,7 @@ class ConnPgsqlConfigFile(ConnPgsqlConfig):
             up_up_dir = os.path.dirname(os.path.dirname(__file__))
             CONF_FILE_PATH = os.path.join(up_up_dir, self.dir_name, self.file_name)
             conf.read(CONF_FILE_PATH)
-            self.logger.debug(f"module {__class__.__name__} started, configfile read")
+            self.logger.debug(f"module {__class__.__name__} read configfile")
             return conf[sector]
         except Exception as e:
             self.logger.error(f"{__class__.__name__} can't read config file", e)

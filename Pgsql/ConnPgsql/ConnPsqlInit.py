@@ -4,11 +4,11 @@ import psycopg2
 
 class ConnPsqlInit(ConnPsqlMainClass):
     pgsql_conn = None
+    cursor = None
 
     def __init__(self):
         super().__init__()
         from Pgsql.ConnPgsql.ConnPgsqlConfig import ConnPgsqlConfig
-        # self.pgsql_conn = psycopg2.connect("dbname=capdb user=capuser password=cap_pass")
         try:
             conf = ConnPgsqlConfig().get_config()
             self.pgsql_conn = psycopg2.connect(
@@ -17,17 +17,28 @@ class ConnPsqlInit(ConnPsqlMainClass):
                 database=conf['db_name'],
                 user=conf['user'],
                 password=conf['user_pass'])
-            self.cursor = self.pgsql_conn.cursor()
+
+            # self.cursor = self.pgsql_conn.cursor()
+            self.logger.debug(f"{__class__.__name__} connector for PostgreSQL created")
         except Exception as e:
-            print(f"configuration data not loaded {e}")
+            # print(f"configuration data not loaded {e}")
+            self.logger.error(f"{__class__.__name__} can't create connector for PostgreSQL! {e}")
 
     def get_pgsql_version(self):
-        self.cursor.execute('SELECT version()')
-        db_version = self.cursor.fetchone()
-        print(db_version)
-        self.cursor.close()
+        if self.pgsql_conn:
+            try:
+                with self.pgsql_conn:
+                    with self.pgsql_conn.cursor() as my_cursor:
+                        my_cursor.execute('SELECT version()')
+                        db_version = my_cursor.fetchone()
+                        my_cursor.close()
+            finally:
+                self.pgsql_conn.close()
+        else:
+            return None
+        return db_version
 
 
 if __name__ == '__main__':
     connector = ConnPsqlInit()
-    connector.get_pgsql_version()
+    print(connector.get_pgsql_version())

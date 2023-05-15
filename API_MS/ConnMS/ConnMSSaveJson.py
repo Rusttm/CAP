@@ -1,10 +1,11 @@
 # from Main.CAPMainClass import CAPMainClass
+from API_MS.ConnMS.ConnMSMainClass import ConnMSMainClass
 import os
 import json
 import re
 
 
-class ConnMSSaveFile(object):
+class ConnMSSaveJson(ConnMSMainClass):
     """ connector: save dictionary data file to json """
     dir_name = "data"
     file_name = "ms_requested_data.json"
@@ -25,18 +26,17 @@ class ConnMSSaveFile(object):
             if os.path.exists(DATA_FILE_PATH) and data_dict:
                 with open(DATA_FILE_PATH, 'w') as ff:
                     json.dump(data_dict, ff, ensure_ascii=False)
+                self.logger.debug(f"{__class__.__name__} saved data to json file {DATA_FILE_PATH}")
                 return True
             else:
-                print(f"{__class__.__name__} can't write data to file {self.file_name}")
+                self.logger.error(f"{__class__.__name__} can't read json file, it doesnt exist!")
+                # print(f"{__class__.__name__} can't write data to file {self.file_name}")
                 return False
-                # import errno
-                # raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT),
-                #                         f"{__class__.__name__} can't write data to file {self.file_name}")
         except Exception as e:
-            print(e)
-
-        finally:
-            return False
+            self.logger.error(f"{__class__.__name__} can't write to json file!", e)
+            # print(e)
+        # finally:
+        #     return False
 
     def corrected_file_name(self, file_name):
         """ return corrected file name in filename.json"""
@@ -53,5 +53,5 @@ class ConnMSSaveFile(object):
 
 
 if __name__ == '__main__':
-    connector = ConnMSSaveFile()
-    print(connector.save_data_json_file({"data": "some data"}))
+    connector = ConnMSSaveJson()
+    print(connector.save_data_json_file(data_dict={"data": "some data"}, file_name="temporary_file"))

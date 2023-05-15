@@ -1,11 +1,11 @@
 from API_MS.ConnMS.ConnMSMainClass import ConnMSMainClass
-from API_MS.ConnMS.ConnMSSaveFile import ConnMSSaveFile
+# from API_MS.ConnMS.ConnMSSaveFile import ConnMSSaveFile
 import os
 import pandas as pd
 # import openpyxl
 import re
 
-class ConnMSReadExcell(object):
+class ConnMSReadExcell(ConnMSMainClass):
     """ read api fields convertor from excell and return json:
     {"type":"product", "data":{"id":{"type":"UUID", "filters":"=,!=", "descr":"ID товара"}}} """
     dir_name = "data"
@@ -23,6 +23,7 @@ class ConnMSReadExcell(object):
             if not re.search('xlsx', file_name):
                 file_name += '.xlsx'
             try:
+                # choose directory to read data
                 if self.dir_name == "config":
                     file = os.path.dirname(__file__)
                 elif self.dir_name == "data":
@@ -54,9 +55,11 @@ class ConnMSReadExcell(object):
                 file_data.columns = self.table_columns
                 test_dict = file_data.to_dict('index')
                 result['data'] = test_dict
+                self.logger.debug(f"{__class__.__name__} got data from excell file")
                 return result
             except Exception as e:
-                print(e)
+                # print(e)
+                self.logger.error(f"{__class__.__name__} can't read excell file", e)
                 return None
         else:
             import errno
