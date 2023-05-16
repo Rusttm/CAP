@@ -53,13 +53,10 @@ class ConnSCServer(SocketMainClass):
 
 # this version without headers
     def get_client_msg(self, client_socket: socket.socket):
+        self.logger.debug(f"{__class__.__name__} server extract clients msg from client_socket")
         # recieve header with len of msg and usei it like buffer
         try:
             msg = client_socket.recv(self.buffer)
-            # if not len(msg_header):
-            #     self.logger.error(f"{__class__.__name__} server error: header_length is null")
-            #     return False
-            # msg_length = int(msg_header.decode('utf-8').strip())
             print(f"message {msg.decode('utf-8')} received!!!")
             return msg.decode('utf-8')
         except Exception as e:
@@ -67,6 +64,7 @@ class ConnSCServer(SocketMainClass):
             return False
 
     def listen_2receive_msg(self):
+        self.logger.debug(f"{__class__.__name__} server fetching clients in select")
         client_sockets = self.sockets_list
         while 1:
             client_for_read, client_for_send, client_exceptional = select.select(client_sockets,
