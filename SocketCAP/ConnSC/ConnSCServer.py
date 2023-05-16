@@ -2,6 +2,7 @@ from SocketCAP.SocketMainClass import SocketMainClass
 from socket import socket, AF_INET, SOCK_STREAM, SOL_SOCKET, SO_REUSEADDR
 from select import select
 
+
 class ConnSCServer(SocketMainClass):
     """ starts socket server"""
     server_port = 1977
@@ -24,7 +25,8 @@ class ConnSCServer(SocketMainClass):
                 try:
                     client_socket, address = server_socket.accept()
                 except OSError as e:
-                    print(e)
+                    # print(e)
+                    pass
                 else:
                     client_sockets.append(client_socket)
                 finally:
@@ -35,18 +37,25 @@ class ConnSCServer(SocketMainClass):
                         client_for_read, client_for_send, client_suspend = select(client_sockets,
                                                                                    client_sockets,
                                                                                    client_sockets, 0)
+                        print(f"{client_for_read=}, {client_for_send=}, {client_suspend=}")
                         if client_socket in client_for_read:
                             recv_data = client_socket.recv(1024)
                             msg_list = self.__recv_msg_dict.get(address, [])
-                            if msg_list:
+                            # print(f"message {recv_data} recieved from {address}")
+                            if recv_data:
                                 self.__recv_msg_dict[address] = msg_list.append(recv_data)
                                 print(f"message {recv_data} recieved from {address}")
-                            else:
-                                print("cant recieve message")
-                        if client_socket in client_for_send:
-                            if self.__recv_msg_dict.get(address, []):
-                                for msg in self.__recv_msg_dict.get(address, []):
-                                    client_socket.send(msg.encode('utf-8'))
+                            # else:
+                            #     print("cant recieve message")
+
+                        # if client_socket in client_for_send:
+                        #     print(self.__recv_msg_dict.get(address, []))
+                        #     client_socket.send(message)
+
+                            # if self.__recv_msg_dict.get(address, []):
+                            #     for msg in self.__recv_msg_dict.get(address, []):
+                            #         client_socket.send(msg.encode('utf-8'))
+                        # client_socket.close()
 
 
     def get_socket_msg(self):
