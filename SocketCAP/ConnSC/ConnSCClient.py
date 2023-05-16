@@ -64,4 +64,4 @@ if __name__ == '__main__':
     my_dictionary = dict({"module": "telegram", "data": {"from": "57685837", "text": "hello telegram"}})
     # print(connector.send_2server(message=f"Hi Server from client {connector.HOST}"))
     # print(connector.recv_dict_from_server())
-    print(connector.send_dict_2server(dictionary=my_dictionary))
+    print(connector.send_msg_2server("My message from client"))
