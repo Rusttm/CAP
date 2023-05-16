@@ -19,17 +19,28 @@ class ConnSCServer(SocketMainClass):
         super().__init__()
 
     def start_socket_server(self):
-        pass
+        # print(socket.gethostname())
+        HOST = (socket.gethostname(), self.server_port)
+        server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) # reuse address in OS after closing (notimeout)
+        server_socket.bind(HOST)
+        server_socket.listen()
+        print(f"listening port {self.server_port}")
+        while True:
+            client_socket, addr = server_socket.accept()
+            print(f"connected to {addr}")
+            msg = f'Hello to {addr} from server'
+            client_socket.send(msg.encode('utf-8'))
 
-    def get_socket_msg(self):
-        """ return msg dict and clear(!) it after request"""
-        msg_dictionary = self.__recv_msg_dict
-        self.__recv_msg_dict = dict({"server": []})
-        return msg_dictionary
-
-    def send_socket_msg(self, socket_name=None, msg=None):
-        if socket_name and msg:
-            self.__send_msg_dict[socket_name] = self.__send_msg_dict.get(socket_name, []).append(msg)
+    # def get_socket_msg(self):
+    #     """ return msg dict and clear(!) it after request"""
+    #     msg_dictionary = self.__recv_msg_dict
+    #     self.__recv_msg_dict = dict({"server": []})
+    #     return msg_dictionary
+    #
+    # def send_socket_msg(self, socket_name=None, msg=None):
+    #     if socket_name and msg:
+    #         self.__send_msg_dict[socket_name] = self.__send_msg_dict.get(socket_name, []).append(msg)
 
 
 if __name__ == '__main__':
