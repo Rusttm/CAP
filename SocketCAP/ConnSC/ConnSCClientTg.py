@@ -27,7 +27,7 @@ class ConnSCClientTg(SocketMainClass):
         # set buffer to not blocking during the sending information
         self.client_socket.setblocking(0)
         self.logger.debug(f"{__class__.__name__} client connect to server {self.HOST} for send dict")
-        # self.send_dict_2server(to="server", data=f"Telegram client starts at {datetime.now()}")
+        self.send_dict_2server(to="server", data=f"Telegram client starts at {datetime.now()}")
 
     def send_dict_2server(self, to=None, data=None):
 

@@ -32,7 +32,7 @@ class ConnSCServer(SocketMainClass):
         self.host = (socket.gethostname(), self.server_port)
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR,
-                                      0)  # reuse address in OS after closing (0 - no timeout)
+                                      1)  # reuse address in OS after closing (0 - no timeout)
         self.server_socket.bind(self.host)
         self.server_socket.listen()
         self.sockets_list.append(self.server_socket)
@@ -158,13 +158,15 @@ class ConnSCServer(SocketMainClass):
                         del self.clients_dict[_socket]  # remove from dict
                         continue
                     # download previous user information
-                    user_msg = self.clients_dict[_socket]
+                    user = self.clients_dict[_socket]
 
                     for client_socket in self.clients_dict.keys():
                         # user_msg =
+                        print(f"Lets make spam from user {user}")
                         if client_socket is not _socket:
                             """ spam for other users"""
-                            client_socket.sendall(f" new message from {user_msg['from']} is {new_msg['data']}")
+
+                            client_socket.sendall(f" new message from {user} is {new_msg['data']}")
 
                 for _socket in client_exceptional:
                     """ remove sockets with errors from sockets_list and clients_dict """
