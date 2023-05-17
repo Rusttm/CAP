@@ -37,7 +37,8 @@ class ConnSCServer(SocketMainClass):
         self.server_socket.listen()
         self.sockets_list.append(self.server_socket)
         self.logger.debug(f"{__class__.__name__} server initiated and listening port {self.server_port}")
-
+        # test reply
+        # self.clients_dict[self.server_socket] = "server"
     # main version
     def get_client_msg(self, client_socket: socket.socket):
         # receive header with len of msg and usei it like buffer
@@ -73,7 +74,7 @@ class ConnSCServer(SocketMainClass):
         try:
             data = client_socket.recv(self.buffer)
             msg = pickle.loads(data)
-            print(f"you have message is {msg}")
+            print(f"you have message: {msg}")
             return msg
         except Exception as e:
             self.logger.error(f"{__class__.__name__} server error: {e}")
@@ -160,13 +161,15 @@ class ConnSCServer(SocketMainClass):
                     # download previous user information
                     user = self.clients_dict[_socket]
 
-                    for client_socket in self.clients_dict.keys():
-                        # user_msg =
-                        print(f"Lets make spam from user {user}")
-                        if client_socket is not _socket:
-                            """ spam for other users"""
-
-                            client_socket.sendall(f" new message from {user} is {new_msg['data']}")
+                    try:
+                        # lets send msg to recipient
+                        for client_socket, client_name in self.clients_dict.items():
+                            print(f"Lets send from user {user} to client {new_msg['to']}")
+                            if client_name == new_msg['to']:
+                                msg_dict = {"from": f"{new_msg['from']}", "to": f"{new_msg['to']}", "data": "data"}
+                                client_socket.sendall(pickle.dumps(msg_dict ))
+                    except Exception as e:
+                        print(e)
 
                 for _socket in client_exceptional:
                     """ remove sockets with errors from sockets_list and clients_dict """
