@@ -9,28 +9,33 @@ import time
 
 
 class ConnSCClientTg(SocketMainClass):
-    """ client for reader client"""
+    """ client for telegram module"""
     server_port = 1977
+    """ server port"""
     server_host = 'localhost'
+    """ server host"""
     buffer = 1024 #bytes
+    """ length of received data"""
     conn_num = 5
-    client_socket = None
-    HOST = None
+
     client_name = "telegram"
+    """ name of socket client"""
+    server_msgs_list = []
+    """ list of messages received from server"""
 
     def __init__(self):
         super().__init__()
-        self.HOST = (socket.gethostname(), self.server_port)
+        self.server_host = socket.gethostname()
+        self.HOST = (self.server_host, self.server_port)
+        """ tuple (server host, server port)"""
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
+        self.client_socket.setblocking(0)
         self.client_socket.connect(self.HOST)
         # set buffer to not blocking during the sending information
-        self.client_socket.setblocking(0)
         self.logger.debug(f"{__class__.__name__} client connect to server {self.HOST} for send dict")
         self.send_dict_2server(to="server", data=f"Telegram client starts at {datetime.now()}")
 
     def send_dict_2server(self, to=None, data=None):
-
         if not data:
             msg_dict = dict({"error": "no  recipient or data to send"})
             self.logger.debug(f"{__class__.__name__} client send to server {self.HOST} empty msg")
@@ -54,7 +59,7 @@ class ConnSCClientTg(SocketMainClass):
 if __name__ == '__main__':
     connector = ConnSCClientTg()
     for i in range(10):
-        connector.send_dict_2server(to="server", data=f"Hi, Server {i}")
+        connector.send_dict_2server(to="main", data=f"Hi, Server {i}")
         print(f"send {i} packet")
         time.sleep(3)
     print("sends closed")
