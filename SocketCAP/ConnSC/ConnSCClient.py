@@ -61,7 +61,8 @@ class ConnSCClient(SocketMainClass):
 
 if __name__ == '__main__':
     connector = ConnSCClient()
-    my_dictionary = dict({"module": "telegram", "data": {"from": "57685837", "text": "hello telegram"}})
+    my_dictionary = dict({"from": "telegram", "to": "main", "data": {"from": "57685837", "text": "hello telegram"}})
     # print(connector.send_2server(message=f"Hi Server from client {connector.HOST}"))
     # print(connector.recv_dict_from_server())
-    print(connector.send_msg_2server("My message from client"))
+    # print(connector.send_msg_2server("My message from client"))
+    print(connector.send_dict_2server(my_dictionary))

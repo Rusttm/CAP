@@ -37,7 +37,8 @@ class ConnSCServer(SocketMainClass):
         self.server_socket.listen()
         self.sockets_list.append(self.server_socket)
         self.logger.debug(f"{__class__.__name__} server initiated and listening port {self.server_port}")
-# main version
+
+    # main version
     # def get_client_msg(self, client_socket: socket.socket):
     #     # recieve header with len of msg and usei it like buffer
     #     try:
@@ -51,14 +52,27 @@ class ConnSCServer(SocketMainClass):
     #         self.logger.error(f"{__class__.__name__} server error: {e}")
     #         return False
 
-# this version without headers
+    # this version without headers
     def get_client_msg(self, client_socket: socket.socket):
         self.logger.debug(f"{__class__.__name__} server extract clients msg from client_socket")
-        # recieve header with len of msg and usei it like buffer
+        # no header
         try:
             msg = client_socket.recv(self.buffer)
             print(f"message {msg.decode('utf-8')} received!!!")
             return msg.decode('utf-8')
+        except Exception as e:
+            self.logger.error(f"{__class__.__name__} server error: {e}")
+            return False
+
+    # version for dictionary
+    def get_client_dict(self, client_socket: socket.socket):
+        self.logger.debug(f"{__class__.__name__} server extract clients msg from client_socket")
+        # recieve dictionary
+        try:
+            data = client_socket.recv(self.buffer)
+            msg = pickle.loads(data)
+            print(f"you have message is {msg}")
+            return msg
         except Exception as e:
             self.logger.error(f"{__class__.__name__} server error: {e}")
             return False
@@ -85,8 +99,8 @@ class ConnSCServer(SocketMainClass):
                     if not msg:
                         """ if msg empty delete clients from sockets_list and clients_dict"""
                         self.logger.debug(f"{__class__.__name__} server interrupt client {addr} msg is null")
-                        self.sockets_list.remove(_socket) # remove from list
-                        del self.clients_dict[_socket] # remove from dict
+                        self.sockets_list.remove(_socket)  # remove from list
+                        del self.clients_dict[_socket]  # remove from dict
                         continue
                     user = self.clients_dict[_socket]
 
@@ -99,6 +113,47 @@ class ConnSCServer(SocketMainClass):
                     """ remove sockets with errors from sockets_list and clients_dict """
                     self.sockets_list.remove(_socket)
                     del self.clients_dict[_socket]
+
+    def listen_2receive_dict(self):
+        self.logger.debug(f"{__class__.__name__} server fetching clients in select")
+        client_sockets = self.sockets_list
+        while 1:
+            client_for_read, client_for_send, client_exceptional = select.select(client_sockets,
+                                                                                 client_sockets,
+                                                                                 client_sockets, 1)
+            for _socket in client_for_read:
+                if _socket == self.server_socket:
+                    """ if server ready to read """
+                    client_socket, addr = self.server_socket.accept()
+                    user_msg = self.get_client_dict(client_socket=client_socket)
+                    if not user_msg:
+                        continue
+                    self.sockets_list.append(client_socket)
+                    self.clients_dict[client_socket] = user_msg
+                else:
+                    """ looks new clients ready to read """
+                    client_socket, addr = self.server_socket.accept()
+                    # get new message
+                    new_msg = self.get_client_dict(client_socket=client_socket)
+                    if not new_msg:
+                        """ if msg empty delete clients from sockets_list and clients_dict"""
+                        self.logger.debug(f"{__class__.__name__} server interrupt client {addr} msg is null")
+                        self.sockets_list.remove(_socket)  # remove from list
+                        del self.clients_dict[_socket]  # remove from dict
+                        continue
+                    # download previous user information
+                    user_msg = self.clients_dict[_socket]
+
+                    for client_socket in self.clients_dict.keys():
+                        if client_socket is not _socket:
+                            """ spam for other users"""
+                            client_socket.sendall(f" new message from {user_msg['from']} is {new_msg['data']}")
+
+                for _socket in client_exceptional:
+                    """ remove sockets with errors from sockets_list and clients_dict """
+                    self.sockets_list.remove(_socket)
+                    del self.clients_dict[_socket]
+
 
     # def get_client_dict(self):
     #     while True:
@@ -139,4 +194,4 @@ if __name__ == '__main__':
     connector = ConnSCServer()
     # my_dictionary = dict({"module": "telegram", "data": {"from": "57685837", "text": "hello telegram"}})
     # print(connector.send_2client_dict(my_dictionary))
-    print(connector.listen_2receive_msg())
+    print(connector.listen_2receive_dict())
