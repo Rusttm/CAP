@@ -32,28 +32,29 @@ class ConnSCServer(SocketMainClass):
         self.host = (socket.gethostname(), self.server_port)
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR,
-                                      1)  # reuse address in OS after closing (notimeout)
+                                      0)  # reuse address in OS after closing (0 - no timeout)
         self.server_socket.bind(self.host)
         self.server_socket.listen()
         self.sockets_list.append(self.server_socket)
         self.logger.debug(f"{__class__.__name__} server initiated and listening port {self.server_port}")
 
     # main version
-    # def get_client_msg(self, client_socket: socket.socket):
-    #     # recieve header with len of msg and usei it like buffer
-    #     try:
-    #         msg_header = client_socket.recv(self.header_length)
-    #         if not len(msg_header):
-    #             self.logger.error(f"{__class__.__name__} server error: header_length is null")
-    #             return False
-    #         msg_length = int(msg_header.decode('utf-8').strip())
-    #         return {'header': msg_header, 'data': client_socket.recv(msg_length).decode('utf-8')}
-    #     except Exception as e:
-    #         self.logger.error(f"{__class__.__name__} server error: {e}")
-    #         return False
+    def get_client_msg(self, client_socket: socket.socket):
+        # receive header with len of msg and usei it like buffer
+        try:
+            msg_header = client_socket.recv(self.header_length)
+            if not len(msg_header):
+                self.logger.error(f"{__class__.__name__} server error: header_length is null")
+                return False
+            msg_length = int(msg_header.decode('utf-8').strip())
+            return {'header': msg_header, 'data': client_socket.recv(msg_length).decode('utf-8')}
+        except Exception as e:
+            self.logger.error(f"{__class__.__name__} server error: {e}")
+            return False
 
     # this version without headers
-    def get_client_msg(self, client_socket: socket.socket):
+    def get_client_msg_txt(self, client_socket: socket.socket):
+        """ receive and decoding clients text messages"""
         self.logger.debug(f"{__class__.__name__} server extract clients msg from client_socket")
         # no header
         try:
@@ -65,9 +66,10 @@ class ConnSCServer(SocketMainClass):
             return False
 
     # version for dictionary
-    def get_client_dict(self, client_socket: socket.socket):
+    def get_client_msg_dict(self, client_socket: socket.socket):
+        """ receive and decoding clients dictionaries"""
         self.logger.debug(f"{__class__.__name__} server extract clients msg from client_socket")
-        # recieve dictionary
+        # receive dictionary
         try:
             data = client_socket.recv(self.buffer)
             msg = pickle.loads(data)
@@ -118,23 +120,37 @@ class ConnSCServer(SocketMainClass):
         self.logger.debug(f"{__class__.__name__} server fetching clients in select")
         client_sockets = self.sockets_list
         while 1:
+            # receive lists of sockets ready for read/write/error
             client_for_read, client_for_send, client_exceptional = select.select(client_sockets,
                                                                                  client_sockets,
                                                                                  client_sockets, 1)
+            """ client_for_read - clients sockets that already receive msg and ready to read it"""
             for _socket in client_for_read:
-                if _socket == self.server_socket:
-                    """ if server ready to read """
+                # select only sockets for read
+                if _socket == self.server_socket:   # primary choose server ready to read
+                    #
                     client_socket, addr = self.server_socket.accept()
-                    user_msg = self.get_client_dict(client_socket=client_socket)
-                    if not user_msg:
+                    # extract description from message
+                    user_msg = self.get_client_msg_dict(client_socket=client_socket)
+                    if not user_msg:   # if message is empty
+                        # skip this client
                         continue
-                    self.sockets_list.append(client_socket)
-                    self.clients_dict[client_socket] = user_msg
-                else:
-                    """ looks new clients ready to read """
-                    client_socket, addr = self.server_socket.accept()
+
+                    # append this socket to socket_list if its really new socket
+                    if user_msg['from'] in self.clients_dict.values():
+                        print("socket already in self.sockets_list")
+                    else:
+                        self.sockets_list.append(client_socket)
+                        # in clients dict set the key=client_socket and value=message
+                        self.clients_dict[client_socket] = user_msg['from']
+
+                    # self.sockets_list.append(client_socket)
+                    # self.clients_dict[client_socket] = user_msg
+
+                else:   # looks new clients (not server) ready to read
+                    # client_socket, addr = self.server_socket.accept()
                     # get new message
-                    new_msg = self.get_client_dict(client_socket=client_socket)
+                    new_msg = self.get_client_msg_dict(client_socket=_socket)
                     if not new_msg:
                         """ if msg empty delete clients from sockets_list and clients_dict"""
                         self.logger.debug(f"{__class__.__name__} server interrupt client {addr} msg is null")
@@ -145,6 +161,7 @@ class ConnSCServer(SocketMainClass):
                     user_msg = self.clients_dict[_socket]
 
                     for client_socket in self.clients_dict.keys():
+                        # user_msg =
                         if client_socket is not _socket:
                             """ spam for other users"""
                             client_socket.sendall(f" new message from {user_msg['from']} is {new_msg['data']}")

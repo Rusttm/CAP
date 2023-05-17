@@ -2,10 +2,11 @@ import pickle
 
 from SocketCAP.SocketMainClass import SocketMainClass
 from socket import socket, AF_INET, SOCK_STREAM
-import sys
 import socket
-import selectors
-import types
+from datetime import datetime
+import time
+
+
 
 class ConnSCClientTg(SocketMainClass):
     """ client for reader client"""
@@ -22,9 +23,14 @@ class ConnSCClientTg(SocketMainClass):
         self.HOST = (socket.gethostname(), self.server_port)
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    def send_dict_2server(self, to=None, data=None):
         self.client_socket.connect(self.HOST)
+        # set buffer to not blocking during the sending information
+        self.client_socket.setblocking(0)
         self.logger.debug(f"{__class__.__name__} client connect to server {self.HOST} for send dict")
+        # self.send_dict_2server(to="server", data=f"Telegram client starts at {datetime.now()}")
+
+    def send_dict_2server(self, to=None, data=None):
+
         if not data:
             msg_dict = dict({"error": "no  recipient or data to send"})
             self.logger.debug(f"{__class__.__name__} client send to server {self.HOST} empty msg")
@@ -47,4 +53,8 @@ class ConnSCClientTg(SocketMainClass):
 
 if __name__ == '__main__':
     connector = ConnSCClientTg()
-    print(connector.send_dict_2server(to="server", data="Hi, Server"))
+    for i in range(10):
+        connector.send_dict_2server(to="server", data=f"Hi, Server {i}")
+        print(f"send {i} packet")
+        time.sleep(3)
+    print("sends closed")
