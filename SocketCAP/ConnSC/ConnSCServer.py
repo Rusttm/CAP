@@ -1,3 +1,4 @@
+# from https://steelkiwi.com/blog/working-tcp-sockets/
 from SocketCAP.SocketMainClass import SocketMainClass
 import pickle
 import select, socket, sys, queue
