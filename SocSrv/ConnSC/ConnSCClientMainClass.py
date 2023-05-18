@@ -92,7 +92,7 @@ if __name__ == '__main__':
     to = "main"
     msg_text = "it's again me"
     connector.send_dict_2client(to=to, msg_text=msg_text)
-    # t2 = Thread(target=connector.send_dict_2client, args=(to, msg_text)).start()  # if necessary to use threads
+    # t2 = Thread(target=connector.send_dict_2client, args=(to, msg_text)).start()  # if it is necessary to use threads
     print("client successfully started")
     time.sleep(3)
     print(f"full received messages list: {connector.get_all_incoming_msgs()}")
