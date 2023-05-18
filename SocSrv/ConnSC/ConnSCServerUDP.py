@@ -4,7 +4,7 @@ import pickle
 import select, socket, sys, queue
 import logging
 
-class ConnSCServer(SocketMainClass):
+class ConnSCServerUDP(SocketMainClass):
     """ starts socket server"""
     host = 'localhost'
     server_port = 1977
@@ -21,8 +21,8 @@ class ConnSCServer(SocketMainClass):
     inputs_sockets = []
     clients_name_dict = dict()
     """ dictionary {"server": client_socket, "telegram": client_socket,"""
-    tcp_udp_soc_type = "TCP" #or "UDP"
-
+    # tcp_udp_soc_type = "TCP" #or "UDP"
+    tcp_udp_soc_type = "UDP"
     def __init__(self):
         super().__init__()
         self.start_socket_server()
@@ -39,7 +39,7 @@ class ConnSCServer(SocketMainClass):
             self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  # reuse address in OS after closing (0 - no timeout)
         self.server_socket.bind(self.host)
-        self.server_socket.listen(5)
+        # self.server_socket.listen(5)
         self.inputs_sockets.append(self.server_socket)
         self.logger.debug(f"{__class__.__name__} server initiated and listening port {self.server_port}")
 
@@ -70,9 +70,11 @@ class ConnSCServer(SocketMainClass):
                 for _socket in client_for_read:
                     # select only sockets for read
                     if _socket == self.server_socket:  # primary choose server ready to read
-                        client_socket, addr = self.server_socket.accept()
-                        client_socket.setblocking(0)
-                        inputs.append(client_socket)
+                        # client_socket, addr = self.server_socket.accept()
+                        # client_socket.setblocking(0)
+                        # inputs.append(client_socket)
+                        _socket.setblocking(0)
+                        inputs.append(_socket)
                         self.message_queues[_socket] = queue.Queue
 
                     else:  # looks new clients (not server) ready to read
@@ -136,7 +138,7 @@ class ConnSCServer(SocketMainClass):
 
 
 if __name__ == '__main__':
-    connector = ConnSCServer()
+    connector = ConnSCServerUDP()
     # my_dictionary = dict({"module": "telegram", "data": {"from": "57685837", "text": "hello telegram"}})
     # print(connector.send_2client_dict(my_dictionary))
     connector.listen_4receive_dict()

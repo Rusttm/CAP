@@ -8,6 +8,7 @@ import socket
 import datetime
 import pickle
 
+
 class ConnSCClientMain(SocketMainClass):
     incoming_msg_queue = []
     outgoing_msg_queue = []
@@ -27,23 +28,22 @@ class ConnSCClientMain(SocketMainClass):
             self.server_host = socket.gethostbyname(socket.gethostname())
         self.outgoing_msg_queue.append({"to": "server", "text": f"{self.client_name} client starts"})
 
-
     def start_socket_client(self):
         try:
             # socket.setdefaulttimeout(10)
             # socket.timeout(1)
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
+            with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as client_socket:
                 # client_socket.setblocking(False)
                 client_socket.timeout
                 client_socket.connect((self.server_host, self.server_port))
                 while True:
                     try:
-                        if self.outgoing_msg_queue:
-                            msg_dict = self.outgoing_msg_queue.pop(0)
-                            out_msg = {"from": self.client_name, "to": f"{msg_dict['to']}", "text": f"{msg_dict['text']}"}
+                        for msg_dict in self.outgoing_msg_queue:
+                            out_msg = {"from": self.client_name, "to": f"{msg_dict['to']}",
+                                       "text": f"{msg_dict['text']}"}
                             # time.sleep(1)
                             client_socket.sendall(pickle.dumps(out_msg))
-                            # self.outgoing_msg_queue.remove(msg_dict)
+                            self.outgoing_msg_queue.remove(msg_dict)
                     except BlockingIOError:
                         print("wait for blocking error 1")
                     try:
