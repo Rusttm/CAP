@@ -1,8 +1,8 @@
 # from https://steelkiwi.com/blog/working-tcp-sockets/
-from SocketCAP.SocketMainClass import SocketMainClass
+from SocSrv.SocketMainClass import SocketMainClass
 import pickle
 import select, socket, sys, queue
-
+import logging
 
 class ConnSCServer(SocketMainClass):
     """ starts socket server"""
@@ -23,6 +23,8 @@ class ConnSCServer(SocketMainClass):
     def __init__(self):
         super().__init__()
         self.start_socket_server()
+
+
 
     def start_socket_server(self):
         # print(socket.gethostname())

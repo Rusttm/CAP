@@ -1,6 +1,6 @@
 import pickle
 
-from SocketCAP.SocketMainClass import SocketMainClass
+from SocSrv.SocketMainClass import SocketMainClass
 from socket import socket, AF_INET, SOCK_STREAM
 import socket
 from datetime import datetime
@@ -25,15 +25,42 @@ class ConnSCClientTg(SocketMainClass):
 
     def __init__(self):
         super().__init__()
+        socket.setdefaulttimeout(5)
+
         self.server_host = socket.gethostname()
         self.HOST = (self.server_host, self.server_port)
         """ tuple (server host, server port)"""
-        self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.client_socket.setblocking(0)
-        self.client_socket.connect(self.HOST)
-        # set buffer to not blocking during the sending information
-        self.logger.debug(f"{__class__.__name__} client connect to server {self.HOST} for send dict")
-        self.send_dict_2server(to="server", data=f"Telegram client starts at {datetime.now()}")
+        # self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # self.client_socket.setblocking(0)
+        # self.client_socket.connect(self.HOST)
+        # # set buffer to not blocking during the sending information
+        # self.logger.debug(f"{__class__.__name__} client connect to server {self.HOST} for send dict")
+        # self.send_dict_2server(to="server", data=f"Telegram client starts at {datetime.now()}")
+
+    def start_socket_client(self):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
+            client_socket.timeout
+            client_socket.connect((socket.gethostbyname(socket.gethostname()), 1977))
+            try:
+                hello_msg = {"from": "main", "to": "server", "data": f"Main client starts1"}
+                client_socket.sendall(pickle.dumps(hello_msg))
+            except BlockingIOError:
+                print("wait for blocking error 1")
+                # pass
+            while True:
+                try:
+                    data = client_socket.recv(1024)
+                    print(pickle.loads(data))
+                except BlockingIOError:
+                    print("wait for blocking error 2")
+                except TimeoutError:
+                    print("data is not receiving")
+                else:
+                    time.sleep(3)
+                    msg = pickle.loads(data)
+                    msg["to"], msg["from"] = msg["from"], msg["to"]
+                    data = pickle.dumps(msg)
+                    client_socket.sendall(data)
 
     def send_dict_2server(self, to=None, data=None):
         if not data:
@@ -58,6 +85,7 @@ class ConnSCClientTg(SocketMainClass):
 
 if __name__ == '__main__':
     connector = ConnSCClientTg()
+    con
     for i in range(10):
         connector.send_dict_2server(to="main", data=f"Hi, Server {i}")
         print(f"send {i} packet")

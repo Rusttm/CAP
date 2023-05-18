@@ -1,6 +1,6 @@
 import pickle
 
-from SocketCAP.SocketMainClass import SocketMainClass
+from SocSrv.SocketMainClass import SocketMainClass
 from socket import socket, AF_INET, SOCK_STREAM
 import sys
 import socket

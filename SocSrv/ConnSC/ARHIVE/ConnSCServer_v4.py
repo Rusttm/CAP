@@ -1,4 +1,4 @@
-from SocketCAP.SocketMainClass import SocketMainClass
+from SocSrv.SocketMainClass import SocketMainClass
 from socket import socket
 from select import select
 import socket
