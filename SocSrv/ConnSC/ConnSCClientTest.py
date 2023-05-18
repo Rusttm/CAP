@@ -27,7 +27,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
         except TimeoutError:
             print("data is not receiving")
         else:
-            time.sleep(3)
+            time.sleep(30)
             msg = pickle.loads(data)
             msg["to"], msg["from"] = msg["from"], msg["to"]
             data = pickle.dumps(msg)
