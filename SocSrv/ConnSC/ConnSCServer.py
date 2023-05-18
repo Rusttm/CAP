@@ -79,9 +79,9 @@ class ConnSCServer(SocketMainClass):
                         # get new message
                         data = _socket.recv(1024)
                         if data:
-                            print(self.decode_data_2dict(data=data))
                             # change reply message
                             msg = pickle.loads(data)
+                            print(f"incoming msg: {msg}")
                             self.incoming_msg_queue.append(msg)
                             # first msg with request to server
                             self.clients_name_dict[msg['from']] = _socket
@@ -95,14 +95,21 @@ class ConnSCServer(SocketMainClass):
                                     outputs.append(_socket)
                             else:
                                 # if forward message
-                                if self.outgoing_msg_queue:
-                                    for msg in self.outgoing_msg_queue:
-                                        to_client = msg['to']
-                                        client_socket = self.clients_name_dict[to_client]
-                                        next_msg = pickle.dumps(msg)
-                                        self.message_queues[client_socket] = next_msg
+                                to_client = msg['to']
+                                try:
+                                    print(f"try to send {to_client}")
+                                    client_socket = self.clients_name_dict[to_client]
+                                    self.outgoing_msg_queue.append(msg)
+                                    data = pickle.dumps(msg)
+                                    self.message_queues[client_socket] = data
+                                    if _socket not in outputs:
+                                        outputs.append(client_socket)
+                                except KeyError as e:
+                                    print(f"client's {to_client} socket closed")
+                                    self.logger.error(f"client {to_client} not online skipping")
                         else:
                             """ if msg empty delete clients from sockets_list and clients_dict"""
+                            print("client send empty request")
                             if _socket in outputs:
                                 self.logger.debug(f"{__class__.__name__} server interrupt client msg is null")
                                 outputs.remove(_socket)
@@ -110,15 +117,19 @@ class ConnSCServer(SocketMainClass):
                             _socket.close() # close socket
                             try:
                                 del self.message_queues[_socket]  # remove from dict
-                            except:
-                                pass
+                            except Exception as e:
+                                print(f"cant remove _socket from message_queues error: {e}")
+
                 for _socket in client_for_send:
                     try:
                         next_msg = self.message_queues[_socket]
+
                     except queue.Empty:
                         outputs.remove(_socket)
                     else:
                         _socket.send(next_msg)
+                        msg = pickle.loads(next_msg)
+                        print(f"message from {msg['from']} to {msg['to']} was send by server ")
                         # test
                         outputs.remove(_socket)
 

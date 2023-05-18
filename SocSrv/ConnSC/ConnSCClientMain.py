@@ -25,8 +25,8 @@ class ConnSCClientMain(SocketMainClass):
             self.server_host = server_host
         else:
             self.server_host = socket.gethostbyname(socket.gethostname())
-        self.outgoing_msg_queue.append({"to": "server", "text": f"{self.client_name} client starts"})
-
+        self.outgoing_msg_queue.append({"from": self.client_name, "to": "server", "text": f"{self.client_name} client starts"})
+        self.outgoing_msg_queue.append({"from": self.client_name, "to": "telegram", "text": f"{self.client_name} client starts"})
 
     def start_socket_client(self):
         try:
@@ -34,29 +34,26 @@ class ConnSCClientMain(SocketMainClass):
             # socket.timeout(1)
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
                 # client_socket.setblocking(False)
-                client_socket.timeout
+                # client_socket.timeout
                 client_socket.connect((self.server_host, self.server_port))
                 while True:
                     try:
                         if self.outgoing_msg_queue:
                             msg_dict = self.outgoing_msg_queue.pop(0)
-                            out_msg = {"from": self.client_name, "to": f"{msg_dict['to']}", "text": f"{msg_dict['text']}"}
-                            # time.sleep(1)
-                            client_socket.sendall(pickle.dumps(out_msg))
-                            # self.outgoing_msg_queue.remove(msg_dict)
+                            client_socket.sendall(pickle.dumps(msg_dict))
                     except BlockingIOError:
                         print("wait for blocking error 1")
                     try:
                         data = client_socket.recv(1024)
-                        self.incoming_msg_queue.append(pickle.loads(data))
                     except BlockingIOError:
                         print("wait for blocking error 2")
                     except TimeoutError:
-                        print(self.outgoing_msg_queue)
+                        print(f"incoming message {msg}")
                         print("data is not receiving")
                     else:
-                        # time.sleep(30)
+                        # time.sleep(3)
                         msg = pickle.loads(data)
+                        print(f"incoming message {msg}")
                         self.incoming_msg_queue.append(msg)
 
                         # msg["to"], msg["from"] = msg["from"], msg["to"]
@@ -69,9 +66,13 @@ class ConnSCClientMain(SocketMainClass):
         except ConnectionRefusedError as e:
             print("no connection")
             self.logger.critical(f"Socket Server is not responding {e}")
+        except BlockingIOError as e:
+            print(f"IOError - connection is busy: {e}")
+            self.logger.critical(f"Socket Server is not responding {e}")
+
 
     def send_dict_2client(self, to=None, msg_text=None):
-        print(f"add new message {self.outgoing_msg_queue}")
+        # print(f"add new message {self.outgoing_msg_queue}")
         # if not to and not msg_text:
         new_msg = {"from": self.client_name, "to": to, "text": msg_text}
         self.outgoing_msg_queue.append(new_msg)
@@ -93,14 +94,19 @@ if __name__ == '__main__':
     #
 
     connector = ConnSCClientMain()
-    t1 = Thread(target=connector.start_socket_client, args=[]).start()
-    # t1.run()
-    print("all started")
-    to = "server"
-    msg_text = "it's again me"
-    connector.send_dict_2client(to=to, msg_text=msg_text)
-    # t2 = Thread(target=connector.send_dict_2client, args=(to, msg_text)).start()
-    # t2.run()
-    for i in range(10):
-        msg_text = f"{i}: it's again me"
-        connector.send_dict_2client(to=to, msg_text=msg_text)
+    connector.start_socket_client()
+    # to = "telegram"
+    # msg_text = "it's main"
+    # for i in range(3):
+    #     time.sleep(4)
+    #     msg_text = f"{i}: it's again me"
+    #     connector.send_dict_2client(to=to, msg_text=msg_text)
+
+    # t1 = Thread(target=connector.start_socket_client, args=[]).start()
+    # # t1.run()
+    # print("all started")
+    #
+    # connector.send_dict_2client(to=to, msg_text=msg_text)
+    # # t2 = Thread(target=connector.send_dict_2client, args=(to, msg_text)).start()
+    # # t2.run()
+
