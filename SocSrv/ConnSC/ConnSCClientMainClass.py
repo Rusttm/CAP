@@ -13,18 +13,16 @@ class ConnSCClientMainClass(SocketMainClass):
     outgoing_msg_queue = []
     server_port = 1977
     server_host = 'localhost'
-    client_name = "main"
+    # client_name = "main"
 
-    def __init__(self, name=None, server_port=None, server_host=None):
+    def __init__(self, name=None):
         super().__init__()
-        if name:
-            self.client_name = name
-        if server_port:
-            self.server_port = server_port
-        if server_host:
-            self.server_host = server_host
-        else:
+        self.client_name = name
+        # if server_port:
+        #     self.server_port = server_port
+        if not self.server_host:
             self.server_host = socket.gethostbyname(socket.gethostname())
+        self.server_host = socket.gethostbyname(socket.gethostname())
         self.outgoing_msg_queue.append(
             {"from": self.client_name, "to": "server", "text": f"{self.client_name} client starts"})
         self.outgoing_msg_queue.append(

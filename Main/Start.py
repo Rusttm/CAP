@@ -1,7 +1,14 @@
 import sys
 import logging as log
 import Main.ContMain.ContCAPMS as ContCAPMS
+from Main.CAPMainClass import CAPMainClass
 
+
+class Main(CAPMainClass):
+    
+    def __init__(self):
+        super().__init__()
+     
 
 
 if __name__ == '__main__':

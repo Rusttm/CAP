@@ -1,8 +1,7 @@
 # from https://steelkiwi.com/blog/working-tcp-sockets/
 from SocSrv.SocketMainClass import SocketMainClass
 import pickle
-import select, socket, sys, queue
-import logging
+import select, socket, queue
 
 class ConnSCServer(SocketMainClass):
     """ starts socket server"""
@@ -71,7 +70,7 @@ class ConnSCServer(SocketMainClass):
                     # select only sockets for read
                     if _socket == self.server_socket:  # primary choose server ready to read
                         client_socket, addr = self.server_socket.accept()
-                        client_socket.setblocking(0)
+                        client_socket.setblocking(False)
                         inputs.append(client_socket)
                         self.message_queues[_socket] = queue.Queue
 
@@ -97,7 +96,7 @@ class ConnSCServer(SocketMainClass):
                                 # if forward message
                                 to_client = msg['to']
                                 try:
-                                    print(f"try to send {to_client}")
+                                    print(f"try to send '{to_client}'")
                                     client_socket = self.clients_name_dict[to_client]
                                     self.outgoing_msg_queue.append(msg)
                                     data = pickle.dumps(msg)
@@ -105,8 +104,8 @@ class ConnSCServer(SocketMainClass):
                                     if _socket not in outputs:
                                         outputs.append(client_socket)
                                 except KeyError as e:
-                                    print(f"client's {to_client} socket closed")
-                                    self.logger.error(f"client {to_client} not online skipping")
+                                    print(f"client's '{to_client}' socket closed")
+                                    self.logger.error(f"client '{to_client}' not online skipping")
                         else:
                             """ if msg empty delete clients from sockets_list and clients_dict"""
                             print("client send empty request")
