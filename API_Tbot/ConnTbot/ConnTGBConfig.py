@@ -15,11 +15,11 @@ class ConnTGBConfig(ConnTGBotMainClass):
     def __init__(self):
         super().__init__()
 
-    def get_config(self, token_conf_key='access_token'):
+    def get_config(self, key='access_token'):
         from API_Tbot.ConnTbot.ConnTGBConfigFile import ConnTGBConfigFile
         if self.method == "file":
             self.conf = ConnTGBConfigFile().get_config_data()
-        return {'token': self.conf[token_conf_key]}
+        return self.conf[key]
 
 
 if __name__ == '__main__':

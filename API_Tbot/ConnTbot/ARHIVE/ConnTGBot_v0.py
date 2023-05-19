@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# used https://docs.python-telegram-bot.org/en/stable/telegram.message.html#telegram.Message.text
+# from https://github.com/eternnoir/pyTelegramBotAPI/blob/master/examples/telebot_bot/telebot_bot.py
 from threading import Thread
 import telebot
 
@@ -33,7 +33,7 @@ class ConnTGBTest(ConnTGBotMainClass):
     def start_telegrambot(self) -> None:
         text_messages = {
             'welcome':
-                u'Please welcome {name}, your id:{id} !\n\n',
+                u'Please welcome {name}!\n\n',
 
             'info':
                 u'My name is TeleBot,\n',
@@ -44,40 +44,38 @@ class ConnTGBTest(ConnTGBotMainClass):
         }
         bot = telebot.TeleBot(self.__token)
 
-        # @bot.message_handler(func=lambda m: True, content_types=['new_chat_participant'])
-        # def on_user_joins(message):
-        #     # if not is_api_group(message.chat.id):
-        #     #     return
-        #
-        #     name = message.new_chat_participant.first_name
-        #     if hasattr(message.new_chat_participant,
-        #                'last_name') and message.new_chat_participant.last_name is not None:
-        #         name += u" {}".format(message.new_chat_participant.last_name)
-        #
-        #     if hasattr(message.new_chat_participant, 'username') and message.new_chat_participant.username is not None:
-        #         name += u" (@{})".format(message.new_chat_participant.username)
-        #
-        #     bot.reply_to(message, text_messages['welcome'].format(name=name))
+        @bot.message_handler(func=lambda m: True, content_types=['new_chat_participant'])
+        def on_user_joins(message):
+            # if not is_api_group(message.chat.id):
+            #     return
+
+            name = message.new_chat_participant.first_name
+            if hasattr(message.new_chat_participant,
+                       'last_name') and message.new_chat_participant.last_name is not None:
+                name += u" {}".format(message.new_chat_participant.last_name)
+
+            if hasattr(message.new_chat_participant, 'username') and message.new_chat_participant.username is not None:
+                name += u" (@{})".format(message.new_chat_participant.username)
+
+            bot.reply_to(message, text_messages['welcome'].format(name=name))
 
         @bot.message_handler(commands=['info', 'help'])
         def on_info(message):
             bot.reply_to(message, text_messages['info'])
             return
 
+        @bot.message_handler(commands=["ping"])
+        def on_ping(message):
+            bot.reply_to(message, "Still alive and kicking!")
+
         @bot.message_handler(commands=['start'])
         def on_start(message):
-            # echo
-            name = message.from_user.first_name
-            user_id = message.from_user.id
-            bot.send_message(chat_id=user_id,
-                             text=text_messages['welcome'].format(name=name, id=user_id),
-                             parse_mode="HTML")      # allows "MarkdownV2"
+            bot.reply_to(message, text_messages['wrong_chat'])
             return
 
         def listener(messages):
-            for message in messages:
-                self.logger.info(f"{__name__} receive message: {message.text} from {message.from_user.first_name}")
-                print(str(message))
+            for m in messages:
+                print(str(m))
 
         bot.set_update_listener(listener)
         bot.infinity_polling()
@@ -85,5 +83,5 @@ class ConnTGBTest(ConnTGBotMainClass):
 
 if __name__ == '__main__':
     ConnTGBTest()
-    print("bit is working")
-
+    print("TelegramBot start!!!")
+    print("TelegramBot run!!!")
