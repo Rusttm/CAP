@@ -1,4 +1,4 @@
-from API_Tbot.TGBotMainClass import TGBotMainClass
+from API_Tbot.ConnTbot.ConnTGBotMainClass import ConnTGBotMainClass
 
 
 import os
@@ -7,7 +7,7 @@ import re
 import configparser
 
 
-class ConnTGBConfig(TGBotMainClass):
+class ConnTGBConfig(ConnTGBotMainClass):
     """ configfile connector"""
     conf = None
     method = 'file'
@@ -16,9 +16,9 @@ class ConnTGBConfig(TGBotMainClass):
         super().__init__()
 
     def get_config(self, token_conf_key='access_token'):
-        from API_MS.ConnMS.ConnMSConfigFile import ConnMSConfigFile
+        from API_Tbot.ConnTbot.ConnTGBConfigFile import ConnTGBConfigFile
         if self.method == "file":
-            self.conf = ConnMSConfigFile().get_config_data()
+            self.conf = ConnTGBConfigFile().get_config_data()
         return {'token': self.conf[token_conf_key]}
 
 
