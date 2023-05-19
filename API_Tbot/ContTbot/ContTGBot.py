@@ -15,12 +15,17 @@ class ContTGBot(ContMainClass, ConnTGBot):
         for fin in self.users_ids.get('fin', []):
             self.bot.send_message(chat_id=fin, text=msg, parse_mode="HTML")
 
+    def send_spam_msg(self, msg=None):
+        for _, group_list in self.users_ids.items():
+            for user_id in group_list:
+                self.bot.send_message(chat_id=user_id, text=msg, parse_mode="HTML")
+
 
 
 if __name__ == '__main__':
     connector = ContTGBot()
     print("bot is working ...")
-    connector.send_finance_msg(msg=f"Hello my finance")
+    connector.send_spam_msg(msg=f"Hello my finance")
     # for i in range(4):
     #     connector.send_finance_msg(msg=f"{i}Hello my friend")
     #     time.sleep(3)
