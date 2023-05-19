@@ -15,13 +15,14 @@ class ConnTGBConfig(ConnTGBotMainClass):
     def __init__(self):
         super().__init__()
 
-    def get_config(self, key='access_token'):
+    def get_config(self):
         from API_Tbot.ConnTbot.ConnTGBConfigFile import ConnTGBConfigFile
         if self.method == "file":
             self.conf = ConnTGBConfigFile().get_config_data()
-        return self.conf[key]
+        return self.conf
 
 
 if __name__ == '__main__':
     connector = ConnTGBConfig()
-    print(connector.get_config())
+    print(connector.get_config()['TELEGRAMBOT'])
+

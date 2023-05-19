@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # used https://docs.python-telegram-bot.org/en/stable/telegram.message.html#telegram.Message.text
+import time
 from threading import Thread
 import telebot
 
@@ -7,21 +8,24 @@ from API_Tbot.ConnTbot.ConnTGBConfig import ConnTGBConfig
 from API_Tbot.ConnTbot.ConnTGBotMainClass import ConnTGBotMainClass
 
 
-class ConnTGBTest(ConnTGBotMainClass):
+class ConnTGBot(ConnTGBotMainClass):
     __token = None
     admin_id = None
-    app = None
-    msg_queue = []
-    users_dict = {}
+    users_dict = dict()
+    users_ids = dict()
+    employees_set = set()
+    # srv_msg_queue = []
+    # """messages from socket server"""
 
     def __init__(self):
         super().__init__()
+        self.bot = None
         try:
             config = ConnTGBConfig()
-            self.__token = config.get_config('token')
-            self.admin_id = config.get_config('my_chat_id')
-
-            print(f"this bot administrated by {self.admin_id}")
+            self.__token = config.get_config()['TELEGRAMBOT']['token']
+            self.convert_users_2ids(config=config)
+            self.admin_id = self.users_ids.get('admin', None)
+            print(f"TelegramBot administrated by {self.admin_id}")
         except Exception as e:
             self.logger.warning("Cant read configuration!", e)
         else:
@@ -29,6 +33,22 @@ class ConnTGBTest(ConnTGBotMainClass):
             Thread(target=self.start_telegrambot, args=[]).start()
             # self.start_telegrambot()
             self.logger.debug(f"{__class__.__name__} runs TBot thread")
+
+    def convert_users_2ids(self, config):
+        groups = config.get_config()['GROUPS']
+        users = config.get_config()['USERS']
+        for group in groups:
+            temp_list_name = []
+            temp_list_id = []
+            for name in groups.get(group).split(','):
+                user_id = users.get(name)
+                if name and user_id:
+                    temp_list_name.append(name)
+                    temp_list_id.append(user_id)
+                    self.employees_set.add(user_id)
+            self.users_dict[group] = temp_list_name
+            self.users_ids[group] = temp_list_id
+        return True
 
     def start_telegrambot(self) -> None:
         text_messages = {
@@ -38,12 +58,11 @@ class ConnTGBTest(ConnTGBotMainClass):
             'info':
                 u'My name is TeleBot,\n',
 
-            'wrong_chat':
-                u'Hi there!\nThis bot can only be used in the Serman Ltd. group chat.\n'
-                u'Join us!\n'
+            'reject':
+                u'Hi {name} your id:{id}!\nThis bot can only be used for Serman Ltd. employees.\n'
+                u'Please request permission to administrator {admin} \n'
         }
-        bot = telebot.TeleBot(self.__token)
-
+        self.bot = telebot.TeleBot(self.__token)
         # @bot.message_handler(func=lambda m: True, content_types=['new_chat_participant'])
         # def on_user_joins(message):
         #     # if not is_api_group(message.chat.id):
@@ -59,31 +78,43 @@ class ConnTGBTest(ConnTGBotMainClass):
         #
         #     bot.reply_to(message, text_messages['welcome'].format(name=name))
 
-        @bot.message_handler(commands=['info', 'help'])
+        @self.bot.message_handler(commands=['info', 'help'])
         def on_info(message):
-            bot.reply_to(message, text_messages['info'])
+            self.bot.reply_to(message, text_messages['info'])
             return
 
-        @bot.message_handler(commands=['start'])
+        @self.bot.message_handler(commands=['start'])
         def on_start(message):
             # echo
             name = message.from_user.first_name
             user_id = message.from_user.id
-            bot.send_message(chat_id=user_id,
+            self.bot.send_message(chat_id=user_id,
                              text=text_messages['welcome'].format(name=name, id=user_id),
                              parse_mode="HTML")      # allows "MarkdownV2"
             return
 
         def listener(messages):
+            """ check only employees"""
             for message in messages:
-                self.logger.info(f"{__name__} receive message: {message.text} from {message.from_user.first_name}")
-                print(str(message))
+                user_name = message.from_user.first_name
+                user_id = message.from_user.id
+                self.logger.info(f"{__name__} receive message: {message.text} from {user_name}")
+                if str(user_id) in self.employees_set:
+                    self.bot.reply_to(message, text_messages['welcome'].format(name=user_name, id=user_id))
+                else:
+                    self.bot.reply_to(message,
+                                      text_messages['reject'].format(name=user_name, id=user_id, admin=self.admin_id))
+                    self.logger.warning(f"unknown user {user_id} send msg to chat")
 
-        bot.set_update_listener(listener)
-        bot.infinity_polling()
+        self.bot.set_update_listener(listener)
+        self.bot.infinity_polling()
+        self.logger.debug(f"TelegramBot is polling")
 
 
 if __name__ == '__main__':
-    ConnTGBTest()
-    print("bit is working")
+    connector = ConnTGBot()
+    print("bot is working ...")
+    # connector.bot.send_message(connector.admin_id, text="hello from MainClass")
+
+
 

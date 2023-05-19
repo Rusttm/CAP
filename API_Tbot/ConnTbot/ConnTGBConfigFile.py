@@ -19,7 +19,7 @@ class ConnTGBConfigFile(ConnTGBConfig):
             CONF_FILE_PATH = os.path.join(file, self.dir_name, self.file_name)
             conf.read(CONF_FILE_PATH)
             self.logger.debug(f"{pathlib.PurePath(__file__).name} got info from configfile")
-            return conf[sector]
+            return conf
         except Exception as e:
             self.logger.error(f"{__class__.__name__} can't read msconfig file", e)
             # print(e)
