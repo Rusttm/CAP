@@ -16,6 +16,11 @@ class ConnSCServer(SocketMainClass):
     """ dictionary {_socket: msg.data, client_socket:  msg.data}"""
     incoming_msg_queue = []
     outgoing_msg_queue = []
+    """ dictionary {"from": "user_name", "to":"telegram", 'text':'message text',"""
+    incoming_msg_list = []
+    """ all income messages list"""
+    outgoing_msg_list = []
+    """ all outgunned messages list"""
     outputs_sockets = []
     inputs_sockets = []
     clients_name_dict = dict()
@@ -55,7 +60,30 @@ class ConnSCServer(SocketMainClass):
             self.logger.error(f"{__class__.__name__} server error: {e}")
             return False
 
-    def msg_handler(self, _socket):
+    def outgoing_msg_handler(self, _socket):
+        # handling outgoing messages
+        try:
+            next_msg = self.message_queues[_socket]
+        except queue.Empty:
+            # if msg is empty - remove from select outgoing sockets list
+            self.outputs_sockets.remove(_socket)
+        else:
+            _socket.send(next_msg)
+            msg = pickle.loads(next_msg)
+            # print(f"message from {msg['from']} to {msg['to']} was send by server ")
+            self.logger.info(f"{__class__.__name__} send msg: {msg}")
+            # after sending remove socket from select outgoing sockets
+            self.outputs_sockets.remove(_socket)
+            try:
+                self.outgoing_msg_queue.remove(msg)
+                # append to msgs queue list
+                self.incoming_msg_queue.remove(msg)
+            except Exception as e:
+                self.logger.warning(f"{__class__.__name__} cant find msg: {msg} in queues")
+
+    # def outgoing_msg_handler
+
+    def incoming_msg_handler(self, _socket):
         # get new message
         data = _socket.recv(1024)
         if data:
@@ -63,15 +91,14 @@ class ConnSCServer(SocketMainClass):
             msg = pickle.loads(data)
             # print(f"incoming msg: {msg}")
             self.logger.info(f"{__class__.__name__} receive msg: {msg}")
-            # append to msgs queue list
-            self.incoming_msg_queue.append(msg)
+            self.incoming_msg_list.append(msg)
             # make dictionary client:socket like {"server":_socket}
             self.clients_name_dict[msg['from']] = _socket
             # handling initial msg with request to server
             if msg["to"] == "server":
                 # if msg for server and registering msgs
                 msg["to"], msg["from"] = msg["from"], msg["to"]
-                msg['text'] = "request received"
+                msg['text'] = f"request received: {msg['text']}"
                 data = pickle.dumps(msg)
                 # make reply to client in queue socket:msg
                 self.message_queues[_socket] = data
@@ -79,6 +106,8 @@ class ConnSCServer(SocketMainClass):
                 if _socket not in self.outputs_sockets:
                     self.outputs_sockets.append(_socket)
             else:
+                # append to msgs queue list
+                self.incoming_msg_queue.append(msg)
                 # if forwarding message
                 to_client = msg['to']
                 try:
@@ -87,6 +116,7 @@ class ConnSCServer(SocketMainClass):
                     client_socket = self.clients_name_dict[to_client]
                     # append this msg to queue for outgoing msgs
                     self.outgoing_msg_queue.append(msg)
+                    self.outgoing_msg_list.append(msg)
                     data = pickle.dumps(msg)
                     # put data in dictionary socket:data
                     self.message_queues[client_socket] = data
@@ -128,9 +158,12 @@ class ConnSCServer(SocketMainClass):
             self.logger.debug(f"{__class__.__name__} server fetching clients in select")
             while 1:
                 # receive lists of sockets ready for read/write/error
-                client_for_read, client_for_send, client_for_except = select.select(self.inputs_sockets, self.outputs_sockets, self.inputs_sockets)
-                """ client_for_read - clients sockets that already receive msg and ready to read it"""
-                for _socket in client_for_read:
+                sockets_readable, sockets_sendable, sockets_for_except = select.select(self.inputs_sockets, self.outputs_sockets, self.inputs_sockets)
+                """ 
+                sockets_readable - sockets that already have a msg and waiting you to get it
+                sockets_sendable - sockets that ready to receive msg and waiting you to send it
+                """
+                for _socket in sockets_readable:
                     # select only sockets for read
                     if _socket == self.server_socket:  # primary choose server ready to read
                         client_socket, addr = self.server_socket.accept()
@@ -139,24 +172,12 @@ class ConnSCServer(SocketMainClass):
                         # make empty message from server???
                         self.message_queues[_socket] = queue.Queue
                     else:  # looks new clients (not server) ready to read
-                        self.msg_handler(_socket)
+                        self.incoming_msg_handler(_socket)
 
-                for _socket in client_for_send:
-                    # handling outgoing messages
-                    try:
-                        next_msg = self.message_queues[_socket]
-                    except queue.Empty:
-                        # if msg empty - remove from select outgoing sockets list
-                        self.outputs_sockets.remove(_socket)
-                    else:
-                        _socket.send(next_msg)
-                        msg = pickle.loads(next_msg)
-                        # print(f"message from {msg['from']} to {msg['to']} was send by server ")
-                        self.logger.info(f"{__class__.__name__} send msg: {msg}")
-                        # after sending remove socket from select outgoing sockets
-                        self.outputs_sockets.remove(_socket)
+                for _socket in sockets_sendable:
+                    self.outgoing_msg_handler(_socket)
 
-                for _socket in client_for_except:
+                for _socket in sockets_for_except:
                     """ remove sockets with errors from sockets_list and clients_dict """
                     self.inputs_sockets.remove(_socket)
                     if _socket in self.outputs_sockets:
@@ -175,6 +196,4 @@ class ConnSCServer(SocketMainClass):
 if __name__ == '__main__':
     connector = ConnSCServer()
     print("Server runs!")
-    # my_dictionary = dict({"module": "telegram", "data": {"from": "57685837", "text": "hello telegram"}})
-    # print(connector.send_2client_dict(my_dictionary))
-    # connector.listen_4receive_dict()
+

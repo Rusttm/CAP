@@ -11,9 +11,12 @@ from API_Tbot.ConnTbot.ConnTGBotMainClass import ConnTGBotMainClass
 class ConnTGBot(ConnTGBotMainClass):
     __token = None
     admin_id = None
-    users_dict = dict()
-    users_ids = dict()
+    users_group_name_dict = dict() # {'fin':['alex', 'mans']}
+    users_group_ids_dict = dict()   # {'fin':['365758', '9595873']}
+    users_id_name_dict = dict() # {'75768996': 'alex'}
     employees_set = set()
+    outgoing_msgs_list = []
+    incoming_msg_list = []
     # srv_msg_queue = []
     # """messages from socket server"""
 
@@ -24,7 +27,7 @@ class ConnTGBot(ConnTGBotMainClass):
             config = ConnTGBConfig()
             self.__token = config.get_config()['TELEGRAMBOT']['token']
             self.convert_users_2ids(config=config)
-            self.admin_id = self.users_ids.get('admin', None)
+            self.admin_id = self.users_group_ids_dict.get('admin', None)
             print(f"TelegramBot administrated by {self.admin_id}")
         except Exception as e:
             self.logger.warning("Cant read configuration!", e)
@@ -42,12 +45,13 @@ class ConnTGBot(ConnTGBotMainClass):
             temp_list_id = []
             for name in groups.get(group).split(','):
                 user_id = users.get(name)
+                self.users_id_name_dict[user_id] = name
                 if name and user_id:
                     temp_list_name.append(name)
                     temp_list_id.append(user_id)
                     self.employees_set.add(user_id)
-            self.users_dict[group] = temp_list_name
-            self.users_ids[group] = temp_list_id
+            self.users_group_name_dict[group] = temp_list_name
+            self.users_group_ids_dict[group] = temp_list_id
         return True
 
     def start_telegrambot(self) -> None:
@@ -98,7 +102,9 @@ class ConnTGBot(ConnTGBotMainClass):
             for message in messages:
                 user_name = message.from_user.first_name
                 user_id = message.from_user.id
-                self.logger.info(f"{__name__} receive message: {message.text} from {user_name}")
+                msg_text = message.text
+                self.incoming_msg_list.append(dict({"from": user_name, "id": user_id, "text": msg_text}))
+                self.logger.info(f"{__name__} receive message: {msg_text} from {user_name}")
                 if str(user_id) in self.employees_set:
                     self.bot.reply_to(message, text_messages['welcome'].format(name=user_name, id=user_id))
                 else:

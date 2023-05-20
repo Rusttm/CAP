@@ -9,7 +9,8 @@ import pickle
 class ConnSCClientMainClass(SocketMainClass):
     """ main class for socket clients
     for new child class please rename 'client_name' """
-    incoming_msg_queue = []
+    incoming_msg_list = [] # list for all incoming msg
+    outgoing_msg_list = [] # list for all outgoing msg
     outgoing_msg_queue = []
     server_port = 1977
     server_host = 'localhost'
@@ -23,10 +24,10 @@ class ConnSCClientMainClass(SocketMainClass):
         if not self.server_host:
             self.server_host = socket.gethostbyname(socket.gethostname())
         self.server_host = socket.gethostbyname(socket.gethostname())
-        self.outgoing_msg_queue.append(
-            {"from": self.client_name, "to": "server", "text": f"{self.client_name} client starts"})
-        self.outgoing_msg_queue.append(
-            {"from": self.client_name, "to": self.client_name, "text": f"{self.client_name} self replying"})
+        server_start_msg = {"from": self.client_name, "to": "server", "text": f"{self.client_name} client starts"}
+        self.outgoing_msg_queue.append(server_start_msg)
+        itself_start_msg =  {"from": self.client_name, "to": self.client_name, "text": f"{self.client_name} self replying"}
+        self.outgoing_msg_queue.append(itself_start_msg)
         Thread(target=self.__start_socket_client, args=[]).start()
 
     def set_client_name(self, name=None):
@@ -46,6 +47,7 @@ class ConnSCClientMainClass(SocketMainClass):
                         if self.outgoing_msg_queue:
                             msg_dict = self.outgoing_msg_queue.pop(0)
                             client_socket.sendall(pickle.dumps(msg_dict))
+                            self.outgoing_msg_list.append(msg_dict)
                             self.logger.info(f"{self.client_name} send msg: {msg_dict}")
                     except BlockingIOError as e:
                         self.logger.error(f"{self.client_name} blocking error in sendall: {e}")
@@ -59,7 +61,7 @@ class ConnSCClientMainClass(SocketMainClass):
                         # time.sleep(3)
                         msg = pickle.loads(data)
                         self.logger.info(f"{self.client_name} receive msg: {msg}")
-                        self.incoming_msg_queue.append(msg)
+                        self.incoming_msg_list.append(msg)
         except KeyboardInterrupt:
             self.logger.info("Socket Server was interrupted by admin")
         except ConnectionRefusedError as e:
@@ -78,11 +80,16 @@ class ConnSCClientMainClass(SocketMainClass):
             self.logger.error(f"{self.client_name} new message not specified 'to' receiver: {to}")
 
     def get_all_incoming_msgs(self):
-        all_messages_list= self.incoming_msg_queue
-        self.incoming_msg_queue = []
+        all_messages_list= self.incoming_msg_list
+        self.incoming_msg_list = []
         self.logger.info(f"{self.client_name} erase all incoming messages")
         return all_messages_list
 
+    def get_all_outgoing_msgs(self):
+        all_messages_list= self.outgoing_msg_list
+        self.outgoing_msg_list = []
+        self.logger.info(f"{self.client_name} erase all outgoing messages")
+        return all_messages_list
 
 if __name__ == '__main__':
     client_name = "main"
