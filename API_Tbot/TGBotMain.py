@@ -7,6 +7,6 @@ class TGBotMain(ContTGBot):
 
 
 if __name__ == '__main__':
-    connector = TGBotMain()
+    controller = TGBotMain()
     print("bot is working ...")
-    connector.send_spam_msg(msg=f"Hello, everybody, iam spam")
+    controller.send_spam_msg(msg=f"Hello, everybody, iam spam")
