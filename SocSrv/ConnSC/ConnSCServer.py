@@ -35,6 +35,7 @@ class ConnSCServer(SocketMainClass):
         self.server_socket = None
         self.start_socket_server()
         Thread(target=self.listen_4receive_dict, args=[]).start()
+        # Thread(target=self.listen_4receive_dict, args=[]).run()
         self.logger.debug(f"{__class__.__name__} server is listening port {self.server_port}")
 
     def start_socket_server(self):
