@@ -6,6 +6,7 @@ from SocSrv.ContSC.ContSCClientAdmin import ContSCClientAdmin
 from SocSrv.ContSC.ContSCClientTg import ContSCClientTg
 
 class SocSrvMain(SocketMainClass):
+    """ main class for Socket Service Server and Admin Client"""
     
     def __init__(self):
         super().__init__()
@@ -21,7 +22,7 @@ class SocSrvMain(SocketMainClass):
 if __name__ == '__main__':
     socket_service = SocSrvMain()
     socket_service.main()
-    for i in range(3):
+    for i in range(10):
         time.sleep(5)
         print(f"incoming messages on server {socket_service.server.get_socserver_incomings()}")
         print(f"outgoing messages on server {socket_service.server.get_socserver_outgoins()}")
