@@ -1,7 +1,7 @@
-from SocSrv.ConnSC.ConnSCServer import ConnSCServer
+from SocSrv.SocketMainClass import SocketMainClass
 
 
-class ContSCMainClass(ConnSCServer):
+class ContSCMainClass(SocketMainClass):
 
     def __init__(self):
         super().__init__()

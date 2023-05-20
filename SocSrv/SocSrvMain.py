@@ -28,3 +28,4 @@ if __name__ == '__main__':
         print(f"outgoing messages on server {socket_service.server.get_socserver_outgoins()}")
         print(f"incoming messages on admin {socket_service.admin_client.get_all_incoming_msgs()}")
         print(f"outgoing messages on admin {socket_service.admin_client.get_all_outgoing_msgs()}")
+        socket_service.admin_client.send_socket_msg(to_user="telegram", msg_text="Hi telegram from admin")
