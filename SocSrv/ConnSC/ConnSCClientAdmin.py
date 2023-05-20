@@ -14,7 +14,7 @@ if __name__ == '__main__':
     name = "admin"
     to = "server"
     msg_text = "Hi, server! This message from admin. "
-    connector.send_dict_2client(to=to, msg_text=msg_text)
+    connector.send_dict_2client(to_user=to, msg_text=msg_text)
     print(f"{name} client successfully started")
     time.sleep(3)
     print(f"{name} full received messages list: {connector.get_all_incoming_msgs()}")

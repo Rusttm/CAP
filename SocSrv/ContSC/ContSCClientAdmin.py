@@ -11,7 +11,7 @@ class ContSCClientAdmin(ConnSCClientAdmin, ContSCMainClass):
     def send_socket_msg(self, to_user=None, msg_text=None):
         if to_user and msg_text:
             try:
-                self.send_dict_2client(to=to_user, msg_text=msg_text)
+                self.send_dict_2client(to_user=to_user, msg_text=msg_text)
                 return True
             except Exception as e:
                 self.logger.warning(f"{__name__} cant send msg to {to_user} error: {e}")

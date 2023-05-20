@@ -16,7 +16,7 @@ if __name__ == '__main__':
     name = "telegram"
     to = "server"
     msg_text = f"Hi, server! This message from {name}. "
-    controller.send_dict_2client(to=to, msg_text=msg_text)
+    controller.send_dict_2client(to_user=to, msg_text=msg_text)
     print(f"{name} client successfully started")
     for i in range(10):
         time.sleep(3)

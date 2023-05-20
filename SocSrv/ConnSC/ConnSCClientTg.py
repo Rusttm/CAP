@@ -14,7 +14,7 @@ if __name__ == '__main__':
     connector = ConnSCClientTg(name="telegram")
     to = "main"
     msg_text = "Hi, main! This message from telegrambot. "
-    connector.send_dict_2client(to=to, msg_text=msg_text)
+    connector.send_dict_2client(to_user=to, msg_text=msg_text)
     print("client successfully started")
     for i in range(10):
         time.sleep(3)
