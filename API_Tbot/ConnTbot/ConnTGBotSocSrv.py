@@ -1,8 +1,8 @@
 import time
 
-from SocSrv.ConnSC.ConnSCClientMainClass import ConnSCClientMainClass
+from API_Tbot.ConnTbot.ConnTGBotSocSrvMainClass import ConnTGBotSocSrvMainClass
 
-class ConnSCClientTg(ConnSCClientMainClass):
+class ConnTGBotSocSrv(ConnTGBotSocSrvMainClass):
     """ socket client for telegram bot"""
 
     def __init__(self, name="telegram"):
@@ -10,7 +10,7 @@ class ConnSCClientTg(ConnSCClientMainClass):
 
 
 if __name__ == '__main__':
-    connector = ConnSCClientTg(name="telegram")
+    connector = ConnTGBotSocSrv(name="telegram")
     to = "main"
     msg_text = "Hi, main! This message from telegrambot. "
     connector.send_dict_2client(to=to, msg_text=msg_text)
