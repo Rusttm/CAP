@@ -10,6 +10,7 @@ class SocSrvMain(SocketMainClass):
     
     def __init__(self):
         super().__init__()
+        self.main()
 
 
     def main(self):
@@ -21,7 +22,7 @@ class SocSrvMain(SocketMainClass):
 
 if __name__ == '__main__':
     socket_service = SocSrvMain()
-    socket_service.main()
+    # socket_service.main()
     for i in range(10):
         time.sleep(6)
         print(f"incoming messages on server {socket_service.server.get_socserver_incomings()}")

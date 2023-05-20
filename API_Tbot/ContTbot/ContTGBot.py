@@ -3,6 +3,7 @@ import time
 from API_Tbot.ContTbot.ContMainClass import ContMainClass
 from API_Tbot.ConnTbot.ConnTGBot import ConnTGBot
 
+
 class ContTGBot(ContMainClass, ConnTGBot):
     """ Controller """
 
@@ -11,7 +12,12 @@ class ContTGBot(ContMainClass, ConnTGBot):
 
     def send_service_msg(self, msg=None):
         for admin in self.users_group_ids_dict.get('admin', []):
-            self.bot.send_message(chat_id=admin, text=msg, parse_mode="HTML")
+            try:
+                text_html = f"from:<strong>{msg['from']}</strong>\n new message: <b>{msg['text']}</b>"
+                msg = text_html
+            except Exception as e:
+                self.logger.warning(f" tgbot cant format dict {msg} to text ")
+            self.bot.send_message(chat_id=admin, text=msg, parse_mode="HTML")  # allowed "MarkdownV2"
 
     def send_finance_msg(self, msg=None):
         for fin in self.users_group_ids_dict.get('fin', []):

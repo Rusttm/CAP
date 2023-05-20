@@ -57,7 +57,7 @@ class ConnTGBot(ConnTGBotMainClass):
     def start_telegrambot(self) -> None:
         text_messages = {
             'welcome':
-                u'Please welcome {name}, your id:{id} !\n\n',
+                u'Hi, {name}, your id:{id} !\n\n',
 
             'info':
                 u'My name is TeleBot,\n',
@@ -94,7 +94,7 @@ class ConnTGBot(ConnTGBotMainClass):
             user_id = message.from_user.id
             self.bot.send_message(chat_id=user_id,
                              text=text_messages['welcome'].format(name=name, id=user_id),
-                             parse_mode="HTML")      # allows "MarkdownV2"
+                             parse_mode="HTML")      # allows "MarkdownV2" or "HTML"
             return
 
         def listener(messages):
