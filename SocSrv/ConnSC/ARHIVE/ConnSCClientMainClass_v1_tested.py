@@ -37,23 +37,24 @@ class ConnSCClientMainClass(SocketMainClass):
 
     def start_socket_client(self):
         try:
-            socket.setdefaulttimeout(10)
+            # socket.setdefaulttimeout(10)
             # socket.timeout(3)
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
                 # client_socket.setblocking(False)
-                client_socket.timeout
+                # client_socket.timeout
                 client_socket.connect((self.server_host, self.server_port))
                 while True:
-                    # print(f"queue length: {len(self.outgoing_msg_queue)}")
+                    print(f"queue length: {len(self.outgoing_msg_queue)}")
                     # time.sleep(1)
                     try:
                         if self.outgoing_msg_queue:
-                            msg_dict = self.outgoing_msg_queue.pop(0)
-                            client_socket.sendall(pickle.dumps(msg_dict))
-                            # self.outgoing_msg_queue.remove(msg_dict)
-                            self.outgoing_msg_list.append(msg_dict)
-                            self.logger.info(f"{self.client_name} send msg: {msg_dict}")
-                            # print(f"{self.client_name} send to {msg_dict['to']} msg: {msg_dict}")
+                            for msg_dict in self.outgoing_msg_queue:
+                                time.sleep(4)
+                                client_socket.sendall(pickle.dumps(msg_dict))
+                                self.outgoing_msg_queue.remove(msg_dict)
+                                self.outgoing_msg_list.append(msg_dict)
+                                self.logger.info(f"{self.client_name} send msg: {msg_dict}")
+                                # print(f"{self.client_name} send to {msg_dict['to']} msg: {msg_dict}")
                     except BlockingIOError as e:
                         self.logger.error(f"{self.client_name} blocking error in sendall: {e}")
                     try:
@@ -71,7 +72,7 @@ class ConnSCClientMainClass(SocketMainClass):
                         # time.sleep(3)
                         msg_dict = pickle.loads(data)
                         self.logger.info(f"{self.client_name} receive msg: {msg_dict}")
-                        # print(f"{self.client_name} receive from {msg_dict['from']} msg: {msg_dict}")
+                        print(f"{self.client_name} receive from {msg_dict['from']} msg: {msg_dict}")
                         self.incoming_msg_list.append(msg_dict)
         except KeyboardInterrupt:
             self.logger.info("Socket Server was interrupted by admin")
@@ -114,7 +115,7 @@ if __name__ == '__main__':
     to_user = "server"
     print(f"client {client_name} successfully started")
     for i in range(10):
-        time.sleep(1)
+        time.sleep(3)
         msg_text = f"msg No {i} it's again me {client_name}"
         send = connector.send_dict_2client(to_user=to_user, msg_text=msg_text)
         # if send:
