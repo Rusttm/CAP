@@ -100,13 +100,13 @@ class ConnTGBotSocSrvMainClass(TGBotMainClass):
     def get_all_incoming_msgs(self):
         all_messages_list= self.incoming_msg_list
         self.incoming_msg_list = []
-        self.logger.info(f"{self.client_name} erase all incoming messages")
+        # self.logger.debug(f"{self.client_name} erase all incoming messages")
         return all_messages_list
 
     def get_all_outgoing_msgs(self):
         all_messages_list= self.outgoing_msg_list
         self.outgoing_msg_list = []
-        self.logger.info(f"{self.client_name} erase all outgoing messages")
+        # self.logger.debug(f"{self.client_name} erase all outgoing messages")
         return all_messages_list
 
 if __name__ == '__main__':
