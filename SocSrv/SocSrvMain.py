@@ -1,9 +1,8 @@
 import time
-
 from SocSrv.SocketMainClass import SocketMainClass
 from SocSrv.ContSC.ContSCServer import ContSCServer
 from SocSrv.ContSC.ContSCClientAdmin import ContSCClientAdmin
-from SocSrv.ContSC.ContSCClientTg import ContSCClientTg
+
 
 class SocSrvMain(SocketMainClass):
     """ main class for Socket Service Server and Admin Client"""
