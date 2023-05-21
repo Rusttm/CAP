@@ -11,6 +11,7 @@ class ConnPgsqlJson(ConnPgsqlMainClass):
         super().__init__()
 
     def get_fields_from_json(self, file_name=None):
+        """ takes data from json files in dir ../data"""
         try:
             up_up_dir = os.path.dirname(os.path.dirname(__file__))
             json_file = os.path.join(up_up_dir, self.dir_name, file_name)
@@ -22,15 +23,19 @@ class ConnPgsqlJson(ConnPgsqlMainClass):
             return False
 
     def get_json_files_list(self):
+        """ gets files .json in ../data"""
         up_up_dir = os.path.dirname(os.path.dirname(__file__))
         files_list = os.listdir(os.path.join(up_up_dir, self.dir_name))
         json_files_list = [file for file in files_list if file.endswith(".json")]
         return json_files_list
 
     def get_all_dicts_in_dir(self):
+        """ """
         json_files_list = self.get_json_files_list()
+        result = list()
         for file in json_files_list:
-            print(self.get_fields_from_json(file_name=file))
+            result.append(self.get_fields_from_json(file_name=file))
+        return result
 
 if __name__ == '__main__':
     connector = ConnPgsqlJson()
