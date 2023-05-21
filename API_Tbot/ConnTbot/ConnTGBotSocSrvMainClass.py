@@ -64,13 +64,16 @@ class ConnTGBotSocSrvMainClass(TGBotMainClass):
                             data += request
                             if len(request) < self.buffer:
                                 break
+                        msg_dict = pickle.loads(data)
                     except BlockingIOError as e:
                         self.logger.error(f"{self.client_name} blocking error in receive: {e}")
                     except TimeoutError as e:
                         self.logger.error(f"{self.client_name} timeout error in receive: {e}")
+                    except EOFError as e:
+                        self.logger.error(f"{self.client_name} data convert error in received msg: {e}")
                     else:
                         # time.sleep(3)
-                        msg_dict = pickle.loads(data)
+
                         self.logger.info(f"{self.client_name} receive msg: {msg_dict}")
                         # print(f"{self.client_name} receive from {msg_dict['from']} msg: {msg_dict}")
                         self.incoming_msg_list.append(msg_dict)
