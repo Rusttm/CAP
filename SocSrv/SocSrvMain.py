@@ -15,8 +15,12 @@ class SocSrvMain(SocketMainClass):
 
     def main(self):
         self.server = ContSCServer()
+        print("Socket Server starts")
+        self.logger.debug(f"{__class__.__name__} starts 'server' socket service")
         time.sleep(3)
         self.admin_client = ContSCClientAdmin()
+        print("Admin socket client starts")
+        self.logger.debug(f"{__class__.__name__} starts 'admin' socket service")
 
 
 

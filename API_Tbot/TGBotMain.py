@@ -1,3 +1,5 @@
+import time
+
 from API_Tbot.ContTbot.ContTGBot import ContTGBot
 from threading import Thread
 
@@ -6,11 +8,14 @@ class TGBotMain(ContTGBot):
     def __init__(self):
         super().__init__()
         Thread(target=self.start_tg_socket_service, args=[]).start()
+        print("Telegram socket client starts")
 
     def start_tg_socket_service(self):
         from API_Tbot.ContTbot.ContTGBotSocSrvClient import ContTGBotSocSrvClient
         self.socket_controller = ContTGBotSocSrvClient()
+        self.logger.debug(f"{__class__.__name__} starts 'telegram' socket service")
         while True:
+            time.sleep(2)
             try:
                 new_msg_list = self.socket_controller.get_all_incoming_msgs()
             except Exception as e:

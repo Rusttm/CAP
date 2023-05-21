@@ -31,7 +31,7 @@ if __name__ == '__main__':
     main_class = Main()
     main_class.main()
     for i in range(10):
-        time.sleep(3)
+        # time.sleep(3)
         main_class.socket_service.admin_client.send_socket_msg(to_user="telegram", msg_text=f"Hi telegram {i} msg from admin")
 
     # msapi1 = ContCAPMS.ContCAPMS()
