@@ -1,7 +1,7 @@
-from Main.CAPMainClass import CAPMainClass
+from Pgsql.PgsqlMainClass import PgsqlMainClass
 
 
-class ContPgsqlMainClass(CAPMainClass):
+class ContPgsqlMainClass(PgsqlMainClass):
     """ Controller """
     def __init__(self):
         super().__init__()

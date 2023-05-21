@@ -1,8 +1,8 @@
-from Main.CAPMainClass import CAPMainClass
+from Pgsql.PgsqlMainClass import PgsqlMainClass
 import psycopg2
 
 
-class ConnPgsqlMainClass(CAPMainClass):
+class ConnPgsqlMainClass(PgsqlMainClass):
     """initialise connection to pgsql database
         keys from config file"""
     pgsql_conn = None
