@@ -68,7 +68,8 @@ class ConnTGBotSocSrvMainClass(TGBotMainClass):
                     except BlockingIOError as e:
                         self.logger.error(f"{self.client_name} blocking error in receive: {e}")
                     except TimeoutError as e:
-                        self.logger.error(f"{self.client_name} timeout error in receive: {e}")
+                        # self.logger.error(f"{self.client_name} timeout error in receive: {e}")
+                        pass
                     except EOFError as e:
                         self.logger.error(f"{self.client_name} data convert error in received msg: {e}")
                     else:

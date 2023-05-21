@@ -2,7 +2,7 @@ from Main.CAPMainClass import CAPMainClass
 import psycopg2
 
 
-class ConnPsqlMainClass(CAPMainClass):
+class ConnPgsqlMainClass(CAPMainClass):
     """initialise connection to pgsql database
         keys from config file"""
     pgsql_conn = None
@@ -84,7 +84,7 @@ class ConnPsqlMainClass(CAPMainClass):
 
 
 if __name__ == '__main__':
-    connector = ConnPsqlMainClass()
+    connector = ConnPgsqlMainClass()
     ans = connector.send_get_request("SELECT version()")
     # ans = connector.send_set_request("CREATE TABLE testtable (i integer);")
     print(ans)

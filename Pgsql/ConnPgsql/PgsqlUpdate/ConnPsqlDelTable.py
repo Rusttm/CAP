@@ -1,7 +1,7 @@
-from Pgsql.ConnPgsql.ConnPsqlMainClass import ConnPsqlMainClass
+from Pgsql.ConnPgsql.ConnPgsqlMainClass import ConnPgsqlMainClass
 
 
-class ConnPsqlDelTable(ConnPsqlMainClass):
+class ConnPsqlDelTable(ConnPgsqlMainClass):
     """connector for delete table"""
 
     def __init__(self):

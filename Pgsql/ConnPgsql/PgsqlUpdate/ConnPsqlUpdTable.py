@@ -1,7 +1,7 @@
-from Pgsql.ConnPgsql.ConnPsqlMainClass import ConnPsqlMainClass
+from Pgsql.ConnPgsql.ConnPgsqlMainClass import ConnPgsqlMainClass
 
 
-class ConnPsqlUpdTable(ConnPsqlMainClass):
+class ConnPsqlUpdTable(ConnPgsqlMainClass):
     """connector for saving data to table"""
 
     def __init__(self):

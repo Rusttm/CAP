@@ -1,4 +1,4 @@
-from Pgsql.ConnPgsql.ConnPsqlMainClass import ConnPsqlMainClass
+from Pgsql.ConnPgsql.ConnPgsqlMainClass import ConnPsqlMainClass
 
 
 class ConnPsqlReadDataTables(ConnPsqlMainClass):

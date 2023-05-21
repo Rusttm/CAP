@@ -1,7 +1,7 @@
-from Pgsql.ConnPgsql.ConnPsqlMainClass import ConnPsqlMainClass
+from Pgsql.ConnPgsql.ConnPgsqlMainClass import ConnPgsqlMainClass
 
 
-class ConnPsqlCreateTable(ConnPsqlMainClass):
+class ConnPsqlCreateTable(ConnPgsqlMainClass):
     """returns tables list"""
     pgsql_conn = None
     # cursor = None

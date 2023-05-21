@@ -1,5 +1,5 @@
 # from Main.CAPMainClass import CAPMainClass
-from Pgsql.ConnPgsql.ConnPsqlMainClass import ConnPsqlMainClass
+from Pgsql.ConnPgsql.ConnPgsqlMainClass import ConnPgsqlMainClass
 
 # import os
 # import re
@@ -7,7 +7,7 @@ from Pgsql.ConnPgsql.ConnPsqlMainClass import ConnPsqlMainClass
 # import configparser
 
 
-class ConnPgsqlConfig(ConnPsqlMainClass):
+class ConnPgsqlConfig(ConnPgsqlMainClass):
     """ configfile connector"""
     conf = None
     method = 'file'
