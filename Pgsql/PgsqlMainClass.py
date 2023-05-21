@@ -1,8 +1,8 @@
-from Main.CAPMainClass import CAPMainClass
+# from Main.CAPMainClass import CAPMainClass
 from Pgsql.PgsqlLogger import PgsqlLogger
 
 
-class PgsqlMainClass(PgsqlLogger, CAPMainClass):
+class PgsqlMainClass(PgsqlLogger):
 
     def __init__(self):
         super().__init__()
