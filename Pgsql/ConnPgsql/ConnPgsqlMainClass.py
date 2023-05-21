@@ -39,8 +39,8 @@ class ConnPgsqlMainClass(CAPMainClass):
                             self.pgsql_conn.commit()
                             db_answer = my_cursor.fetchall()
                             self.logger.debug(f"{__class__.__name__} fetch cursor -'{req_line}'")
-                            my_cursor.close()
-                            self.logger.debug(f"{__class__.__name__} closed cursor -'{req_line}'")
+                            # my_cursor.close()
+                            # self.logger.debug(f"{__class__.__name__} closed cursor -'{req_line}'")
                     return db_answer
                 except Exception as e:
                     self.logger.error(f"{__class__.__name__} can't request: '{e}'")
@@ -66,9 +66,10 @@ class ConnPgsqlMainClass(CAPMainClass):
                             my_cursor.execute(req_line)
                             self.pgsql_conn.commit()
                             self.logger.debug(f"{__class__.__name__} fetch cursor -'{req_line}'")
+                            result_cursor = my_cursor.connection
                             my_cursor.close()
                             self.logger.debug(f"{__class__.__name__} closed cursor -'{req_line}'")
-                    return True
+                    return dict({"connection": result_cursor})
                 except Exception as e:
                     self.logger.error(f"{__class__.__name__} request error'{e}'")
                     return False

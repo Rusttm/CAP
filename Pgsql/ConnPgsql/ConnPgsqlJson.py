@@ -12,6 +12,10 @@ class ConnPgsqlJson(ConnPgsqlMainClass):
 
     def get_fields_from_json(self, file_name=None):
         """ takes data from json files in dir ../data"""
+        if file_name:
+            file_name_type = file_name.split(".")[-1]
+            if file_name_type != "json":
+                file_name += ".json"
         try:
             up_up_dir = os.path.dirname(os.path.dirname(__file__))
             json_file = os.path.join(up_up_dir, self.dir_name, file_name)

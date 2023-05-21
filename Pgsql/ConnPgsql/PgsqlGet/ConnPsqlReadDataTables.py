@@ -18,7 +18,6 @@ class ConnPsqlReadDataTables(ConnPsqlMainClass):
             except Exception as e:
                 # print(e)
                 self.logger.error(f"{__class__.__name__} error while request table {table_name}: {e}")
-
         else:
             self.logger.warning(f"{__class__.__name__} request not specified table_name={table_name}")
             self.logger.info(f"{__class__.__name__} please try request 'get_tables_list'")

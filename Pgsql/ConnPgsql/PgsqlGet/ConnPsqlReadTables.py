@@ -1,7 +1,7 @@
-from Pgsql.ConnPgsql.ConnPgsqlMainClass import ConnPsqlMainClass
+from Pgsql.ConnPgsql.ConnPgsqlMainClass import ConnPgsqlMainClass
 
 
-class ConnPsqlReadTables(ConnPsqlMainClass):
+class ConnPsqlReadTables(ConnPgsqlMainClass):
     """returns tables list"""
     pgsql_conn = None
     # cursor = None
@@ -10,7 +10,8 @@ class ConnPsqlReadTables(ConnPsqlMainClass):
         super().__init__()
 
     def get_table(self, table_name=None):
-        req_line = f"SELECT {table_name} FROM information_schema.tables WHERE table_schema = 'public'"
+        # req_line = f"SELECT {table_name} FROM information_schema.tables WHERE table_schema = 'public'"
+        req_line = f"SELECT * FROM information_schema.columns WHERE table_name = {table_name}"
         if table_name:
             try:
                 ans = self.send_get_request(req_line=req_line)
@@ -18,7 +19,6 @@ class ConnPsqlReadTables(ConnPsqlMainClass):
             except Exception as e:
                 # print(e)
                 self.logger.error(f"{__class__.__name__} error while request table {table_name}: {e}")
-
         else:
             self.logger.warning(f"{__class__.__name__} request not specified table_name={table_name}")
             self.logger.info(f"{__class__.__name__} please try request 'get_tables_list'")
