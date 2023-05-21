@@ -1,11 +1,7 @@
-from Main.CAPMainClass import CAPMainClass
-# from API_MS.ConnMS.ConnMSConfig import ConnMSConfig
-import configparser
-import os
-import pathlib
+from API_MS.MSMainClass import MSMainClass
 
 
-class ContMSMainClass(CAPMainClass):
+class ContMSMainClass(MSMainClass):
     """ superclass for all MoiSklad controllers """
     id = 0
 

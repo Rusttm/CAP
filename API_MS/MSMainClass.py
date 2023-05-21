@@ -1,7 +1,7 @@
 from Main.CAPMainClass import CAPMainClass
 
+class MSMainClass(CAPMainClass):
+    logger_name = "MoiSkladAPI"
 
-class PgsqlMainClass(CAPMainClass):
-    logger_name = "Pgsql"
     def __init__(self):
         super().__init__()

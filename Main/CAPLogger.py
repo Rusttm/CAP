@@ -17,5 +17,5 @@ class CAPLogger(object):
 
 
 if __name__ == '__main__':
-    connector = SocSrvLogger()
+    connector = CAPLogger()
     connector.logger.info("resting")

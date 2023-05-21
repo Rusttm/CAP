@@ -1,7 +1,7 @@
-from Main.CAPMainClass import CAPMainClass
+from API_GS.GSMainClass import GSMainClass
 
 
-class CntrGSMainClass(CAPMainClass):
+class CntrGSMainClass(GSMainClass):
     """ Controller """
     def __init__(self):
         super().__init__()

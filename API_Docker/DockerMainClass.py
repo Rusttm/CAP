@@ -1,7 +1,8 @@
 from Main.CAPMainClass import CAPMainClass
 
 
-class PgsqlMainClass(CAPMainClass):
-    logger_name = "Pgsql"
+class DockerMainClass(CAPMainClass):
+    logger_name = "Docker"
+
     def __init__(self):
         super().__init__()

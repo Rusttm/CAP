@@ -1,7 +1,7 @@
-from Main.CAPMainClass import CAPMainClass
+from API_Docker.DockerMainClass import DockerMainClass
 
 
-class ConnDCMainClass(CAPMainClass):
+class ConnDCMainClass(DockerMainClass):
     """ Connector"""
 
     def __init__(self):

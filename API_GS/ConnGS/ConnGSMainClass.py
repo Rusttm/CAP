@@ -1,6 +1,6 @@
-from Main.CAPMainClass import CAPMainClass
+from API_GS.GSMainClass import GSMainClass
 
-class ConnGSMainClass(CAPMainClass):
+class ConnGSMainClass(GSMainClass):
     """ Connector"""
 
     def __init__(self):

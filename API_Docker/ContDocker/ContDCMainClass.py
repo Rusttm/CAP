@@ -1,7 +1,7 @@
-from Main.CAPMainClass import CAPMainClass
+from API_Docker.DockerMainClass import DockerMainClass
 
 
-class ContDCMainClass(CAPMainClass):
+class ContDCMainClass(DockerMainClass):
     """ Controller """
     def __init__(self):
         super().__init__()

@@ -1,14 +1,9 @@
-from Main.CAPMainClass import CAPMainClass
-
-
+from API_MS.MSMainClass import MSMainClass
 import requests
-import json
-import os
 import re
-# import pathlib
 
 
-class ConnMSMainClass(CAPMainClass):
+class ConnMSMainClass(MSMainClass):
     """ superclass for all MoiSklad connectors """
     id = 0
     __api_url = str()
