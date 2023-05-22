@@ -11,3 +11,4 @@ pandas~=2.0.1
 openpyxl
 logging~=0.4.9.6
 # aiogram~=3.0.0b7
+SQLAlchemy==2.0.15
