@@ -1,10 +1,6 @@
-import sys
-import os
 import time
 import setup
-import CAPMain
 from CAPMain.CAPMainClass import CAPMainClass
-# from CAPMainClass import CAPMainClass
 
 
 class Main(CAPMainClass):
@@ -31,10 +27,12 @@ class Main(CAPMainClass):
 if __name__ == '__main__':
     main_class = Main()
     main_class.main()
-    for i in range(10):
-        # time.sleep(3)
+    for i in range(100):
+        time.sleep(3600)
+        now = time.ctime()
+        msg_line = f"Hi telegram {i} msg from admin at {now}"
         main_class.socket_service.admin_client.send_socket_msg(to_user="telegram",
-                                                               msg_text=f"Hi telegram {i} msg from admin")
+                                                               msg_text=msg_line)
 
     # msapi1 = ContCAPMS.ContCAPMS()
     # msapi1.get_cont_id()
