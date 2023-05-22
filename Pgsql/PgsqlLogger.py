@@ -3,7 +3,7 @@ from logging.handlers import RotatingFileHandler
 
 
 class PgsqlLogger(object):
-    logger_name = "PostgreSQL"
+    logger_name = "postgressql"
     logger = None
 
     def __init__(self):

@@ -1,5 +1,6 @@
 from SQLAlchem.SQLAlchemMainClass import SQLAlchemMainClass
 import sqlalchemy
+import psycopg2
 
 
 class ConnALMainClass(SQLAlchemMainClass):
@@ -18,7 +19,7 @@ class ConnALMainClass(SQLAlchemMainClass):
             user = conf['user'],
             password = conf['user_pass']
             self.logger.debug(f"{__class__.__name__} read data from config")
-            self.engine = sqlalchemy.create_engine(f"postgresql-psycopg2://{user}:{password}@{host},{port}/{database}")
+            self.engine = sqlalchemy.create_engine(f"postgresql://{user}:{password}@{host},{port}/{database}")
             self.engine.connect()
             print(self.engine)
         except Exception as e:
