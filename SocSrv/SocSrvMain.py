@@ -22,7 +22,6 @@ class SocSrvMain(SocketMainClass):
         self.logger.debug(f"{__class__.__name__} starts 'admin' socket service")
 
 
-
 if __name__ == '__main__':
     socket_service = SocSrvMain()
     # socket_service.main()

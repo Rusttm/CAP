@@ -2,7 +2,6 @@ from SocSrv.SocSrvLogger import SocSrvLogger
 
 
 class SocketMainClass(SocSrvLogger):
-    logger_name = "SocketService"
 
     def __init__(self):
         # print("test class")
