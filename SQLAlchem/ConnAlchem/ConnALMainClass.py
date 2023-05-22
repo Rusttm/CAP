@@ -12,12 +12,12 @@ class ConnALMainClass(SQLAlchemMainClass):
     def create_engine(self):
         from SQLAlchem.ConnAlchem.ConnALConfig import ConnALConfig
         try:
-            conf = ConnALConfig().get_config()
-            host = conf['url'],
-            port = conf['port'],
-            database = conf['db_name'],
-            user = conf['user'],
-            password = conf['user_pass']
+            conf = dict(ConnALConfig().get_config())
+            host = conf.get('url', '')
+            port = conf.get('port', '')
+            database = conf.get('db_name', '')
+            user = conf.get('user', '')
+            password = conf.get('user_pass', '')
             self.logger.debug(f"{__class__.__name__} read data from config")
             self.engine = sqlalchemy.create_engine(f"postgresql://{user}:{password}@{host},{port}/{database}")
             self.engine.connect()
