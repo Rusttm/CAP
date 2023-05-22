@@ -1,10 +1,4 @@
-# from CAPMain.CAPMainClass import CAPMainClass
-from SQLAlchem.ConnAlchem.ConnALMainClass import ConnALMainClass
 from SQLAlchem.SQLAlchemMainClass import SQLAlchemMainClass
-# import os
-# import re
-# import pathlib
-# import configparser
 
 
 class ConnALConfig(SQLAlchemMainClass):
