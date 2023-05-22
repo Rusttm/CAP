@@ -11,7 +11,6 @@ class SocSrvMain(SocketMainClass):
         super().__init__()
         self.main()
 
-
     def main(self):
         self.server = ContSCServer()
         print("Socket Server starts")

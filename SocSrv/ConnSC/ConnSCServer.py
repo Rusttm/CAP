@@ -145,6 +145,7 @@ class ConnSCServer(SocketMainClass):
         # handling outgoing messages
         try:
             # client_name = self.clients_socket_name_dict[_socket]
+            # is _socket in queue with ready for send messages
             if _socket in self.message_queues_socket_data_dict.keys():
                 next_msg_data = self.message_queues_socket_data_dict[_socket]
                 _socket.send(next_msg_data)
