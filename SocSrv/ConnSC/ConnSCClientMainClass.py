@@ -35,49 +35,52 @@ class ConnSCClientMainClass(SocketMainClass):
         if name:
             self.client_name = name
 
+    def client_incoming_msg_handler(self, client_socket=None):
+        try:
+            if self.outgoing_msg_queue:
+                msg_dict = self.outgoing_msg_queue.pop(0)
+                client_socket.sendall(pickle.dumps(msg_dict))
+                # self.outgoing_msg_queue.remove(msg_dict)
+                self.outgoing_msg_list.append(msg_dict)
+                self.logger.info(f"{self.client_name} send msg: {msg_dict}")
+                # print(f"{self.client_name} send to {msg_dict['to']} msg: {msg_dict}")
+        except BlockingIOError as e:
+            self.logger.error(f"{self.client_name} blocking error in sendall: {e}")
+
+    def client_outgoing_msg_handler(self, client_socket=None):
+        try:
+            data = b''
+            while True:
+                request = client_socket.recv(self.buffer)
+                data += request
+                if len(request) < self.buffer:
+                    break
+            msg_dict = pickle.loads(data)
+        except BlockingIOError as e:
+            self.logger.error(f"{self.client_name} blocking error in receive: {e}")
+        except TimeoutError as e:
+            # self.logger.debug(f"{self.client_name} timeout error in receive: {e}")
+            pass
+        except EOFError as e:
+            self.logger.error(f"{self.client_name} data convert error in received msg: {e}")
+        else:
+            # time.sleep(3)
+
+            self.logger.info(f"{self.client_name} receive msg: {msg_dict}")
+            # print(f"{self.client_name} receive from {msg_dict['from']} msg: {msg_dict}")
+            self.incoming_msg_list.append(msg_dict)
+
     def start_socket_client(self):
         try:
             socket.setdefaulttimeout(10)
             # socket.timeout(3)
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
                 # client_socket.setblocking(False)
-                client_socket.timeout
+                # client_socket.timeout
                 client_socket.connect((self.server_host, self.server_port))
                 while True:
-                    # print(f"queue length: {len(self.outgoing_msg_queue)}")
-                    # time.sleep(1)
-                    try:
-                        if self.outgoing_msg_queue:
-                            msg_dict = self.outgoing_msg_queue.pop(0)
-                            client_socket.sendall(pickle.dumps(msg_dict))
-                            # self.outgoing_msg_queue.remove(msg_dict)
-                            self.outgoing_msg_list.append(msg_dict)
-                            self.logger.info(f"{self.client_name} send msg: {msg_dict}")
-                            # print(f"{self.client_name} send to {msg_dict['to']} msg: {msg_dict}")
-                    except BlockingIOError as e:
-                        self.logger.error(f"{self.client_name} blocking error in sendall: {e}")
-                    try:
-                        data = b''
-                        while True:
-                            request = client_socket.recv(self.buffer)
-                            data += request
-                            if len(request) < self.buffer:
-                                break
-                        msg_dict = pickle.loads(data)
-                    except BlockingIOError as e:
-                        self.logger.error(f"{self.client_name} blocking error in receive: {e}")
-                    except TimeoutError as e:
-                        # self.logger.debug(f"{self.client_name} timeout error in receive: {e}")
-                        pass
-                    except EOFError as e:
-                        self.logger.error(f"{self.client_name} data convert error in received msg: {e}")
-
-                    else:
-                        # time.sleep(3)
-
-                        self.logger.info(f"{self.client_name} receive msg: {msg_dict}")
-                        # print(f"{self.client_name} receive from {msg_dict['from']} msg: {msg_dict}")
-                        self.incoming_msg_list.append(msg_dict)
+                    self.client_incoming_msg_handler(client_socket=client_socket)
+                    self.client_outgoing_msg_handler(client_socket=client_socket)
         except KeyboardInterrupt:
             self.logger.info("Socket Server was interrupted by admin")
         except ConnectionRefusedError as e:
@@ -101,13 +104,13 @@ class ConnSCClientMainClass(SocketMainClass):
     def get_all_incoming_msgs(self):
         all_messages_list= self.incoming_msg_list
         self.incoming_msg_list = []
-        self.logger.info(f"{self.client_name} erase all incoming messages")
+        self.logger.debug(f"{self.client_name} erased all incoming messages")
         return all_messages_list
 
     def get_all_outgoing_msgs(self):
         all_messages_list= self.outgoing_msg_list
         self.outgoing_msg_list = []
-        self.logger.info(f"{self.client_name} erase all outgoing messages")
+        self.logger.debug(f"{self.client_name} erased all outgoing messages")
         return all_messages_list
 
 if __name__ == '__main__':
