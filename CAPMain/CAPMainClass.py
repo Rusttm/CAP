@@ -1,5 +1,4 @@
-from Main.CAPLogger import CAPLogger
-import logging
+from CAPMain.CAPLogger import CAPLogger
 
 
 class CAPMainClass(CAPLogger):

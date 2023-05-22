@@ -1,4 +1,4 @@
-from Main.ContMain.ContCAPMainClass import ContCAPMainClass
+from CAPMain.ContMain.ContCAPMainClass import ContCAPMainClass
 from API_Tbot.TGBotMain import TGBotMain
 
 

@@ -1,4 +1,4 @@
-from Main.ContMain.ContCAPMainClass import ContCAPMainClass
+from CAPMain.ContMain.ContCAPMainClass import ContCAPMainClass
 import json
 import logging
 

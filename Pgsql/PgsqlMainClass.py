@@ -1,4 +1,4 @@
-# from Main.CAPMainClass import CAPMainClass
+# from CAPMain.CAPMainClass import CAPMainClass
 from Pgsql.PgsqlLogger import PgsqlLogger
 
 
