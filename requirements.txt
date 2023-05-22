@@ -12,3 +12,4 @@ openpyxl
 logging~=0.4.9.6
 # aiogram~=3.0.0b7
 SQLAlchemy==2.0.15
+SQLAlchemy_Utils==0.41.1
