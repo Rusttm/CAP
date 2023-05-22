@@ -8,12 +8,12 @@ class TGBotMain(ContTGBot):
     def __init__(self):
         super().__init__()
         Thread(target=self.start_tg_socket_service, args=[]).start()
-        print("Telegram socket client starts")
+        print(f"Telegram socket client started at {time.ctime()}")
 
     def start_tg_socket_service(self):
         from API_Tbot.ContTbot.ContTGBotSocSrvClient import ContTGBotSocSrvClient
         self.socket_controller = ContTGBotSocSrvClient()
-        self.logger.debug(f"{__class__.__name__} starts 'telegram' socket service")
+        self.logger.debug(f"{__class__.__name__} started 'telegram' socket service")
         while True:
             time.sleep(2)
             try:
