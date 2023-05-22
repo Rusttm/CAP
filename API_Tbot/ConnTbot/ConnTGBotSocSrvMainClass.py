@@ -26,9 +26,15 @@ class ConnTGBotSocSrvMainClass(TGBotMainClass):
         if not self.server_host:
             self.server_host = socket.gethostbyname(socket.gethostname())
         self.server_host = socket.gethostbyname(socket.gethostname())
-        server_start_msg = {"from": self.client_name, "to": "server", "text": f"{self.client_name} client starts"}
+        server_start_msg = {"from": self.client_name,
+                            "to": "server",
+                            "text": f"{self.client_name} client starts",
+                            "at": f"{time.ctime()}"}
         self.outgoing_msg_queue.append(server_start_msg)
-        itself_start_msg = {"from": self.client_name, "to": self.client_name, "text": f"{self.client_name} self replying"}
+        itself_start_msg = {"from": self.client_name,
+                            "to": self.client_name,
+                            "text": f"{self.client_name} self replying",
+                            "at": f"{time.ctime()}"}
         self.outgoing_msg_queue.append(itself_start_msg)
         Thread(target=self.start_socket_client, args=[]).start()
         # self.__start_socket_client()
@@ -88,7 +94,7 @@ class ConnTGBotSocSrvMainClass(TGBotMainClass):
     def send_dict_2client(self, to_user=None, msg_text=None):
         if to_user and msg_text:
             try:
-                new_msg = {"from": self.client_name, "to": to_user, "text": msg_text}
+                new_msg = {"from": self.client_name, "to": to_user, "text": msg_text, "at": f"{time.ctime()}"}
                 self.outgoing_msg_queue.append(new_msg)
                 # print(f"added in queue {self.outgoing_msg_queue}")
                 return True
@@ -115,7 +121,8 @@ if __name__ == '__main__':
     connector = ConnTGBotSocSrvMainClass(name=client_name)
     # Thread(target=connector.start_socket_client, args=[]).start()
     # connector.start_socket_client()
-    connector.outgoing_msg_queue.append({'from': 'main', 'to': 'main', 'text': 'прощай немытая Россия'})
+    connector.outgoing_msg_queue.append({'from': 'main', 'to': 'main',
+                                         'text': 'прощай, немытая Россия', "at": f"{time.ctime()}"})
     to_user = "server"
     print(f"client {client_name} successfully started")
     for i in range(10):

@@ -11,25 +11,30 @@ class ContTGBot(ContMainClass, ConnTGBot):
         super().__init__()
 
     def send_service_msg(self, msg=None):
+        """ send msg to telegrambot user in admin group"""
         for admin in self.users_group_ids_dict.get('admin', []):
             try:
-                text_html = f"from:<strong>{msg['from']}</strong>\n new message: <b>{msg['text']}</b>"
+                text_html = f"at:<strong>{msg.get('at', time.ctime())}</strong>\n " \
+                            f"from:<strong>{msg.get('from','unknown')}</strong>\n " \
+                            f"new message: <b>{msg.get('text', 'empty')}</b>"
                 msg = text_html
             except Exception as e:
                 self.logger.warning(f" tgbot cant format dict {msg} to text ")
             self.bot.send_message(chat_id=admin, text=msg, parse_mode="HTML")  # allowed "MarkdownV2"
 
     def send_finance_msg(self, msg=None):
+        """ send msg to telegrambot user in fin group"""
         for fin in self.users_group_ids_dict.get('fin', []):
             self.bot.send_message(chat_id=fin, text=msg, parse_mode="HTML")
 
     def send_spam_msg(self, msg=None):
+        """ send msg to telegrambot user in all groups"""
         for _, group_list in self.users_group_ids_dict.items():
             for user_id in group_list:
                 self.bot.send_message(chat_id=user_id, text=msg, parse_mode="HTML")
                 try:
                     name = self.users_id_name_dict[user_id]
-                    self.outgoing_msgs_list.append(dict({"to": name, "id": user_id, "msg": msg}))
+                    self.outgoing_msgs_list.append(dict({"to": name, "id": user_id, "msg": msg, "at": f"{time.ctime()}"}))
                 except Exception as e:
                     self.logger.warning(f"{__file__.__name__} cant find name for id: {user_id}")
 

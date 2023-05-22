@@ -1,4 +1,6 @@
 # from https://steelkiwi.com/blog/working-tcp-sockets/
+import time
+
 from SocSrv.SocketMainClass import SocketMainClass
 import pickle
 import select
@@ -199,7 +201,7 @@ class ConnSCServer(SocketMainClass):
     def server_msg_handler(self, msg, _socket):
         # if msg for server and registering msgs
         msg["to"], msg["from"] = msg["from"], msg["to"]
-        msg['text'] = f"request received: {msg['text']}"
+        msg['text'] = f"{time.ctime()} request received: {msg['text']}"
         data = pickle.dumps(msg)
         # make reply to client in queue socket:msg
         self.message_queues_socket_data_dict[_socket] = data

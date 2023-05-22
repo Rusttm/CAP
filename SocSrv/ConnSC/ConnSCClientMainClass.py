@@ -88,7 +88,7 @@ class ConnSCClientMainClass(SocketMainClass):
     def send_dict_2client(self, to_user=None, msg_text=None):
         if to_user and msg_text:
             try:
-                new_msg = {"from": self.client_name, "to": to_user, "text": msg_text}
+                new_msg = {"from": self.client_name, "to": to_user, "text": msg_text, "at": f"{time.ctime()}"}
                 self.outgoing_msg_queue.append(new_msg)
                 # print(f"added in queue {self.outgoing_msg_queue}")
                 return True
@@ -115,9 +115,10 @@ if __name__ == '__main__':
     connector = ConnSCClientMainClass(name=client_name)
     # Thread(target=connector.start_socket_client, args=[]).start()
     # connector.start_socket_client()
-    connector.outgoing_msg_queue.append({'from': 'main', 'to': 'main', 'text': 'прощай немытая Россия'})
+    connector.outgoing_msg_queue.append({'from': 'main', 'to': 'main',
+                                         'text': 'прощай немытая Россия', "at": f"{time.ctime()}"})
     to_user = "server"
-    print(f"client {client_name} successfully started")
+    print(f", at: {time.ctime()} client {client_name} successfully started")
     for i in range(10):
         time.sleep(1)
         msg_text = f"msg No {i} it's again me {client_name}"
