@@ -1,9 +1,10 @@
 from SQLAlchem.ConnAlchem.ConnALConfig import ConnALConfig
+
 import os
 import configparser
 
 
-class ConnALConfigFile(object):
+class ConnALConfigFile(ConnALConfig):
     """ configfile connector"""
     dir_name = "config"
     file_name = "sqlconfig.ini"
