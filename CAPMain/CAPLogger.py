@@ -3,7 +3,7 @@ from logging.handlers import RotatingFileHandler
 
 
 class CAPLogger(object):
-    logger_name = "CAPMainLogger"
+    logger_name = "capmainlogger"
     logger = None
 
     def __init__(self):
