@@ -32,7 +32,7 @@ class ConnALMainClass(SQLAlchemMainClass):
         })
         return mapper.get(type, postgresql.TEXT)
 
-    def create_engine(self):
+    def create_url(self):
         from SQLAlchem.ConnAlchem.ConnALConfig import ConnALConfig
         try:
             conf = dict(ConnALConfig().get_config())
@@ -123,7 +123,7 @@ class ConnALMainClass(SQLAlchemMainClass):
 
 if __name__ == '__main__':
     connector = ConnALMainClass()
-    connector.create_engine()
+    connector.create_url()
     print(sqlalchemy.__version__)
     # connector.create_database_alchemy(db_name="newdb")
     # connector.delete_database_alchemy(db_name="newdb")
