@@ -47,8 +47,9 @@ class ConnPgsqlTables(ConnPgsqlMainClass):
         if table_name and col_name and col_type and self.table_is_exist(table_name=table_name):
             column_type = self.types_mapper(type_ms=col_type)
             if column_type:
-                req_line = f"ALTER TABLE IF EXISTS table_name ADD IF NOT EXIST col_name column_type"
-                return req_line
+                req_line = f"ALTER TABLE IF EXISTS {table_name} ADD IF NOT EXISTS {col_name} {column_type}"
+                ans = self.send_set_request(req_line=req_line)
+                return ans
             else:
                 self.logger.warning(f"{__class__.__name__} cant convert MoiSklad datatype: {col_type}")
         else:
@@ -61,6 +62,17 @@ class ConnPgsqlTables(ConnPgsqlMainClass):
             return True
         return False
 
+    def table_col_is_exist(self, table_name=None, col_name=None):
+        """ check is col  exist in table? """
+        if table_name and col_name and self.table_is_exist(table_name=table_name):
+            req_line = f"SELECT {table_name}, {col_name}, data_type FROM information_schema.columns WHERE table_name = '{table_name}'"
+            ans = self.send_set_request(req_line=req_line)
+            return ans
+        else:
+            self.logger.warning(f"{__class__.__name__} receive wrong parameters")
+        return False
+
+
     def delete_table(self, table_name=None):
         """  delete table 'table_name' """
         ans = None
@@ -72,9 +84,11 @@ class ConnPgsqlTables(ConnPgsqlMainClass):
 
 if __name__ == '__main__':
     connector = ConnPgsqlTables()
-    print(f"tables list {connector.get_tables_list()}")
-    print(f"try to get table 'test' {connector.get_table_schema(table_name='test')}")
-    # print(f"create empty table {connector.create_table_empty(table_name='test_empty')}")
-    print(f"create table {connector.create_table_with_id(table_name='test_empty_id')}")
-    print(connector.table_is_exist(table_name='test_empty_id'))
-    print(f"delete table 'test' {connector.delete_table(table_name='test_empty_id')}")
+    # print(f"tables list {connector.get_tables_list()}")
+    # print(f"try to get table 'test' {connector.get_table_schema(table_name='test')}")
+    print(f"create empty table {connector.create_table_with_id(table_name='test_empty_id')}")
+    print(f"add col to empty table {connector.create_col_in_table(table_name='test_empty_id', col_name='test_col_1', col_type='String(255)')}")
+    print(connector.get_table_schema(table_name='test_empty_id'))
+    # print(f"create table {connector.create_table_with_id(table_name='test_empty_id')}")
+    # print(connector.table_is_exist(table_name='test_empty_id'))
+    # print(f"delete table 'test' {connector.delete_table(table_name='test_empty_id')}")

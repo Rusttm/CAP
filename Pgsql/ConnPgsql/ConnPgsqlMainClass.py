@@ -78,7 +78,7 @@ class ConnPgsqlMainClass(PgsqlMainClass):
             self.logger.error(f"{__class__.__name__} command line for request is not valid-'{req_line}'")
         return None
 
-    def types_mapper(self, type_ms=None):
+    def types_mapper(self, type_ms):
         """ mapper fo datatypes from MoiSklad to Postgresql"""
         mapper = dict({
             "String(255)": "VARCHAR(255)",
@@ -95,7 +95,7 @@ class ConnPgsqlMainClass(PgsqlMainClass):
             "DateTime": "DATE",
             "Float": "REAL"
         })
-        return mapper.get(type, "None")
+        return mapper.get(type_ms, type_ms)
 
 
 if __name__ == '__main__':
