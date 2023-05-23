@@ -39,7 +39,7 @@ class ConnPgsqlTables(ConnPgsqlMainClass):
         ans = None
         if table_name:
             # req_line = f"CREATE TABLE IF NOT EXISTS {table_name} (id varchar(250) NOT NULL PRIMARY KEY);"
-            req_line = f"CREATE TABLE IF NOT EXISTS {table_name} (id varchar(255) NOT NULL PRIMARY KEY);"
+            req_line = f"CREATE TABLE IF NOT EXISTS {table_name} (id SERIAL PRIMARY KEY);"
             ans = self.send_set_request(req_line=req_line)
         return ans
 
