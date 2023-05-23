@@ -1,0 +1,11 @@
+[Unit]
+Description=Serman CAP service
+After=multi-user.target
+
+[Service]
+Type=simple
+Restart=always
+ExecStart=/home/rusttm/cap_env/bin/python /home/rusttm/PycharmProjects/CAP/CAPMain/Start.py
+
+[Install]
+WantedBy=multi-user.target
