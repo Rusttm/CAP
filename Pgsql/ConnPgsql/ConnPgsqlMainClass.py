@@ -44,15 +44,12 @@ class ConnPgsqlMainClass(PgsqlMainClass):
                     return db_answer
                 except Exception as e:
                     self.logger.error(f"{__class__.__name__} can't request: '{e}'")
-                    return False
                 finally:
                     self.pgsql_conn.close()
                     self.logger.debug(f"{__class__.__name__} closed connector")
-            else:
-                return None
         else:
             self.logger.error(f"{__class__.__name__} command line for request is not valid-'{req_line}'")
-            return None
+        return None
 
     def send_set_request(self, req_line=None):
         self.init_connection()
@@ -72,16 +69,14 @@ class ConnPgsqlMainClass(PgsqlMainClass):
                     return dict({"connection": result_cursor})
                 except Exception as e:
                     self.logger.error(f"{__class__.__name__} request error'{e}'")
-                    return False
                 finally:
                     self.pgsql_conn.close()
                     self.logger.debug(f"{__class__.__name__} closed connector")
             else:
                 self.logger.debug(f"{__class__.__name__} connector not valid == '{self.pgsql_conn}'")
-                return None
         else:
             self.logger.error(f"{__class__.__name__} command line for request is not valid-'{req_line}'")
-            return None
+        return None
 
 
 if __name__ == '__main__':

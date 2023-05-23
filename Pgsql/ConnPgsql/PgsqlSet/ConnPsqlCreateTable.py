@@ -9,33 +9,32 @@ class ConnPsqlCreateTable(ConnPgsqlMainClass):
     def __init__(self):
         super().__init__()
 
-    def create_empty_table(self, table_name=None):
-        """  create table  """
+    def table_is_exist(self, table_name=None):
+        from Pgsql.ConnPgsql.PgsqlGet.ConnPsqlReadTables import ConnPsqlReadTables
+        if ConnPsqlReadTables().get_table_schema(table_name=table_name):
+            return True
+        return False
+
+    def create_table_empty(self, table_name=None):
+        """  create empty table  """
         ans = None
         if table_name:
-            req_line = f"CREATE TABLE IF NOT EXISTS {table_name} (id varchar(250) NOT NULL PRIMARY KEY);"
+            req_line = f"CREATE TABLE IF NOT EXISTS {table_name} ();"
             ans = self.send_set_request(req_line=req_line)
-        return ans["connection"].notices
+        return ans
 
-    # def create_table(self, table_dict=None):
-    #     """  create table from dict """
-    #     table_dict = dict({'name': 'test_table',
-    #                        'fields': {'username': 'varchar(45) NOT NULL',
-    #                                   'password': 'varchar(45) NOT NULL',
-    #                                   'enabled': "integer NOT NULL DEFAULT '1'",
-    #                                   'PRIMARY KEY': 'username'}})
-    #     ans = None
-    #     if table_dict:
-    #         req_line = f""" CREATE TABLE IF NOT EXISTS {table_dict['name']} (
-    #         username varchar(45) NOT NULL,
-    #         password varchar(450) NOT NULL,
-    #         enabled integer NOT NULL DEFAULT '1',
-    #         PRIMARY KEY ({table_dict['fields']['PRIMARY KEY']})
-    #         )"""
-    #         ans = self.send_set_request(req_line=req_line)
-    #     return ans
+    def  create_table_with_id(self, table_name=None):
+        """ creates table with id primary key"""
+        ans = None
+        if table_name:
+            # req_line = f"CREATE TABLE IF NOT EXISTS {table_name} (id varchar(250) NOT NULL PRIMARY KEY);"
+            req_line = f"CREATE TABLE IF NOT EXISTS {table_name} (id varchar(255) NOT NULL PRIMARY KEY);"
+            ans = self.send_set_request(req_line=req_line)
+        return ans
 
 
 if __name__ == '__main__':
     connector = ConnPsqlCreateTable()
-    print(f"create empty table {connector.create_empty_table(table_name='test')}")
+    # print(f"create empty table {connector.create_table_empty(table_name='test_empty')}")
+    print(f"create table {connector.create_table_with_id(table_name='test_empty_id')}")
+    print(connector.table_is_exist(table_name='test_empty_id'))

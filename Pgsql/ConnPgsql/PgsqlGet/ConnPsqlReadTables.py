@@ -9,9 +9,9 @@ class ConnPsqlReadTables(ConnPgsqlMainClass):
     def __init__(self):
         super().__init__()
 
-    def get_table(self, table_name=None):
+    def get_table_schema(self, table_name=None):
         # req_line = f"SELECT {table_name} FROM information_schema.tables WHERE table_schema = 'public'"
-        req_line = f"SELECT * FROM information_schema.columns WHERE table_name = {table_name}"
+        req_line = f"SELECT * FROM information_schema.tables WHERE table_schema = 'public' AND table_name='{table_name}'"
         if table_name:
             try:
                 ans = self.send_get_request(req_line=req_line)
@@ -25,7 +25,7 @@ class ConnPsqlReadTables(ConnPgsqlMainClass):
 
         return None
     def get_tables_list(self):
-        req_line = """SELECT * FROM information_schema.tables WHERE table_schema = 'public'"""
+        req_line = "SELECT * FROM information_schema.tables WHERE table_schema = 'public'"
         ans = self.send_get_request(req_line=req_line)
         return ans
 
