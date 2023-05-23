@@ -31,6 +31,7 @@ class ContPgsqlCreateFieldsTable(ConnPgsqlTables, ConnPgsqlJson, ContPgsqlMainCl
     def add_columns_2table_from_json(self, table_name, fields_dict):
         for _, data_dict in fields_dict["data"].items():
             self.create_col_in_table(table_name=table_name, col_name="field_name", col_type="VARCHAR(255)")
+            self.create_unique_col_in_table(table_name=table_name, col_name="field_name")
             for name_col, _ in data_dict.items():
                 self.create_col_in_table(table_name=table_name, col_name=f"field_{name_col}", col_type="VARCHAR(255)")
             break
@@ -47,7 +48,7 @@ class ContPgsqlCreateFieldsTable(ConnPgsqlTables, ConnPgsqlJson, ContPgsqlMainCl
             self.create_table_from_json_field(file_name=file_name)
             print(f"created table {file_name}")
 
-    def delete_all_tables(self):
+    def delete_all_fields_tables(self):
         for file_name in self.tables_list:
             self.delete_table(table_name=file_name)
             print(f"deleted table {file_name}")
