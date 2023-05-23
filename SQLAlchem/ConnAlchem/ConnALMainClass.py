@@ -92,11 +92,12 @@ class ConnALMainClass(SQLAlchemMainClass):
         try:
             self.last_metadata = sqlalchemy.MetaData()
             # new_table = sqlalchemy.Table(name=table_name, metadata=self.last_metadata, autoload_replace=True, autoload_with=self.engine)
-            new_table = sqlalchemy.Table(table_name, self.last_metadata,
+            new_table = sqlalchemy.Table(table_name, self.last_metadata, Column("id", Integer, primary_key=True),
                                          autoload_replace=True, autoload_with=self.engine)
             print(repr(self.last_metadata.tables))
             print(repr(self.last_metadata.tables[table_name]))
             print(new_table.columns.keys())
+            # new_table.create(self.engine)
             self.last_metadata.create_all(self.engine)
             self.engine.connect()
             return True
