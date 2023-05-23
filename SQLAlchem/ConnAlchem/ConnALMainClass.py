@@ -44,9 +44,7 @@ class ConnALMainClass(SQLAlchemMainClass):
             self.logger.debug(f"{__class__.__name__} read data from config")
             self.url = f"postgresql://{user}:{password}@{host},{port}/{database}"
             self.url_temp = f"postgresql://{user}:{password}@{host},{port}/"
-            self.engine = sqlalchemy.create_engine(self.url, echo=True, pool_size=6, max_overflow=10)
-            self.conn = self.engine.connect()
-            # self.cur = self.conn.cursor()
+             # self.cur = self.conn.cursor()
             # self.metadata = sqlalchemy.MetaData()
             # print(self.engine)
         except Exception as e:
@@ -90,16 +88,17 @@ class ConnALMainClass(SQLAlchemMainClass):
 
     def create_empty_table(self, table_name=None):
         try:
+            self.engine = sqlalchemy.create_engine(self.url, echo=True, pool_size=6, max_overflow=10)
             self.last_metadata = sqlalchemy.MetaData()
             # new_table = sqlalchemy.Table(name=table_name, metadata=self.last_metadata, autoload_replace=True, autoload_with=self.engine)
-            new_table = sqlalchemy.Table(table_name, self.last_metadata, Column("id", Integer, primary_key=True),
-                                         autoload_replace=True, autoload_with=self.engine)
-            print(repr(self.last_metadata.tables))
-            print(repr(self.last_metadata.tables[table_name]))
-            print(new_table.columns.keys())
+            # new_table = sqlalchemy.Table(table_name, self.last_metadata, Column("id", Integer, primary_key=True))
+            sqlalchemy.Table(table_name, self.last_metadata)
+            # print(repr(self.last_metadata.tables))
+            # print(repr(self.last_metadata.tables[table_name]))
+            # print(new_table.columns.keys())
             # new_table.create(self.engine)
             self.last_metadata.create_all(self.engine)
-            self.engine.connect()
+            # self.engine.connect()
             return True
         except Exception as e:
             print(e)
@@ -126,10 +125,12 @@ if __name__ == '__main__':
     connector = ConnALMainClass()
     connector.create_engine()
     print(sqlalchemy.__version__)
-    connector.create_database_alchemy(db_name="newdb")
-    connector.delete_database_alchemy(db_name="newdb")
+    # connector.create_database_alchemy(db_name="newdb")
+    # connector.delete_database_alchemy(db_name="newdb")
     table_name = "TestTable"
     # connector.create_database_pgsql(db_name="testdb")
+    connector.create_empty_table(table_name=table_name)
+    table_name = "TestEmpty3Table"
     connector.create_empty_table(table_name=table_name)
     # column_dict = {"name": "info", "type": "String(255)", "primary_key": False, "default": "None"}
     # connector.add_column_2table(table_name=table_name, column_dict=column_dict)
