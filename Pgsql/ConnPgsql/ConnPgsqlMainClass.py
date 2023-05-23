@@ -92,7 +92,7 @@ class ConnPgsqlMainClass(PgsqlMainClass):
             "MetaArray": "JSON[]",
             "String": "TEXT",
             "Enum": "ENUM",
-            "DateTime": "DATE",
+            "DateTime": "TIMESTAMP",
             "Float": "REAL"
         })
         return mapper.get(type_ms, type_ms)
