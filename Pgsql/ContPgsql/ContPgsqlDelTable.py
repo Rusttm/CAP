@@ -1,5 +1,5 @@
 from Pgsql.ContPgsql.ContPgsqlMainClass import ContPgsqlMainClass
-from Pgsql.ConnPgsql.PgsqlUpdate.ConnPsqlDelTable import ConnPsqlDelTable
+from Pgsql.ConnPgsql.ARHIV.ConnPsqlDelTable import ConnPsqlDelTable
 
 
 class ContPgsqlDelTable(ContPgsqlMainClass, ConnPsqlDelTable):

@@ -10,7 +10,7 @@ class ConnPsqlCreateTable(ConnPgsqlMainClass):
         super().__init__()
 
     def table_is_exist(self, table_name=None):
-        from Pgsql.ConnPgsql.PgsqlGet.ConnPsqlReadTables import ConnPsqlReadTables
+        from Pgsql.ConnPgsql.ARHIV.ConnPsqlReadTables import ConnPsqlReadTables
         if ConnPsqlReadTables().get_table_schema(table_name=table_name):
             return True
         return False

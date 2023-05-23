@@ -1,7 +1,7 @@
-from Pgsql.ConnPgsql.ConnPgsqlMainClass import ConnPsqlMainClass
+from Pgsql.ConnPgsql.ConnPgsqlMainClass import ConnPgsqlMainClass
 
 
-class ConnPsqlReadDataTables(ConnPsqlMainClass):
+class ConnPgsqlData(ConnPgsqlMainClass):
     """returns data from tables"""
     pgsql_conn = None
     # cursor = None
@@ -9,7 +9,7 @@ class ConnPsqlReadDataTables(ConnPsqlMainClass):
     def __init__(self):
         super().__init__()
 
-    def get_table_data(self, table_name=None):
+    def get_full_data(self, table_name=None):
         req_line = f"SELECT * FROM {table_name}"
         if table_name:
             try:
@@ -21,10 +21,9 @@ class ConnPsqlReadDataTables(ConnPsqlMainClass):
         else:
             self.logger.warning(f"{__class__.__name__} request not specified table_name={table_name}")
             self.logger.info(f"{__class__.__name__} please try request 'get_tables_list'")
-
         return None
 
 
 if __name__ == '__main__':
-    connector = ConnPsqlReadDataTables()
-    print(f"try to get data from table 'test' {connector.get_table_data(table_name='test')}")
+    connector = ConnPgsqlData()
+    print(f"try to get data from table 'test' {connector.get_full_data(table_name='test')}")

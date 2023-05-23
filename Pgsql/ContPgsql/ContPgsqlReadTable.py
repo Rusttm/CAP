@@ -1,5 +1,5 @@
 from Pgsql.ContPgsql.ContPgsqlMainClass import ContPgsqlMainClass
-from Pgsql.ConnPgsql.PgsqlGet.ConnPsqlReadTables import ConnPsqlReadTables
+from Pgsql.ConnPgsql.ARHIV.ConnPsqlReadTables import ConnPsqlReadTables
 
 
 class ContPgsqlReadTable(ContPgsqlMainClass, ConnPsqlReadTables):
