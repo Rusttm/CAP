@@ -10,11 +10,10 @@ class MSMain(MSMainClass):
                    "profit_bycust_fields": "profit_bycust_table",
                    "payins_fields": "payments_in_table",
                    "payouts_fields": "payments_out_table",
-                   "packin_fields": "",
-                   "packout_fields": "",
+                   "packin_fields": "packlists_in_table",
+                   "packout_fields": "packlists_out_table",
                    "invout_fields": "",
                    "invin_fields": "",
-
                    "customers_bal_fields": "",
                    "customers_fields": "",
 
@@ -87,6 +86,24 @@ class MSMain(MSMainClass):
         self.save_data_2file_json(data_dict=data, file_name=data_name)
         return data
 
+    def get_pack_lists_in(self, from_date=None, to_date=None):
+        data_name = "packlists_in_table"
+        from API_MS.ContMS.ContMSPackIn import ContMSPackIn
+        data = ContMSPackIn().get_packin_filtered_by_date(from_date=from_date, to_date=to_date, to_file=False)
+        data = dict({"name": data_name, "data": data.get('rows', [])})
+        self.logger.debug(f"{__class__.__name__} {data_name} report ready")
+        self.save_data_2file_json(data_dict=data, file_name=data_name)
+        return data
+
+    def get_pack_lists_out(self, from_date=None, to_date=None):
+        data_name = "packlists_out_table"
+        from API_MS.ContMS.ContMSPackOut import ContMSPackOut
+        data = ContMSPackOut().get_packout_filtered_by_date(from_date=from_date, to_date=to_date, to_file=False)
+        data = dict({"name": data_name, "data": data.get('rows', [])})
+        self.logger.debug(f"{__class__.__name__} {data_name} report ready")
+        self.save_data_2file_json(data_dict=data, file_name=data_name)
+        return data
+
     def save_data_2file_json(self, data_dict, file_name):
         """ method save dict data to file in class ConnMSSaveFile"""
         from API_MS.ConnMS.ConnMSSaveJson import ConnMSSaveJson
@@ -110,7 +127,11 @@ class MSMain(MSMainClass):
         # summary[requested_data.get("name")] = requested_data.get("data", [])
         # requested_data = controller.get_payments_in(from_date=from_date, to_date=to_date)
         # summary[requested_data.get("name")] = requested_data.get("data", [])
-        requested_data = controller.get_payments_out(from_date=from_date, to_date=to_date)
+        # requested_data = controller.get_payments_out(from_date=from_date, to_date=to_date)
+        # summary[requested_data.get("name")] = requested_data.get("data", [])
+        # requested_data = controller.get_pack_lists_in(from_date=from_date, to_date=to_date)
+        # summary[requested_data.get("name")] = requested_data.get("data", [])
+        requested_data = controller.get_pack_lists_out(from_date=from_date, to_date=to_date)
         summary[requested_data.get("name")] = requested_data.get("data", [])
 
         self.save_data_2file_json(summary, "summary_tables")
