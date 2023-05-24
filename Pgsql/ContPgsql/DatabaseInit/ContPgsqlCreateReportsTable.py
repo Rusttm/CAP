@@ -5,7 +5,7 @@ from Pgsql.ConnPgsql.ConnPgsqlData import ConnPgsqlData
 
 class ContPgsqlCreateReportsTable(ContPgsqlMainClass):
     """ class for creation report tables from fields tables"""
-    tables_list = ['product_fields',
+    tables_dict = ['product_fields',
                    'payins_fields', 'payouts_fields',
                    'packin_fields', 'packout_fields',
                    'invout_fields', 'invin_fields',

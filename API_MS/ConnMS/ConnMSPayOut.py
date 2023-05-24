@@ -44,3 +44,5 @@ class ConnMSPayOut(ConnMSMainClass):
 
 if __name__ == '__main__':
     connector = ConnMSPayOut()
+    data = connector.get_payout_filtered_by_date()
+    print(data)
