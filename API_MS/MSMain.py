@@ -18,6 +18,7 @@ class MSMain(MSMainClass):
                    "customers_bal_table": {"fields_list": "customers_bal_fields", "function": "get_customers_bal_report"},
                    "customers_table": {"fields_list": "customers_fields", "function": "get_customers_report"}
                    }
+
     def __init__(self):
         super().__init__()
 
@@ -175,6 +176,7 @@ class MSMain(MSMainClass):
             self.save_table_data_2file_json(summary, "summary_tables")
         self.logger.debug(f"{__class__.__name__} summary data from MoiSklad was formed")
         return summary
+
 
 if __name__ == '__main__':
     controller = MSMain()
