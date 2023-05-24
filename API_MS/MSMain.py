@@ -2,6 +2,7 @@ from API_MS.MSMainClass import MSMainClass
 
 
 class MSMain(MSMainClass):
+    """ this class gather all reports together """
     tables_dict = {"product_fields": "products_table",
                    "stockall_fields": "stock_remains_table",
                    "stockstore_fields": "stock_bystore_table",
