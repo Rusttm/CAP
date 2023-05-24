@@ -20,7 +20,7 @@ class ContMSFieldsConfig(ContMSMainClass):
                 """ if json_file_name was not declare"""
                 json_file_name = excell_file_name
             ConnMSSaveJson().save_data_json_file(data_dict=prod_fields_conf, file_name=json_file_name,
-                                                 dir_name='config')
+                                                 dir_name='data/fields')
         return prod_fields_conf
 
     def read_product_fields(self, file_name=None):

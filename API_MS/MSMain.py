@@ -2,7 +2,8 @@ from API_MS.MSMainClass import MSMainClass
 
 
 class MSMain(MSMainClass):
-    """ this class gather all reports together """
+    """ this class gather all reports together
+    in one dict: {"products_table":[], "stock_remains_table":[]}"""
     tables_dict = {"products_table": {"fields_list": "product_fields", "function": "get_products_report"},
                    "stock_remains_table": {"fields_list": "stockall_fields", "function": "get_stockall_report"},
                    "stock_bystore_table": {"fields_list": "stockstore_fields", "function": "get_stockstore_report"},
@@ -17,7 +18,6 @@ class MSMain(MSMainClass):
                    "customers_bal_table": {"fields_list": "customers_bal_fields", "function": "get_customers_bal_report"},
                    "customers_table": {"fields_list": "customers_fields", "function": "get_customers_report"}
                    }
-
     def __init__(self):
         super().__init__()
 
@@ -170,7 +170,10 @@ class MSMain(MSMainClass):
             f = getattr(my_class, table_func)
             requested_data = f(from_date=from_date, to_date=to_date, to_file=to_file)
             summary[requested_data.get("name")] = requested_data.get("data", [])
-        self.save_table_data_2file_json(summary, "summary_tables")
+            self.logger.debug(f"{__class__.__name__} data {table_name} was added to summary")
+        if to_file:
+            self.save_table_data_2file_json(summary, "summary_tables")
+        self.logger.debug(f"{__class__.__name__} summary data from MoiSklad was formed")
         return summary
 
 if __name__ == '__main__':
