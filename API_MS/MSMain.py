@@ -175,7 +175,8 @@ class MSMain(MSMainClass):
 
 if __name__ == '__main__':
     controller = MSMain()
-    data = controller.get_all_data_from_ms(from_date="2023-05-01", to_date="2023-05-24")
+    # data = controller.get_all_data_from_ms(from_date="2023-05-01", to_date="2023-05-24")
+    data = controller.get_all_data_from_ms()
     # data = controller.get_stockall_report(from_date="2023-05-01", to_date="2023-02-01")
     # data = controller.get_stockstore_report(from_date="2023-05-01", to_date="2023-02-01")
     # print(data)
