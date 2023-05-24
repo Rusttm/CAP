@@ -16,11 +16,15 @@ class ConnMSSaveJson(ConnMSMainClass):
         try:
             if file_name:
                 self.file_name = self.corrected_file_name(file_name)
-            if dir_name == "config":
-                self.dir_name = dir_name
+            # if dir_name == "config":
+            self.dir_name = dir_name
             dir_file = os.path.dirname(os.path.dirname(__file__))
+            dir_path = os.path.join(dir_file, self.dir_name)
+            if not os.path.exists(dir_path):
+                os.makedirs(dir_path)
 
-            DATA_FILE_PATH = os.path.join(dir_file, self.dir_name, f"{self.file_name}")
+
+            DATA_FILE_PATH = os.path.join(dir_path, f"{self.file_name}")
             if not os.path.exists(DATA_FILE_PATH):
                 open(DATA_FILE_PATH, 'x')
             if os.path.exists(DATA_FILE_PATH) and data_dict:
