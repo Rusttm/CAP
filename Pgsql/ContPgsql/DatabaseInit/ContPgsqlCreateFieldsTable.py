@@ -5,7 +5,7 @@ from Pgsql.ConnPgsql.ConnPgsqlData import ConnPgsqlData
 
 
 class ContPgsqlCreateFieldsTable(ConnPgsqlTables, ConnPgsqlJson, ContPgsqlMainClass, ConnPgsqlData):
-    """ connector for read tables from pgsql database"""
+    """ connector for read fields tables from pgsql database"""
     tables_list = ['product_fields',
                    'payins_fields', 'payouts_fields',
                    'packin_fields', 'packout_fields',
@@ -34,13 +34,17 @@ class ContPgsqlCreateFieldsTable(ConnPgsqlTables, ConnPgsqlJson, ContPgsqlMainCl
             self.create_unique_col_in_table(table_name=table_name, col_name="field_name")
             for name_col, _ in data_dict.items():
                 self.create_col_in_table(table_name=table_name, col_name=f"field_{name_col}", col_type="VARCHAR(255)")
+                # create column with datatypes of Postgresql
+                self.create_col_in_table(table_name=table_name, col_name=f"field_pg_type", col_type="VARCHAR(255)")
             break
 
     def put_data_from_json(self, table_name, fields_dict):
         data = dict(fields_dict["data"])
         for key, data_dict in data.items():
-            col_names_list = ["field_name"] + [f"field_{col_name}" for col_name in data_dict.keys()]
+            col_names_list = ["field_name"] + [f"field_{col_name}" for col_name in data_dict.keys()] + ["field_pg_type"]
             col_values_list = [key] + [str(value) for value in data_dict.values()]
+            col_pg_type = self.types_mapper(data_dict.get("type"))
+            col_values_list.append(col_pg_type)
             self.put_data_2table(table_name=table_name, col_names_list=col_names_list, col_values_list=col_values_list)
 
     def fill_data_from_json(self):
@@ -63,3 +67,4 @@ if __name__ == '__main__':
     # print(f"try to create table from 'product_fields.json' result - {connector.create_table_from_json_field(file_name='product_fields.json')}")
     # print(connector.get_full_data(table_name='product_fields'))
     print(connector.fill_data_from_json())
+    # print(connector.delete_all_fields_tables())
