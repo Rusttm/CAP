@@ -13,6 +13,7 @@ class ContPgsqlCreateFieldsTable(ConnPgsqlTables, ConnPgsqlJson, ContPgsqlMainCl
                    'stockall_fields', 'stockstore_fields',
                    'customers_bal_fields', 'customers_fields',
                    'profit_byprod_fields', 'profit_bycust_fields']
+
     def __init__(self):
         super().__init__()
 
@@ -59,7 +60,6 @@ class ContPgsqlCreateFieldsTable(ConnPgsqlTables, ConnPgsqlJson, ContPgsqlMainCl
         for file_name in self.tables_list:
             self.delete_table(table_name=file_name)
             print(f"deleted table {file_name}")
-
 
 
 if __name__ == '__main__':
