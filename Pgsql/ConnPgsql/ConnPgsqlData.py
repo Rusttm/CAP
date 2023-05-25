@@ -42,7 +42,7 @@ class ConnPgsqlData(ConnPgsqlMainClass):
 
     def get_value_cols_from_table(self, table_name=None, col_name=None, col_value=None, col_ans=None):
         """ request col_name='col_value'
-        return vale of col_ans"""
+        return vale of col_ans [('attributes', 'JSON[]')] """
         col_string = f"{col_name}, {col_ans}"
         req_line = f"SELECT {col_string} FROM {table_name} WHERE {col_name}='{col_value}'"
         # req_line = f"SELECT field_name FROM {table_name}"
