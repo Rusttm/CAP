@@ -10,6 +10,7 @@ class ConnPgsqlData(ConnPgsqlMainClass):
         super().__init__()
 
     def get_full_data(self, table_name=None):
+        """ select all from table"""
         req_line = f"SELECT * FROM {table_name}"
         if table_name:
             try:
@@ -73,10 +74,11 @@ class ConnPgsqlData(ConnPgsqlMainClass):
 
 if __name__ == '__main__':
     connector = ConnPgsqlData()
-    data_from_table = connector.get_cols_from_table(table_name='product_fields', col_list=['id', 'field_name', 'field_pg_type'])
-    data_from_table = connector.get_value_cols_from_table(table_name='product_fields',
-                                                          col_name='field_name',
-                                                          col_value='attributes',
-                                                          col_ans='field_pg_type')
+    # data_from_table = connector.get_cols_from_table(table_name='product_fields', col_list=['id', 'field_name', 'field_pg_type'])
+    # data_from_table = connector.get_value_cols_from_table(table_name='product_fields',
+    #                                                       col_name='field_name',
+    #                                                       col_value='attributes',
+    #                                                       col_ans='field_pg_type')
+    data_from_table = connector.get_full_data(table_name='product_fields')
     # print(f"try to get data from table 'test' {connector.get_full_data(table_name='product_fields')}")
     print(f"try to get info from table 'product_fields' {data_from_table}")

@@ -16,7 +16,7 @@ class ContPgsqlCreateFieldsTable(ConnPgsqlTables, ConnPgsqlJson, ContPgsqlMainCl
     def __init__(self):
         super().__init__()
 
-    def create_table_from_json_field(self, file_name=None):
+    def create_field_table_from_json(self, file_name=None):
         """ create tables for fields names and types"""
         fields_dict = dict(self.get_fields_from_json(file_name=file_name))
         table_name = fields_dict.get("table", "None")
@@ -49,15 +49,13 @@ class ContPgsqlCreateFieldsTable(ConnPgsqlTables, ConnPgsqlJson, ContPgsqlMainCl
 
     def fill_data_from_json(self):
         for file_name in self.tables_list:
-            self.create_table_from_json_field(file_name=file_name)
+            self.create_field_table_from_json(file_name=file_name)
             print(f"created table {file_name}")
 
     def delete_all_fields_tables(self):
         for file_name in self.tables_list:
             self.delete_table(table_name=file_name)
             print(f"deleted table {file_name}")
-
-
 
 
 

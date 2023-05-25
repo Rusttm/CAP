@@ -4,19 +4,19 @@ from API_MS.MSMainClass import MSMainClass
 class MSMain(MSMainClass):
     """ this class gather all reports together
     in one dict: {"products_table":[], "stock_remains_table":[]}"""
-    tables_dict = {"products_table": {"fields_list": "product_fields", "function": "get_products_report"},
-                   "stock_remains_table": {"fields_list": "stockall_fields", "function": "get_stockall_report"},
-                   "stock_bystore_table": {"fields_list": "stockstore_fields", "function": "get_stockstore_report"},
-                   "profit_byprod_table": {"fields_list": "profit_byprod_fields", "function": "get_profit_by_product"},
-                   "profit_bycust_table": {"fields_list": "profit_bycust_fields", "function": "get_profit_by_customer"},
-                   "payments_in_table": {"fields_list": "payins_fields", "function": "get_payments_in"},
-                   "payments_out_table": {"fields_list": "payouts_fields", "function": "get_payments_out"},
-                   "packlists_in_table": {"fields_list": "packin_fields", "function": "get_pack_lists_in"},
-                   "packlists_out_table": {"fields_list": "packout_fields", "function": "get_pack_lists_out"},
-                   "invoices_out_table": {"fields_list": "invout_fields", "function": "get_invoices_in"},
-                   "invoices_in_table": {"fields_list": "invin_fields", "function": "get_invoices_out"},
-                   "customers_bal_table": {"fields_list": "customers_bal_fields", "function": "get_customers_bal_report"},
-                   "customers_table": {"fields_list": "customers_fields", "function": "get_customers_report"}
+    tables_dict = {"products_table": {"fields_table": "product_fields", "function": "get_products_report"},
+                   "stock_remains_table": {"fields_table": "stockall_fields", "function": "get_stockall_report"},
+                   "stock_bystore_table": {"fields_table": "stockstore_fields", "function": "get_stockstore_report"},
+                   "profit_byprod_table": {"fields_table": "profit_byprod_fields", "function": "get_profit_by_product"},
+                   "profit_bycust_table": {"fields_table": "profit_bycust_fields", "function": "get_profit_by_customer"},
+                   "payments_in_table": {"fields_table": "payins_fields", "function": "get_payments_in"},
+                   "payments_out_table": {"fields_table": "payouts_fields", "function": "get_payments_out"},
+                   "packlists_in_table": {"fields_table": "packin_fields", "function": "get_pack_lists_in"},
+                   "packlists_out_table": {"fields_table": "packout_fields", "function": "get_pack_lists_out"},
+                   "invoices_out_table": {"fields_table": "invout_fields", "function": "get_invoices_in"},
+                   "invoices_in_table": {"fields_table": "invin_fields", "function": "get_invoices_out"},
+                   "customers_bal_table": {"fields_table": "customers_bal_fields", "function": "get_customers_bal_report"},
+                   "customers_table": {"fields_table": "customers_fields", "function": "get_customers_report"}
                    }
 
     def __init__(self):
