@@ -16,7 +16,15 @@ class ContPgsqlCreateReportsTable(ContPgsqlMainClass, MSMain):
     def print_table_dict(self):
         print(self.tables_dict)
 
+    def get_full_info_fields_table(self, ):
+        from Pgsql.ConnPgsql.ConnPgsqlData import ConnPgsqlData
+        connector = ConnPgsqlData()
+        table_data = connector.get_full_data(table_name='fields_list')
+        print(table_data)
+
+
 
 if __name__ == '__main__':
     controller = ContPgsqlCreateReportsTable()
-    controller.print_table_dict()
+    # controller.print_table_dict()
+    controller.get_full_info_fields_table()
