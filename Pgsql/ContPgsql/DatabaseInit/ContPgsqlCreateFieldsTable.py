@@ -17,7 +17,8 @@ class ContPgsqlCreateFieldsTable(ConnPgsqlTables, ConnPgsqlJson, ContPgsqlMainCl
         super().__init__()
 
     def create_field_table_from_json(self, file_name=None):
-        """ create tables for fields names and types"""
+        """ create tables for fields names and types
+        and fulfillment them"""
         fields_dict = dict(self.get_fields_from_json(file_name=file_name))
         table_name = fields_dict.get("table", "None")
         if table_name:
@@ -39,6 +40,7 @@ class ContPgsqlCreateFieldsTable(ConnPgsqlTables, ConnPgsqlJson, ContPgsqlMainCl
             break
 
     def put_data_from_json(self, table_name, fields_dict):
+        """ takes data from json file and put it in sql table"""
         data = dict(fields_dict["data"])
         for key, data_dict in data.items():
             col_names_list = ["field_name"] + [f"field_{col_name}" for col_name in data_dict.keys()] + ["field_pg_type"]
@@ -47,7 +49,8 @@ class ContPgsqlCreateFieldsTable(ConnPgsqlTables, ConnPgsqlJson, ContPgsqlMainCl
             col_values_list.append(col_pg_type)
             self.put_data_2table(table_name=table_name, col_names_list=col_names_list, col_values_list=col_values_list)
 
-    def fill_data_from_json(self):
+    def create_all_field_tables(self):
+        """ create all field tables and fulfillment them"""
         for file_name in self.tables_list:
             self.create_field_table_from_json(file_name=file_name)
             print(f"created table {file_name}")
@@ -61,8 +64,9 @@ class ContPgsqlCreateFieldsTable(ConnPgsqlTables, ConnPgsqlJson, ContPgsqlMainCl
 
 if __name__ == '__main__':
     connector = ContPgsqlCreateFieldsTable()
+    connector.create_all_field_tables()
     # print(f"tables list {connector.get_tables_list()}")
     # print(f"try to create table from 'product_fields.json' result - {connector.create_table_from_json_field(file_name='product_fields.json')}")
     # print(connector.get_full_data(table_name='product_fields'))
-    print(connector.fill_data_from_json())
+    # print(connector.fill_data_from_json())
     # print(connector.delete_all_fields_tables())

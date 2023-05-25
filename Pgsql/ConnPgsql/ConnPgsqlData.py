@@ -56,12 +56,13 @@ class ConnPgsqlData(ConnPgsqlMainClass):
                 # print(e)
                 self.logger.error(f"{__class__.__name__} error while request cols table {table_name}: {e}")
         else:
-            self.logger.warning(f"{__class__.__name__} request not specified table_name={table_name} or col_list={col_list}")
+            self.logger.warning(f"{__class__.__name__} request not specified table_name={table_name} or col_list={col_name}")
             self.logger.info(f"{__class__.__name__} please try request 'get_tables_list'")
         return None
     def put_data_2table(self, table_name: str, col_names_list: list, col_values_list: list):
-        column_list = ', '.join(col_names_list)
-        req_line = f" INSERT INTO {table_name}  ({column_list}) VALUES {tuple(col_values_list)}"
+        column_string = ', '.join(col_names_list)
+        col_values_string = self.values_in_request_handler(col_values_list)
+        req_line = f" INSERT INTO {table_name}  ({column_string}) VALUES {col_values_string}"
         try:
             ans = self.send_get_request(req_line=req_line)
             return ans
@@ -69,6 +70,17 @@ class ConnPgsqlData(ConnPgsqlMainClass):
             # print(e)
             self.logger.error(f"{__class__.__name__} error while put data to table {table_name}: {e}")
 
+    def values_in_request_handler(self, col_values_list):
+        """ add '{}' for json and
+        return corrected list []"""
+        temp_array = list()
+        for elem in col_values_list:
+            temp_array.append(elem)
+        result_string = str(tuple(temp_array))
+        result_string = result_string.replace("\\'", "'")
+        result_string = result_string.replace("json[]'", "json[]")
+        result_string = result_string.replace("'array", "array")
+        return result_string
 
 
 

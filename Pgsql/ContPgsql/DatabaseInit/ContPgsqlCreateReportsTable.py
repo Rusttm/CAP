@@ -40,6 +40,7 @@ class ContPgsqlCreateReportsTable(ContPgsqlMainClass, MSMain, ConnPgsqlTables, C
         return table_data[0]
 
     def create_all_report_tables_by_schema(self):
+        """ just create tables """
         tables_dict = self.tables_dict
         for table_name, data_dict in tables_dict.items():
             field_table_name = data_dict.get('fields_table', None)
@@ -49,12 +50,51 @@ class ContPgsqlCreateReportsTable(ContPgsqlMainClass, MSMain, ConnPgsqlTables, C
             for col_name, col_type in data_fields:
                 self.create_col_in_table(table_name=table_name, col_name=col_name, col_type=col_type)
 
-        # print(self.get_full_info_fields_table())
+            print(f"table: {table_name} created")
+
+    def fill_report_tables(self, from_date=None, to_date=None):
+        from API_MS.MSMain import MSMain
+        ms_connector = MSMain()
+        for table_name, data_dict in self.tables_dict.items():
+            table_data_function = data_dict.get('function', None)
+            request_func = getattr(ms_connector, table_data_function)
+            req_data = request_func(from_date=from_date, to_date=to_date)
+            for data_string in req_data.get('data', []):
+                col_names_list, col_values_list = self.col_values_list_handler(table_name=table_name, data_string=data_string)
+                self.put_data_2table(table_name=table_name, col_names_list=col_names_list, col_values_list=col_values_list)
+                break
+            break
+
+    def col_values_list_handler(self, data_string, table_name):
+        """ add '{}' for json and
+        return corrected list []"""
+        col_names_list = []
+        col_values_list = []
+
+        for col_name, col_value in dict(data_string).items():
+            col_names_list.append(col_name)
+            field_table = dict(self.tables_dict).get(table_name)['fields_table']
+            _, col_type = self.get_pgtype_from_fields_table(col_value=col_name, table_name=field_table)
+            if type(col_value) == str:
+                col_value = f'{col_value}'
+            elif col_type == "JSON":
+                col_value = str(col_value).replace("'", '"')
+                # col_value = f"'{col_value}'"
+            elif col_type == "JSON[]":
+                new_json_array = []
+                for json_elem in col_value:
+                    json_elem = str(json_elem).replace("'", '"')
+                    new_json_array.append(json_elem)
+                col_value = 'array' + f'{new_json_array}' + '::json[]'
+            col_values_list.append(col_value)
+        return col_names_list, col_values_list
+
 
 
 if __name__ == '__main__':
     controller = ContPgsqlCreateReportsTable()
-    controller.create_all_report_tables_by_schema()
+    # controller.create_all_report_tables_by_schema()
+    controller.fill_report_tables()
     # # controller.print_table_dict()
     # print(controller.get_full_info_fields_table(table_name='product_fields'))
     # req_data = controller.get_pgtype_from_fields_table(table_name='product_fields', col_value='attributes')

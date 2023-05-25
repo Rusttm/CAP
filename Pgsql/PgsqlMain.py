@@ -10,7 +10,7 @@ class PgsqlMain(PgsqlMainClass):
     def make_fields_tables(self):
         from Pgsql.ContPgsql.DatabaseInit.ContPgsqlCreateFieldsTable import ContPgsqlCreateFieldsTable
         controller = ContPgsqlCreateFieldsTable()
-        controller.fill_data_from_json()
+        controller.create_all_field_tables()
         # controller.delete_all_fields_tables()
 
 

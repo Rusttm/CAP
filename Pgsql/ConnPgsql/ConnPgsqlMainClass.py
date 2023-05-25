@@ -89,9 +89,9 @@ class ConnPgsqlMainClass(PgsqlMainClass):
             "Meta": "JSON",
             "String(4096)": "TEXT",
             "Int": "INTEGER",
-            "MetaArray": "JSON[]",
+            "MetaArray": "JSON", # not JSON[]
             "String": "TEXT",
-            "Enum": "ENUM",
+            "Enum": "VARCHAR(255)", # no enum in postgresql
             "DateTime": "TIMESTAMP",
             "Float": "REAL"
         })
