@@ -38,7 +38,6 @@ class ContPgsqlCreateReportsTable(ContPgsqlMainClass, MSMain, ConnPgsqlTables, C
                                                          col_name='field_name',
                                                          col_value=col_value,
                                                          col_ans='field_pg_type')
-        # print(col_value, table_data)
         return table_data[0]
 
     def create_all_report_tables_by_schema(self):
@@ -50,9 +49,7 @@ class ContPgsqlCreateReportsTable(ContPgsqlMainClass, MSMain, ConnPgsqlTables, C
             data_fields = self.get_cols_from_table(table_name=field_table_name,
                                                    col_list=['field_name', 'field_pg_type'])
             for col_name, col_type in data_fields:
-
                 self.create_col_in_table(table_name=table_name, col_name=col_name, col_type=col_type)
-
             print(f"table: {table_name} created")
 
     def fill_report_tables(self, from_date=None, to_date=None):
@@ -68,6 +65,7 @@ class ContPgsqlCreateReportsTable(ContPgsqlMainClass, MSMain, ConnPgsqlTables, C
                 col_names_list, col_values_list = self.col_values_list_handler(table_name=table_name, data_string=data_string)
                 self.put_data_2table(table_name=table_name, col_names_list=col_names_list, col_values_list=col_values_list)
                 print(f"send to table {table_name} position No:{i}")
+            break
 
 
     def col_values_list_handler(self, data_string, table_name):
@@ -99,8 +97,8 @@ class ContPgsqlCreateReportsTable(ContPgsqlMainClass, MSMain, ConnPgsqlTables, C
 
 if __name__ == '__main__':
     controller = ContPgsqlCreateReportsTable()
-    controller.create_all_report_tables_by_schema()
-    # controller.fill_report_tables()
+    # controller.create_all_report_tables_by_schema()
+    controller.fill_report_tables()
     # # controller.print_table_dict()
     # print(controller.get_full_info_fields_table(table_name='product_fields'))
     # req_data = controller.get_pgtype_from_fields_table(table_name='product_fields', col_value='attributes')
