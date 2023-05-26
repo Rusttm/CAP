@@ -9,7 +9,6 @@ from Pgsql.ConnPgsql.ConnPgsqlMainClass import ConnPgsqlMainClass
 
 class ConnPgsqlConfig(ConnPgsqlMainClass):
     """ configfile connector"""
-    conf = None
     method = 'file'
 
     # url = None
@@ -22,14 +21,14 @@ class ConnPgsqlConfig(ConnPgsqlMainClass):
     def get_config(self, url='url', port='port', user='user', user_pass='user_pass', db_name='db_name'):
         """ return information from config file"""
         from Pgsql.ConnPgsql.ConnPgsqlConfigFile import ConnPgsqlConfigFile
+        conf = dict()
         if self.method == "file":
-
-            self.conf = ConnPgsqlConfigFile().get_config_data()
-        return {'url': self.conf[url],
-                'port': self.conf[port],
-                'user': self.conf[user],
-                'user_pass': self.conf[user_pass],
-                'db_name': self.conf[db_name]}
+            conf = ConnPgsqlConfigFile().get_config_data()
+        return {'url': conf.get(url, "None"),
+                'port': conf.get(port, "None"),
+                'user': conf.get(user, "None"),
+                'user_pass': conf.get(user_pass, "None"),
+                'db_name': conf.get(db_name, "None")}
 
 
 if __name__ == '__main__':
