@@ -8,6 +8,7 @@ class ContPgsqlReadDataTable(ContPgsqlMainClass, ConnPsqlReadDataTables):
     def __init__(self):
         super().__init__()
 
+
 if __name__ == '__main__':
     connector = ContPgsqlReadDataTable()
     # print(f"tables list {connector.get_tables_list()}")

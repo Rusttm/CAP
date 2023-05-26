@@ -5,19 +5,20 @@ from API_MS.MSMain import MSMain
 from Pgsql.ConnPgsql.ConnPgsqlTables import ConnPgsqlTables
 # from Pgsql.ConnPgsql.ConnPgsqlJson import ConnPgsqlJson
 from Pgsql.ConnPgsql.ConnPgsqlData import ConnPgsqlData
+from Pgsql.ContPgsql.ContPgsqlReadJsonTablesDict import ContPgsqlReadJsonTablesDict
 
 
-class ContPgsqlCreateReportsTable(ContPgsqlMainClass, MSMain, ConnPgsqlTables, ConnPgsqlData):
+class ContPgsqlCreateReportsTable(ContPgsqlMainClass, MSMain, ConnPgsqlTables, ConnPgsqlData, ContPgsqlReadJsonTablesDict):
     """ class for creation report tables from fields tables"""
     ms_reports = None
     unique_columns = ['id', 'fields_name']
+    tables_dict = None
 
     def __init__(self):
         super().__init__()
+        # get all MS requests from MSMain class
         self.ms_reports = MSMain()
-
-    def tables_corr_dict(self):
-        return dict(self.tables_dict)
+        self.tables_dict = self.get_tables_dict()
 
     def create_new_report_table(self, table_name=None):
         self.create_table_with_id(table_name=table_name)
@@ -65,8 +66,7 @@ class ContPgsqlCreateReportsTable(ContPgsqlMainClass, MSMain, ConnPgsqlTables, C
 
     def create_all_report_tables_by_schema(self):
         """ just create tables """
-        tables_dict = self.tables_dict
-        for table_name, data_dict in tables_dict.items():
+        for table_name, data_dict in self.tables_dict.items():
             field_table_name = data_dict.get('fields_table', None)
             self.create_new_report_table(table_name=table_name)
             data_fields = self.get_cols_from_table(table_name=field_table_name,

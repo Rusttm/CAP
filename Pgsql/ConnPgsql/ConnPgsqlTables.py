@@ -41,7 +41,8 @@ class ConnPgsqlTables(ConnPgsqlMainClass):
             # req_line = f"CREATE TABLE IF NOT EXISTS {table_name} (id varchar(250) NOT NULL PRIMARY KEY);"
             req_line = f"CREATE TABLE IF NOT EXISTS {table_name} (position_id SERIAL PRIMARY KEY);"
             ans = self.send_set_request(req_line=req_line)
-        return ans
+            print(ans.get('result', None))
+        return ans.get('result', None)
 
     def create_col_in_table(self, table_name=None, col_name=None, col_type=None):
         if table_name and col_name and col_type and self.table_is_exist(table_name=table_name):

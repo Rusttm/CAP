@@ -87,12 +87,15 @@ class ConnPgsqlMainClass(PgsqlMainClass):
                         # make cursor
                         with connection.cursor() as my_cursor:
                             my_cursor.execute(req_line)
-                            connection.commit()
                             self.logger.debug(f"{__class__.__name__} fetch cursor -'{req_line}'")
-                            result_cursor = my_cursor.connection
-                            my_cursor.close()
+                            result_cursor = ['created!']
+                            try:
+                                result_cursor = my_cursor.connection.notices
+                            except Exception as e:
+                                print(e)
+                            connection.commit()
                             self.logger.debug(f"{__class__.__name__} closed cursor -'{req_line}'")
-                    return dict({"connection": result_cursor})
+                    return dict({"result": result_cursor})
                 except Exception as e:
                     self.logger.error(f"{__class__.__name__} request error'{e}'")
                 finally:
