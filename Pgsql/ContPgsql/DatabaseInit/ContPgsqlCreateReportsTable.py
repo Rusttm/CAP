@@ -3,7 +3,7 @@ import time
 from Pgsql.ContPgsql.ContPgsqlMainClass import ContPgsqlMainClass
 from API_MS.MSMain import MSMain
 from Pgsql.ConnPgsql.ConnPgsqlTables import ConnPgsqlTables
-from Pgsql.ConnPgsql.ConnPgsqlJson import ConnPgsqlJson
+# from Pgsql.ConnPgsql.ConnPgsqlJson import ConnPgsqlJson
 from Pgsql.ConnPgsql.ConnPgsqlData import ConnPgsqlData
 
 
@@ -57,10 +57,10 @@ class ContPgsqlCreateReportsTable(ContPgsqlMainClass, MSMain, ConnPgsqlTables, C
             result_tuple = table_data[0]
         except IndexError as e:
             result_tuple = (f"{col_value}", "TEXT")
-            print(f"cant find field_pg_type for {col_value} in table {table_name}")
+            print(f"cant find field_pg_type for {col_value} in table {field_table_name}")
         except TypeError as e:
             result_tuple = (f"{col_value}", "TEXT")
-            print(f"cant find field_pg_type for {col_value} in table {table_name}")
+            print(f"cant find field_pg_type for {col_value} in table {field_table_name}")
         return result_tuple
 
     def create_all_report_tables_by_schema(self):
