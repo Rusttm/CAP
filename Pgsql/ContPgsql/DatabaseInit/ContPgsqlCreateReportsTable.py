@@ -1,3 +1,5 @@
+import time
+
 from Pgsql.ContPgsql.ContPgsqlMainClass import ContPgsqlMainClass
 from API_MS.MSMain import MSMain
 from Pgsql.ConnPgsql.ConnPgsqlTables import ConnPgsqlTables
@@ -63,6 +65,7 @@ class ContPgsqlCreateReportsTable(ContPgsqlMainClass, MSMain, ConnPgsqlTables, C
     def fill_report_tables(self, from_date=None, to_date=None):
         from API_MS.MSMain import MSMain
         ms_connector = MSMain()
+        time_last = time.ctime()
         for table_name, data_dict in self.tables_dict.items():
             table_data_function = data_dict.get('function', None)
             request_func = getattr(ms_connector, table_data_function)
@@ -72,7 +75,9 @@ class ContPgsqlCreateReportsTable(ContPgsqlMainClass, MSMain, ConnPgsqlTables, C
             for i, data_string in enumerate(data_list):
                 col_names_list, col_values_list = self.col_values_list_handler(table_name=table_name, data_string=data_string)
                 self.put_data_2table(table_name=table_name, col_names_list=col_names_list, col_values_list=col_values_list)
-                print(f"send to table {table_name} position No:{i}")
+                time_request = time.ctime() - time_last
+                time_last = time.ctime()
+                print(f"send to table {table_name} position No:{i} ({time_request})")
             break
 
 
@@ -105,7 +110,7 @@ class ContPgsqlCreateReportsTable(ContPgsqlMainClass, MSMain, ConnPgsqlTables, C
 
 if __name__ == '__main__':
     controller = ContPgsqlCreateReportsTable()
-    # controller.create_all_report_tables_by_schema()
+    controller.create_all_report_tables_by_schema()
     controller.fill_report_tables()
     # # controller.print_table_dict()
     # print(controller.get_full_info_fields_table(table_name='product_fields'))
