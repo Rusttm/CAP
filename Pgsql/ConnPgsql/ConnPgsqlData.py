@@ -110,12 +110,11 @@ class ConnPgsqlData(ConnPgsqlMainClass):
         return result_string
 
     def values_list_in_request_handler(self, col_values_lists):
-        result_string = '( '
+        result_string = ""
         for i, values_list in enumerate(col_values_lists):
             result_string += self.values_in_request_handler(values_list)
             if i < len(col_values_lists) - 1:
                 result_string += ", "
-        result_string += ' )'
         return result_string
 
 

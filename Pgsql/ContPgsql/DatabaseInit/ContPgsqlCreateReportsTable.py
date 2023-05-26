@@ -80,10 +80,29 @@ class ContPgsqlCreateReportsTable(ContPgsqlMainClass, MSMain, ConnPgsqlTables, C
                 print(f"send to table {table_name} position No:{i} ({time_request})")
             break
 
+    def fill_report_tables_multiple(self, from_date=None, to_date=None):
+        from API_MS.MSMain import MSMain
+        ms_connector = MSMain()
+        time_last = time.ctime()
+        for table_name, data_dict in self.tables_dict.items():
+            table_data_function = data_dict.get('function', None)
+            request_func = getattr(ms_connector, table_data_function)
+            req_data = request_func(from_date=from_date, to_date=to_date)
+            data_list = req_data.get('data', [])
+            print(f"количество позиций в таблице {table_name}: {len(data_list)}")
+            col_values_list_list = []
+            for i, data_string in enumerate(data_list):
+                col_values_list_list.append(list(dict(data_string).values()))
+                col_names_list = list(dict(data_string).keys())
+            _, col_values_lists = self.col_values_lists_handle(table_name=table_name,
+                                                               values_dict_string=col_values_list_list)
+            self.put_multiple_data_2table(table_name=table_name,
+                                          col_names_list=col_names_list,
+                                          col_values_lists=col_values_lists)
 
     def col_values_list_handler(self, data_string, table_name):
-        """ add '{}' for json and
-        return corrected list []"""
+        """ add '' for json and cast array[]::json[] to list
+        return corrected """
         col_names_list = []
         col_values_list = []
         for col_name, col_value in dict(data_string).items():
@@ -105,6 +124,10 @@ class ContPgsqlCreateReportsTable(ContPgsqlMainClass, MSMain, ConnPgsqlTables, C
                 col_value = 'array' + f'{new_json_array}' + '::json[]'
             col_values_list.append(col_value)
         return col_names_list, col_values_list
+
+    def col_values_lists_handler(self, values_dict_string):
+
+        return None
 
 
 
