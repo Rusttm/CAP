@@ -38,7 +38,15 @@ class ContPgsqlCreateReportsTable(ContPgsqlMainClass, MSMain, ConnPgsqlTables, C
                                                          col_name='field_name',
                                                          col_value=col_value,
                                                          col_ans='field_pg_type')
-        return table_data[0]
+        try:
+            result_tuple = table_data[0]
+        except IndexError as e:
+            result_tuple = (f"{col_value}", "TEXT")
+            print(f"cant find field_pg_type for {col_value} in table {table_name}")
+        except TypeError as e:
+            result_tuple = (f"{col_value}", "TEXT")
+            print(f"cant find field_pg_type for {col_value} in table {table_name}")
+        return result_tuple
 
     def create_all_report_tables_by_schema(self):
         """ just create tables """
