@@ -13,4 +13,5 @@ class ContMSInvOut(ContMSMainClass, ConnMSInvOut):
 
 if __name__ == '__main__':
     controller = ContMSInvOut()
-    data = controller.get_invout_filtered_by_date(from_date="2023-01-01", to_date="2023-02-01", to_file=True)
+    # data = controller.get_invout_filtered_by_date(from_date="2023-01-01", to_date="2023-02-01", to_file=True)
+    data = controller.get_invout_filtered_by_date(from_date="2022-12-01", to_date="2022-12-03", to_file=True)

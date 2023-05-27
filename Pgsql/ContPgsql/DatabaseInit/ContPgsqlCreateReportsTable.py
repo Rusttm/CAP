@@ -67,14 +67,14 @@ class ContPgsqlCreateReportsTable(ContPgsqlMainClass, MSMain, ConnPgsqlTables, C
     def create_all_report_tables_by_schema(self):
         """ just create tables """
         for table_name, data_dict in self.tables_dict.items():
+            if data_dict.get('sql', None) == 0:
+                continue
             field_table_name = data_dict.get('fields_table', None)
             self.create_new_report_table(table_name=table_name)
-            data_fields = self.get_cols_from_table(table_name=field_table_name,
-                                                   col_list=['field_name', 'field_pg_type'])
+            data_fields = self.get_cols_from_table(table_name=field_table_name, col_list=['field_name', 'field_pg_type'])
             for col_name, col_type in data_fields:
                 self.create_col_in_table(table_name=table_name, col_name=col_name, col_type=col_type)
             print(f"table: {table_name} created")
-            break #nly one table
 
     # def fill_report_tables(self, from_date=None, to_date=None):
     #     from API_MS.MSMain import MSMain

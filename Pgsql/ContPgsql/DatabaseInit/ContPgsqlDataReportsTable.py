@@ -1,15 +1,46 @@
 from Pgsql.ContPgsql.ContPgsqlMainClass import ContPgsqlMainClass
 import time
 from Pgsql.ConnPgsql.ConnPgsqlData import ConnPgsqlData
+from Pgsql.ConnPgsql.ConnPgsqlDataMulty import ConnPgsqlDataMulty
 
 
-class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData):
+class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlDataMulty):
     """class for fulfillment data tables"""
 
     def __init__(self):
         super().__init__()
         from Pgsql.ContPgsql.ContPgsqlReadJsonTablesDict import ContPgsqlReadJsonTablesDict
         self.tables_dict = ContPgsqlReadJsonTablesDict().get_tables_dict()
+
+
+
+    def fill_report_tables_fast(self, from_date=None, to_date=None):
+        from API_MS.MSMain import MSMain
+        ms_connector = MSMain()
+        for table_name, data_dict in self.tables_dict.items():
+            if data_dict.get('sql', None) == 0:
+                continue
+            table_data_function = data_dict.get('function', None)
+            request_func = getattr(ms_connector, table_data_function)
+            # req_data = request_func(from_date="2022-12-01", to_date="2022-12-03")
+            req_data = request_func()
+            data_list = req_data.get('data', [])
+            # field_table = data_dict.get('fields_table')
+            # fields_dict = self.get_pgtype_info_fields_table(field_table_name=field_table)
+            gen_start = end = time.time()
+            print(f"start :{time.ctime()} download in table: {table_name} positions: {len(data_list)}")
+            self.fill_table_fast(table_name=table_name, data_dict=data_list)
+            # for i, data_string in enumerate(data_list):
+            #     col_names_list, col_values_list = self.col_values_list_handler(table_name=table_name,
+            #                                                                    data_string=data_string,
+            #                                                                    fields_dict=fields_dict)
+            #     start = time.time()
+            #
+            #     self.put_data_2table(table_name=table_name, col_names_list=col_names_list,
+            #                          col_values_list=col_values_list)
+            #     end = time.time()
+            #     print(f"send to table {table_name} position No:{i}({len(data_list)}) in:{round(end - start, 2)}sec")
+            print(f"table: {table_name} downloded in {round(end - gen_start, 2)}sec")
 
     def fill_report_tables(self, from_date=None, to_date=None):
         from API_MS.MSMain import MSMain
@@ -19,7 +50,8 @@ class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData):
                 continue
             table_data_function = data_dict.get('function', None)
             request_func = getattr(ms_connector, table_data_function)
-            req_data = request_func(from_date=from_date, to_date=to_date)
+            # req_data = request_func(from_date="2022-12-01", to_date="2022-12-03")
+            req_data = request_func()
             data_list = req_data.get('data', [])
             field_table = data_dict.get('fields_table')
             fields_dict = self.get_pgtype_info_fields_table(field_table_name=field_table)
@@ -30,6 +62,7 @@ class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData):
                                                                                data_string=data_string,
                                                                                fields_dict=fields_dict)
                 start = time.time()
+
                 self.put_data_2table(table_name=table_name, col_names_list=col_names_list, col_values_list=col_values_list)
                 end = time.time()
                 print(f"send to table {table_name} position No:{i}({len(data_list)}) in:{round(end - start, 2)}sec")
@@ -92,4 +125,4 @@ class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData):
 if __name__ == '__main__':
     controller = ContPgsqlDataReportsTable()
     # print(controller.get_pgtype_info_fields_table(field_table_name='product_fields'))
-    controller.fill_report_tables()
+    controller.fill_report_tables_fast()

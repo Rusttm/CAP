@@ -57,6 +57,7 @@ class ContPgsqlCreateFieldsTable(ConnPgsqlTables, ContPgsqlReadFieldJson, ContPg
         from Pgsql.ContPgsql.ContPgsqlReadJsonTablesDict import ContPgsqlReadJsonTablesDict
         fields_tables_list = ContPgsqlReadJsonTablesDict().get_field_tables_list()
         for i, file_name in enumerate(fields_tables_list):
+            # self.table_is_exist(table_name=)
             self.create_field_table_from_json(field_file_name=file_name)
             print(f"created table {i}({len(fields_tables_list)}) {file_name}")
 
@@ -71,7 +72,8 @@ class ContPgsqlCreateFieldsTable(ConnPgsqlTables, ContPgsqlReadFieldJson, ContPg
 
 if __name__ == '__main__':
     connector = ContPgsqlCreateFieldsTable()
-    connector.create_all_field_tables()
+    # connector.create_all_field_tables()
+    connector.create_field_table_from_json(field_file_name='invin_fields')
     # print(f"tables list {connector.get_tables_list()}")
     # print(f"try to create table from 'product_fields.json' result - {connector.create_table_from_json_field(file_name='product_fields.json')}")
     # print(connector.get_full_data(table_name='product_fields'))
