@@ -2,9 +2,10 @@ from Pgsql.ContPgsql.ContPgsqlMainClass import ContPgsqlMainClass
 import time
 from Pgsql.ConnPgsql.ConnPgsqlData import ConnPgsqlData
 from Pgsql.ConnPgsql.ConnPgsqlDataMulty import ConnPgsqlDataMulty
+from Pgsql.ConnPgsql.ConnPgsqlRowCount import ConnPgsqlRowCount
 
 
-class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlDataMulty):
+class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlDataMulty, ConnPgsqlRowCount):
     """class for fulfillment data tables"""
 
     def __init__(self):
@@ -62,11 +63,12 @@ class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlData
                                                                                data_string=data_string,
                                                                                fields_dict=fields_dict)
                 start = time.time()
-
                 self.put_data_2table(table_name=table_name, col_names_list=col_names_list, col_values_list=col_values_list)
                 end = time.time()
                 print(f"send to table {table_name} position No:{i}({len(data_list)}) in:{round(end - start, 2)}sec")
-            print(f"table: {table_name} downloded in {round(end - gen_start, 2)}sec")
+            # count rows in table
+            rows_in_table = self.count_rows_in_table(table_name=table_name)
+            print(f"table: {table_name} ({rows_in_table}rows from {i}) downloded in {round(end - gen_start, 2)}sec")
 
     def col_values_list_handler(self, data_string, table_name, fields_dict=None):
         """ add '' for json and cast array[]::json[] to list
