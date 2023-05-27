@@ -18,6 +18,8 @@ class ContPgsqlCreateFieldsTable(ConnPgsqlTables, ContPgsqlReadFieldJson, ContPg
 
     def __init__(self):
         super().__init__()
+        from Pgsql.ContPgsql.ContPgsqlReadJsonTablesDict import ContPgsqlReadJsonTablesDict
+        self.tables_dict = ContPgsqlReadJsonTablesDict().get_tables_dict()
 
     def create_field_table_from_json(self, field_file_name=None, table_name=None):
         """ get data from field file create tables for fields names and types and fulfillment them"""
@@ -56,6 +58,12 @@ class ContPgsqlCreateFieldsTable(ConnPgsqlTables, ContPgsqlReadFieldJson, ContPg
         """ create all field tables and fulfillment them"""
         from Pgsql.ContPgsql.ContPgsqlReadJsonTablesDict import ContPgsqlReadJsonTablesDict
         fields_tables_list = ContPgsqlReadJsonTablesDict().get_field_tables_list()
+        for table_name, data_dict in self.tables_dict.items():
+            if data_dict.get('sql', None) == 0:
+                try:
+                    fields_tables_list.remove(data_dict.get('fields_table', None))
+                except Exception as e:
+                    print(e)
         for i, file_name in enumerate(fields_tables_list):
             # self.table_is_exist(table_name=)
             self.create_field_table_from_json(field_file_name=file_name)
@@ -73,7 +81,7 @@ class ContPgsqlCreateFieldsTable(ConnPgsqlTables, ContPgsqlReadFieldJson, ContPg
 if __name__ == '__main__':
     connector = ContPgsqlCreateFieldsTable()
     # connector.create_all_field_tables()
-    connector.create_field_table_from_json(field_file_name='payouts_fields')
+    connector.create_field_table_from_json(field_file_name='stockall_fields')
     # print(f"tables list {connector.get_tables_list()}")
     # print(f"try to create table from 'product_fields.json' result - {connector.create_table_from_json_field(file_name='product_fields.json')}")
     # print(connector.get_full_data(table_name='product_fields'))
