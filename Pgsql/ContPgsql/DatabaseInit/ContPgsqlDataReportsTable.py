@@ -79,6 +79,8 @@ class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlData
         for col_name, col_value in dict(data_string).items():
             if col_name == "group":
                 col_name = "group_ms"
+            if col_value is None:
+                continue
             col_names_list.append(col_name)
             # field_table = dict(self.tables_dict).get(table_name)['fields_table']
             col_type = fields_dict.get(col_name, 'TEXT')
@@ -105,6 +107,9 @@ class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlData
                     json_elem = str(col_value).replace("'", '"')
                     new_json_array.append(json_elem)
                 col_value = 'array' + f'{new_json_array}' + '::json[]'
+            # elif not col_value:
+            #     col_value = "null"
+
             col_values_list.append(col_value)
         return col_names_list, col_values_list
 

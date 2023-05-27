@@ -92,6 +92,7 @@ class ConnPgsqlData(ConnPgsqlMainClass):
             result_string += f'{elem}'
             if i < len(col_names_list) - 1:
                 result_string += ", "
+
         result_string += ' )'
         result_string = result_string.replace("\\", "")
         return result_string
@@ -103,6 +104,9 @@ class ConnPgsqlData(ConnPgsqlMainClass):
         for elem in col_values_list:
             if elem == 'group':
                 elem = 'group_ms'
+            # null -> None -> null
+            elif elem is None:
+                elem = "null"
             temp_array.append(elem)
         result_string = str(tuple(temp_array))
         result_string = result_string.replace("\\'", "'")
