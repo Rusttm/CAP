@@ -7,6 +7,7 @@ import queue
 from threading import Thread
 
 
+# noinspection GrazieInspection
 class ConnSCServer(SocketMainClass):
     """ starts socket server"""
     host = 'localhost'

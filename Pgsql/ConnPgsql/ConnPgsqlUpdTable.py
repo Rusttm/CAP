@@ -18,5 +18,5 @@ class ConnPgsqlUpdTable(ConnPgsqlMainClass):
 
 
 if __name__ == '__main__':
-    connector = ConnPsqlUpdTable()
+    connector = ConnPgsqlUpdTable()
     print(f"put data to table 'test' {connector.save_data_2table(table_name='test', data='7686979')}")
