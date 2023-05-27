@@ -3,9 +3,10 @@ import time
 from Pgsql.ConnPgsql.ConnPgsqlData import ConnPgsqlData
 from Pgsql.ConnPgsql.ConnPgsqlDataMulty import ConnPgsqlDataMulty
 from Pgsql.ConnPgsql.ConnPgsqlRowCount import ConnPgsqlRowCount
+from Pgsql.ContPgsql.ContPgsqlEvent import ContPgsqlEvent
 from tqdm import tqdm
 
-class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlDataMulty, ConnPgsqlRowCount):
+class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlDataMulty, ConnPgsqlRowCount, ContPgsqlEvent):
     """class for fulfillment data tables"""
 
     def __init__(self):
@@ -22,7 +23,7 @@ class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlData
                 continue
             table_data_function = data_dict.get('function', None)
             request_func = getattr(ms_connector, table_data_function)
-            req_data = request_func(from_date="2023-05-01", to_date="2023-05-01")
+            req_data = request_func(from_date="2023-05-01", to_date="2023-05-05")
             # req_data = request_func()
             data_list = req_data.get('data', [])
             # field_table = data_dict.get('fields_table')
@@ -40,6 +41,7 @@ class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlData
             #                          col_values_list=col_values_list)
             #     end = time.time()
             #     print(f"send to table {table_name} position No:{i}({len(data_list)}) in:{round(end - start, 2)}sec")
+            self.put_event_2service_table_updates_event(table_name=table_name)
             print(f"table: {table_name} downloded in {round(end - gen_start, 2)}sec")
 
     def fill_report_tables(self, from_date=None, to_date=None):
@@ -53,8 +55,8 @@ class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlData
             if not table_data_function:
                 continue
             request_func = getattr(ms_connector, table_data_function)
-            # req_data = request_func(from_date="2023-01-01", to_date="2023-02-01")
-            req_data = request_func()
+            req_data = request_func(from_date=from_date, to_date=to_date)
+            # req_data = request_func()
             data_list = req_data.get('data', [])
             field_table = data_dict.get('fields_table')
             fields_dict = self.get_pgtype_info_fields_table(field_table_name=field_table)
@@ -71,9 +73,13 @@ class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlData
                 # end = time.time()
                 # print(f"send to table {table_name} position No:{i}({len(data_list)}) in:{round(end - start, 2)}sec")
             # count rows in table
+
             end = time.time()
             rows_in_table = self.count_rows_in_table(table_name=table_name)
+            event_string = f"table: {table_name} ({rows_in_table}rows from {len(data_list)}) downloaded in {round(end - gen_start, 2)}sec"
             print(f"table: {table_name} ({rows_in_table}rows from {len(data_list)}) downloaded in {round(end - gen_start, 2)}sec")
+            self.put_event_2service_table_updates(table_name=table_name, description=event_string,
+                                                  from_date=from_date, to_date=to_date)
         return True
 
     def col_values_list_handler(self, data_string, table_name, fields_dict=None):
@@ -152,4 +158,4 @@ class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlData
 if __name__ == '__main__':
     controller = ContPgsqlDataReportsTable()
     # print(controller.get_pgtype_info_fields_table(field_table_name='product_fields'))
-    controller.fill_report_tables()
+    controller.fill_report_tables(from_date="2023-05-01", to_date="2023-05-17")

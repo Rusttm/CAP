@@ -27,7 +27,7 @@ class ContPgsqlCreateFieldsTable(ConnPgsqlTables, ContPgsqlReadFieldJson, ContPg
         self.fields_dict = ContPgsqlReadFieldJson().get_fields_table_data_from_json(field_file_name=field_file_name)
         if not self.fields_dict:
             raise NotImplementedError(f"configuration json file {field_file_name} doesn't exist, please configure it")
-        table_name = self.fields_dict.get("table", "None")
+        table_name = self.fields_dict.get("table", "unknown_table")
         if table_name:
             result = self.create_table_with_id(table_name=table_name)
             # print(self.table_is_exist(table_name=table_name))
@@ -41,10 +41,10 @@ class ContPgsqlCreateFieldsTable(ConnPgsqlTables, ContPgsqlReadFieldJson, ContPg
         for _, data_dict in fields_dict["data"].items():
             self.create_col_in_table(table_name=table_name, col_name="field_name", col_type="VARCHAR(255)")
             self.create_unique_col_in_table(table_name=table_name, col_name="field_name")
+            # create column with datatypes of Postgresql
+            self.create_col_in_table(table_name=table_name, col_name=f"field_pg_type", col_type="VARCHAR(255)")
             for name_col, _ in data_dict.items():
                 self.create_col_in_table(table_name=table_name, col_name=f"field_{name_col}", col_type="VARCHAR(255)")
-                # create column with datatypes of Postgresql
-                self.create_col_in_table(table_name=table_name, col_name=f"field_pg_type", col_type="VARCHAR(255)")
             break
 
     def put_data_from_json(self, table_name, fields_dict):
@@ -72,7 +72,7 @@ class ContPgsqlCreateFieldsTable(ConnPgsqlTables, ContPgsqlReadFieldJson, ContPg
         for i, file_name in enumerate(fields_tables_list):
             # self.table_is_exist(table_name=)
             self.create_field_table_from_json(field_file_name=file_name)
-            print(f"created table {i}({len(fields_tables_list)}) {file_name}")
+            print(f"created table {i+1}({len(fields_tables_list)}) {file_name}")
 
     def delete_all_fields_tables(self):
         from Pgsql.ContPgsql.ContPgsqlReadJsonTablesDict import ContPgsqlReadJsonTablesDict
