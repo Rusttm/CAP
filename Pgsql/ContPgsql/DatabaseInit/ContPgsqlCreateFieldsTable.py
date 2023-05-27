@@ -73,7 +73,7 @@ class ContPgsqlCreateFieldsTable(ConnPgsqlTables, ContPgsqlReadFieldJson, ContPg
 if __name__ == '__main__':
     connector = ContPgsqlCreateFieldsTable()
     # connector.create_all_field_tables()
-    connector.create_field_table_from_json(field_file_name='invin_fields')
+    connector.create_field_table_from_json(field_file_name='payins_fields')
     # print(f"tables list {connector.get_tables_list()}")
     # print(f"try to create table from 'product_fields.json' result - {connector.create_table_from_json_field(file_name='product_fields.json')}")
     # print(connector.get_full_data(table_name='product_fields'))

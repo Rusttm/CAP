@@ -89,8 +89,13 @@ class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlData
                 # col_value = f"'{col_value}'"
             elif col_type == "JSON[]":
                 new_json_array = []
-                for json_elem in col_value:
-                    json_elem = str(json_elem).replace("'", '"')
+                # single json[] not like list, but like json
+                if type(col_value) == list:
+                    for json_elem in col_value:
+                        json_elem = str(json_elem).replace("'", '"')
+                        new_json_array.append(json_elem)
+                else:
+                    json_elem = str(col_value).replace("'", '"')
                     new_json_array.append(json_elem)
                 col_value = 'array' + f'{new_json_array}' + '::json[]'
             col_values_list.append(col_value)
@@ -125,4 +130,4 @@ class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlData
 if __name__ == '__main__':
     controller = ContPgsqlDataReportsTable()
     # print(controller.get_pgtype_info_fields_table(field_table_name='product_fields'))
-    controller.fill_report_tables_fast()
+    controller.fill_report_tables()
