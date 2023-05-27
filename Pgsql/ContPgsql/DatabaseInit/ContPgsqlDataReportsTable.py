@@ -50,7 +50,7 @@ class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlData
                 continue
             table_data_function = data_dict.get('function', None)
             request_func = getattr(ms_connector, table_data_function)
-            # req_data = request_func(from_date="2022-12-01", to_date="2022-12-03")
+            # req_data = request_func(from_date="2022-12-01", to_date="2022-12-01")
             req_data = request_func()
             data_list = req_data.get('data', [])
             field_table = data_dict.get('fields_table')
