@@ -9,10 +9,18 @@ class ConnPgsqlTables(ConnPgsqlMainClass):
     def __init__(self):
         super().__init__()
 
-    def get_tables_list(self):
+    def get_tables_tuple_list(self):
         req_line = "SELECT * FROM information_schema.tables WHERE table_schema = 'public'"
         ans = self.send_get_request(req_line=req_line)
         return ans
+
+    def get_tables_list(self):
+        result_list = []
+        req_line = "SELECT * FROM information_schema.tables WHERE table_schema = 'public'"
+        ans = self.send_get_request(req_line=req_line)
+        for table in ans:
+            result_list.append(table[2])
+        return result_list
 
     def get_table_schema(self, table_name=None):
         req_line = f"SELECT * FROM information_schema.tables WHERE table_schema = 'public' AND table_name='{table_name}'"
@@ -100,9 +108,10 @@ if __name__ == '__main__':
     connector = ConnPgsqlTables()
     # print(f"tables list {connector.get_tables_list()}")
     # print(f"try to get table 'test' {connector.get_table_schema(table_name='test')}")
-    print(f"create empty table {connector.create_table_with_id(table_name='test_empty_id')}")
-    print(f"add col to empty table {connector.create_col_in_table(table_name='test_empty_id', col_name='test_col_1', col_type='String(255)')}")
-    print(connector.get_table_schema(table_name='test_empty_id'))
+    # print(f"create empty table {connector.create_table_with_id(table_name='test_empty_id')}")
+    # print(f"add col to empty table {connector.create_col_in_table(table_name='test_empty_id', col_name='test_col_1', col_type='String(255)')}")
+    # print(connector.get_table_schema(table_name='test_empty_id'))
+    print(connector.get_tables_tuple_list())
     # print(f"create table {connector.create_table_with_id(table_name='test_empty_id')}")
     # print(connector.table_is_exist(table_name='test_empty_id'))
     # print(f"delete table 'test' {connector.delete_table(table_name='test_empty_id')}")

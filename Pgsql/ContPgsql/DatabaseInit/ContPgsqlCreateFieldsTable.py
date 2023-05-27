@@ -59,9 +59,10 @@ class ContPgsqlCreateFieldsTable(ConnPgsqlTables, ContPgsqlReadFieldJson, ContPg
         """ create all field tables and fulfillment them"""
         from Pgsql.ContPgsql.ContPgsqlReadJsonTablesDict import ContPgsqlReadJsonTablesDict
         fields_tables_list = ContPgsqlReadJsonTablesDict().get_field_tables_list()
+        tables_in_db = self.get_tables_list()
         for table_name, data_dict in self.tables_dict.items():
             # create tables only with sql==1 in tables_dict
-            if data_dict.get('sql', None) != 1:
+            if data_dict.get('sql', None) != 1 or table_name in tables_in_db:
                 try:
                     fields_tables_list.remove(data_dict.get('fields_table', None))
                 except Exception as e:

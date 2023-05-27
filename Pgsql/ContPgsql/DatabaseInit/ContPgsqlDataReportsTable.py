@@ -3,7 +3,7 @@ import time
 from Pgsql.ConnPgsql.ConnPgsqlData import ConnPgsqlData
 from Pgsql.ConnPgsql.ConnPgsqlDataMulty import ConnPgsqlDataMulty
 from Pgsql.ConnPgsql.ConnPgsqlRowCount import ConnPgsqlRowCount
-
+from tqdm import tqdm
 
 class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlDataMulty, ConnPgsqlRowCount):
     """class for fulfillment data tables"""
@@ -51,24 +51,27 @@ class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlData
                 continue
             table_data_function = data_dict.get('function', None)
             request_func = getattr(ms_connector, table_data_function)
-            req_data = request_func(from_date="2023-01-01", to_date="2023-02-01")
-            # req_data = request_func()
+            # req_data = request_func(from_date="2023-01-01", to_date="2023-02-01")
+            req_data = request_func()
             data_list = req_data.get('data', [])
             field_table = data_dict.get('fields_table')
             fields_dict = self.get_pgtype_info_fields_table(field_table_name=field_table)
-            gen_start = end = time.time()
+            gen_start = time.time()
             print(f"start :{time.ctime()} download in table: {table_name} positions: {len(data_list)}")
-            for i, data_string in enumerate(data_list):
+            # for i, data_string in enumerate(data_list):
+            for i in tqdm(range(len(data_list))):
+                data_string = data_list[i]
                 col_names_list, col_values_list = self.col_values_list_handler(table_name=table_name,
                                                                                data_string=data_string,
                                                                                fields_dict=fields_dict)
-                start = time.time()
+                # start = time.time()
                 self.put_data_2table(table_name=table_name, col_names_list=col_names_list, col_values_list=col_values_list)
-                end = time.time()
-                print(f"send to table {table_name} position No:{i}({len(data_list)}) in:{round(end - start, 2)}sec")
+                # end = time.time()
+                # print(f"send to table {table_name} position No:{i}({len(data_list)}) in:{round(end - start, 2)}sec")
             # count rows in table
+            end = time.time()
             rows_in_table = self.count_rows_in_table(table_name=table_name)
-            print(f"table: {table_name} ({rows_in_table}rows from {i}) downloded in {round(end - gen_start, 2)}sec")
+            print(f"table: {table_name} ({rows_in_table}rows from {len(data_list)}) downloaded in {round(end - gen_start, 2)}sec")
         return True
 
     def col_values_list_handler(self, data_string, table_name, fields_dict=None):

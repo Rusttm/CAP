@@ -12,7 +12,7 @@ class ContPgsqlCount(ContPgsqlMainClass, ConnPgsqlRowCount, ConnPgsqlTables, Con
     def get_db_info(self):
         """ return information about tables"""
         result_dict = dict()
-        tables_list = self.get_tables_list()
+        tables_list = self.get_tables_tuple_list()
         for table in tables_list:
             table_dict = dict()
             table_name = table[2]

@@ -10,7 +10,7 @@ class ContPgsqlDelTable(ContPgsqlMainClass, ConnPsqlDelTable, ConnPgsqlTables):
         super().__init__()
 
     def delete_all_tables_in_db(self):
-        tables_list = self.get_tables_list()
+        tables_list = self.get_tables_tuple_list()
         for tuple_line in tables_list:
             table_name = tuple_line[2]
             self.delete_table(table_name=table_name)

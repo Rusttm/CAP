@@ -22,7 +22,7 @@ class ContPgsqlInitMain(ContPgsqlMainClass):
         print(f" report tables filled!")
         return result
     def initial_base_main(self):
-        start = time.ctime()
+        start = time.time()
         print(f"start db initialize at {time.ctime(start)}")
         fields_result = self.initial_create_fields_tables()
         now1 = time.time()
