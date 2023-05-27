@@ -50,6 +50,8 @@ class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlData
             if data_dict.get('sql', None) != 1:
                 continue
             table_data_function = data_dict.get('function', None)
+            if not table_data_function:
+                continue
             request_func = getattr(ms_connector, table_data_function)
             # req_data = request_func(from_date="2023-01-01", to_date="2023-02-01")
             req_data = request_func()

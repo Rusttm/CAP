@@ -25,6 +25,8 @@ class ContPgsqlCreateFieldsTable(ConnPgsqlTables, ContPgsqlReadFieldJson, ContPg
         """ get data from field file create tables for fields names and types and fulfillment them"""
         from Pgsql.ContPgsql.DatabaseInit.ContPgsqlReadFieldJson import ContPgsqlReadFieldJson
         self.fields_dict = ContPgsqlReadFieldJson().get_fields_table_data_from_json(field_file_name=field_file_name)
+        if not self.fields_dict:
+            raise NotImplementedError(f"configuration json file {field_file_name} doesn't exist, please configure it")
         table_name = self.fields_dict.get("table", "None")
         if table_name:
             result = self.create_table_with_id(table_name=table_name)
