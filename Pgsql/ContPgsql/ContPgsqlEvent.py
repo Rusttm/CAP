@@ -8,8 +8,7 @@ class ContPgsqlEvent(ConnPgsqlEvent):
     def put_event_2service_table_updates(self, table_name=None,
                                                description=None,
                                                from_date=None,
-                                               to_date=None
-                                               ):
+                                               to_date=None):
         """ put in service table information about updates of tables"""
         now = datetime.datetime.now()
         date_string = now.strftime("%Y-%m-%d %H:%M:%S")
