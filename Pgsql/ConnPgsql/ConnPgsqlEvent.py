@@ -15,9 +15,10 @@ class ConnPgsqlEvent(ConnPgsqlMainClass):
         from Pgsql.ConnPgsql.ConnPgsqlData import ConnPgsqlData
         col_names_list = list(event_dict.keys())
         col_values_list = list(event_dict.values())
-        connector = ConnPgsqlData().put_data_2table(table_name=self.service_table_name,
-                                                    col_names_list=col_names_list,
-                                                    col_values_list=col_values_list)
+        ans = ConnPgsqlData().put_data_2table(table_name=self.service_table_name,
+                                              col_names_list=col_names_list,
+                                              col_values_list=col_values_list)
+        self.logger.info(f"new event in service_table {event_dict}, result: {ans}")
         return True
 
 
