@@ -18,6 +18,7 @@ class ConnPgsqlEvent(ConnPgsqlMainClass):
         connector = ConnPgsqlData().put_data_2table(table_name=self.service_table_name,
                                                     col_names_list=col_names_list,
                                                     col_values_list=col_values_list)
+        return True
 
 
 if __name__ == '__main__':
