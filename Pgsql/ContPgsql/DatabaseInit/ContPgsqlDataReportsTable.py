@@ -22,8 +22,8 @@ class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlData
                 continue
             table_data_function = data_dict.get('function', None)
             request_func = getattr(ms_connector, table_data_function)
-            # req_data = request_func(from_date="2022-12-01", to_date="2022-12-03")
-            req_data = request_func()
+            req_data = request_func(from_date="2023-05-01", to_date="2023-05-01")
+            # req_data = request_func()
             data_list = req_data.get('data', [])
             # field_table = data_dict.get('fields_table')
             # fields_dict = self.get_pgtype_info_fields_table(field_table_name=field_table)
@@ -85,6 +85,13 @@ class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlData
             if type(col_value) == str:
                 col_value = f'{col_value}'
             elif col_type == "JSON":
+                # "name": "ООО "АМЕТИСТ""
+                for key, value in col_value.items():
+                    if type(value) == str:
+                        value = value.replace('"', "")
+                    # value = str(value).replace("'", "")
+                    # value = str(value).replace('"', "")
+                    col_value[key] = value
                 col_value = str(col_value).replace("'", '"')
                 # col_value = f"'{col_value}'"
             elif col_type == "JSON[]":

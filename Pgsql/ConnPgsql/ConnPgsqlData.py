@@ -64,7 +64,7 @@ class ConnPgsqlData(ConnPgsqlMainClass):
         # column_string = ', '.join(col_names_list)
         col_values_string = self.values_in_request_handler(col_values_list, table_name)
         col_names_string = self.columns_in_request_handler(col_names_list, table_name)
-        req_line = f" INSERT INTO {table_name}  {col_names_string} VALUES {col_values_string}"
+        req_line = f"INSERT INTO {table_name}  {col_names_string} VALUES {col_values_string}"
         try:
             ans = self.send_get_request(req_line=req_line)
             return ans
