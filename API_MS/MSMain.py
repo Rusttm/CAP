@@ -41,7 +41,7 @@ class MSMain(MSMainClass):
             self.save_table_data_2file_json(data_dict=data, file_name=data_name)
         return data
 
-    def get_customers_report(self, from_date=None, to_date=None, to_file=False):
+    def get_customers_bal_report(self, from_date=None, to_date=None, to_file=False):
         data_name = "customers_table"
         from API_MS.ContMS.ContMSCustBal import ContMSCustBal
         data = ContMSCustBal().get_cust_bal(from_date=from_date, to_date=to_date, to_file=False)
@@ -52,7 +52,7 @@ class MSMain(MSMainClass):
             self.save_table_data_2file_json(data_dict=data, file_name=data_name)
         return data
 
-    def get_customers_bal_report(self, from_date=None, to_date=None, to_file=False):
+    def get_customers_report(self, from_date=None, to_date=None, to_file=False):
         data_name = "customers_bal_table"
         from API_MS.ContMS.ContMSCustList import ContMSCustList
         data = ContMSCustList().get_custom_list_filtered_by_updated(from_date=from_date, to_date=to_date, to_file=False)

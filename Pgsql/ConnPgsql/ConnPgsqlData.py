@@ -111,7 +111,9 @@ class ConnPgsqlData(ConnPgsqlMainClass):
         result_string = str(tuple(temp_array))
         result_string = result_string.replace("\\'", "'")
         result_string = result_string.replace("json[]'", "json[]")
+        result_string = result_string.replace('text[]"', 'text[]')
         result_string = result_string.replace("'array", "array")
+        result_string = result_string.replace('"array', 'array')
         return result_string
 
     # def values_list_in_request_handler(self, col_values_lists):

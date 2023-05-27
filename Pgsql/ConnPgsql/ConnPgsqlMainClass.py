@@ -122,7 +122,8 @@ class ConnPgsqlMainClass(PgsqlMainClass):
             "String": "TEXT",
             "Enum": "VARCHAR(255)", # no enum in postgresql
             "DateTime": "TIMESTAMP",
-            "Float": "REAL"
+            "Float": "REAL",
+            "Array(String)": "TEXT[]"
         })
         return mapper.get(type_ms, type_ms)
 

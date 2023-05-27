@@ -91,11 +91,16 @@ class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlData
                 for key, value in col_value.items():
                     if type(value) == str:
                         value = value.replace('"', "")
-                    # value = str(value).replace("'", "")
-                    # value = str(value).replace('"', "")
                     col_value[key] = value
                 col_value = str(col_value).replace("'", '"')
                 # col_value = f"'{col_value}'"
+            elif col_type == "TEXT[]":
+                new_string_array = []
+                if type(col_value) == list:
+                    for string_elem in col_value:
+                        # string_elem = str(string_elem).replace('"', "")
+                        new_string_array.append(string_elem)
+                col_value = 'array' + f'{new_string_array}' + '::text[]'
             elif col_type == "JSON[]":
                 new_json_array = []
                 # single json[] not like list, but like json
