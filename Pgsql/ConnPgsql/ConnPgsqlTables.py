@@ -41,8 +41,13 @@ class ConnPgsqlTables(ConnPgsqlMainClass):
             # req_line = f"CREATE TABLE IF NOT EXISTS {table_name} (id varchar(250) NOT NULL PRIMARY KEY);"
             req_line = f"CREATE TABLE IF NOT EXISTS {table_name} (position_id SERIAL PRIMARY KEY);"
             ans = self.send_set_request(req_line=req_line)
-            print(ans.get('result', None))
-        return ans.get('result', None)
+            if ans.get('result', None) == []:
+                self.logger.debug(f"created new table: {table_name}")
+                return True
+            else:
+                self.logger.debug(f"table: {table_name} already exist")
+                return False
+        return False
 
     def create_col_in_table(self, table_name=None, col_name=None, col_type=None):
         if table_name and col_name and col_type and self.table_is_exist(table_name=table_name):
@@ -81,7 +86,6 @@ class ConnPgsqlTables(ConnPgsqlMainClass):
         else:
             self.logger.warning(f"{__class__.__name__} receive wrong parameters")
         return False
-
 
     def delete_table(self, table_name=None):
         """  delete table 'table_name' """

@@ -2,8 +2,8 @@ import logging
 from logging.handlers import RotatingFileHandler
 
 
-class CAPLogger(object):
-    logger_name = "capmainlogger"
+class MSLogger(object):
+    logger_name = "msapi"
     logger = None
 
     def __init__(self):
@@ -17,5 +17,5 @@ class CAPLogger(object):
 
 
 if __name__ == '__main__':
-    connector = CAPLogger()
+    connector = MSLogger()
     connector.logger.info("resting")

@@ -13,9 +13,8 @@ class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlData
         from Pgsql.ContPgsql.ContPgsqlReadJsonTablesDict import ContPgsqlReadJsonTablesDict
         self.tables_dict = ContPgsqlReadJsonTablesDict().get_tables_dict()
 
-
-
     def fill_report_tables_fast(self, from_date=None, to_date=None):
+        """ !!!doesnt work now"""
         from API_MS.MSMain import MSMain
         ms_connector = MSMain()
         for table_name, data_dict in self.tables_dict.items():
@@ -44,15 +43,16 @@ class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlData
             print(f"table: {table_name} downloded in {round(end - gen_start, 2)}sec")
 
     def fill_report_tables(self, from_date=None, to_date=None):
+        """fill all the tables with sql = 1 in tables_dict"""
         from API_MS.MSMain import MSMain
         ms_connector = MSMain()
         for table_name, data_dict in self.tables_dict.items():
-            if data_dict.get('sql', None) == 0:
+            if data_dict.get('sql', None) != 1:
                 continue
             table_data_function = data_dict.get('function', None)
             request_func = getattr(ms_connector, table_data_function)
-            # req_data = request_func(from_date="2022-12-01", to_date="2022-12-01")
-            req_data = request_func()
+            req_data = request_func(from_date="2023-01-01", to_date="2023-02-01")
+            # req_data = request_func()
             data_list = req_data.get('data', [])
             field_table = data_dict.get('fields_table')
             fields_dict = self.get_pgtype_info_fields_table(field_table_name=field_table)
@@ -69,6 +69,7 @@ class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlData
             # count rows in table
             rows_in_table = self.count_rows_in_table(table_name=table_name)
             print(f"table: {table_name} ({rows_in_table}rows from {i}) downloded in {round(end - gen_start, 2)}sec")
+        return True
 
     def col_values_list_handler(self, data_string, table_name, fields_dict=None):
         """ add '' for json and cast array[]::json[] to list
@@ -114,9 +115,6 @@ class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlData
                     json_elem = str(col_value).replace("'", '"')
                     new_json_array.append(json_elem)
                 col_value = 'array' + f'{new_json_array}' + '::json[]'
-            # elif not col_value:
-            #     col_value = "null"
-
             col_values_list.append(col_value)
         return col_names_list, col_values_list
 
