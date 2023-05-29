@@ -9,6 +9,8 @@ class ConnPgsqlMainClass(PgsqlMainClass):
 
     def __init__(self):
         super().__init__()
+        # from Pgsql.ConnPgsql.ConnPgsqlJson import ConnPgsqlJson
+        # self.types_mapper = ConnPgsqlJson().get_data_from_json(file_name='mapper')
 
     def init_connection(self):
         from Pgsql.ConnPgsql.ConnPgsqlConfig import ConnPgsqlConfig
@@ -107,25 +109,25 @@ class ConnPgsqlMainClass(PgsqlMainClass):
             self.logger.error(f"{__class__.__name__} command line for request is not valid-'{req_line}'")
         return None
 
-    def types_mapper(self, type_ms):
-        """ mapper fo datatypes from MoiSklad to Postgresql"""
-        mapper = dict({
-            "String(255)": "VARCHAR(255)",
-            "Boolean": "BOOLEAN",
-            "UUID": "UUID",
-            "Array(Object)": "JSON[]",
-            "Object": "JSON",
-            "Meta": "JSON",
-            "String(4096)": "TEXT",
-            "Int": "INTEGER",
-            "MetaArray": "JSON[]",
-            "String": "TEXT",
-            "Enum": "VARCHAR(255)", # no enum in postgresql
-            "DateTime": "TIMESTAMP",
-            "Float": "REAL",
-            "Array(String)": "TEXT[]"
-        })
-        return mapper.get(type_ms, type_ms)
+    # def types_mapper(self, type_ms):
+    #     """ mapper fo datatypes from MoiSklad to Postgresql"""
+    #     mapper = dict({
+    #         "String(255)": "VARCHAR(255)",
+    #         "Boolean": "BOOLEAN",
+    #         "UUID": "UUID",
+    #         "Array(Object)": "JSON[]",
+    #         "Object": "JSON",
+    #         "Meta": "JSON",
+    #         "String(4096)": "TEXT",
+    #         "Int": "INTEGER",
+    #         "MetaArray": "JSON[]",
+    #         "String": "TEXT",
+    #         "Enum": "VARCHAR(255)", # no enum in postgresql
+    #         "DateTime": "TIMESTAMP",
+    #         "Float": "REAL",
+    #         "Array(String)": "TEXT[]"
+    #     })
+    #     return mapper.get(type_ms, type_ms)
 
 
 if __name__ == '__main__':

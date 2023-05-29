@@ -2,11 +2,13 @@ from Pgsql.ContPgsql.ContPgsqlMainClass import ContPgsqlMainClass
 from Pgsql.ConnPgsql.ConnPgsqlDataGet import ConnPgsqlDataGet
 from Pgsql.ConnPgsql.ConnPgsqlDataPut import ConnPgsqlDataPut
 from Pgsql.ConnPgsql.ConnPgsqlDataHandler import ConnPgsqlDataHandler
+from Pgsql.ConnPgsql.ConnPgsqlRowCount import ConnPgsqlRowCount
+from Pgsql.ContPgsql.ContPgsqlEvent import ContPgsqlEvent
 import datetime
 import time
 from tqdm import tqdm
 
-class ContPgsqlUpdater(ContPgsqlMainClass, ConnPgsqlDataGet, ConnPgsqlDataPut, ConnPgsqlDataHandler):
+class ContPgsqlUpdater(ContPgsqlMainClass, ConnPgsqlDataGet, ConnPgsqlDataPut, ConnPgsqlDataHandler, ConnPgsqlRowCount, ContPgsqlEvent):
 
     def __init__(self):
         super().__init__()
@@ -39,25 +41,20 @@ class ContPgsqlUpdater(ContPgsqlMainClass, ConnPgsqlDataGet, ConnPgsqlDataPut, C
             fields_dict = self.get_pgtype_info_fields_table(field_table_name=field_table)
             gen_start = time.time()
             print(f"start :{time.ctime()} download in table: {table_name} positions: {len(data_list)}")
+            time.sleep(1)
             # for i, data_string in enumerate(data_list):
             for i in tqdm(range(len(data_list))):
                 data_string = data_list[i]
                 col_names_list, col_values_list = self.col_and_values_list_pre_handler(table_name=table_name,
-                                                                               data_string=data_string,
-                                                                               fields_dict=fields_dict)
-                # start = time.time()
+                                                                                       data_string=data_string,
+                                                                                       fields_dict=fields_dict)
                 self.put_data_2table(table_name=table_name, col_names_list=col_names_list,
                                      col_values_list=col_values_list)
-                # end = time.time()
-                # print(f"send to table {table_name} position No:{i}({len(data_list)}) in:{round(end - start, 2)}sec")
-            # count rows in table
-
             end = time.time()
-            rows_in_table = self.c(table_name=table_name)
+            rows_in_table = self.count_rows_in_table(table_name=table_name)
             event_string = f"table: {table_name} ({rows_in_table}rows from {len(data_list)}) downloaded in {round(end - gen_start, 2)}sec"
             print(f"table: {table_name} ({rows_in_table}rows from {len(data_list)}) downloaded in {round(end - gen_start, 2)}sec")
-            # self.put_event_2service_table_updates(table_name=table_name, description=event_string,
-            #                                       from_date=from_date, to_date=to_date)
+            self.put_event_2service_table_updates(table_name=table_name, description=event_string, from_date=from_date, to_date=to_date)
         return True
 
 

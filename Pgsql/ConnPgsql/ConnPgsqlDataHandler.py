@@ -1,7 +1,8 @@
 from Pgsql.ConnPgsql.ConnPgsqlMainClass import ConnPgsqlMainClass
+from Pgsql.ConnPgsql.ConnPgsqlDataTypes import ConnPgsqlDataTypes
 
 
-class ConnPgsqlDataHandler(ConnPgsqlMainClass):
+class ConnPgsqlDataHandler(ConnPgsqlMainClass, ConnPgsqlDataTypes):
     def __init__(self):
         super().__init__()
         from Pgsql.ContPgsql.ContPgsqlReadJsonTablesDict import ContPgsqlReadJsonTablesDict

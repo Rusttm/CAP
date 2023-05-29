@@ -5,9 +5,11 @@ from Pgsql.ConnPgsql.ConnPgsqlJson import ConnPgsqlJson
 from Pgsql.ContPgsql.DatabaseInit.ContPgsqlReadFieldJson import ContPgsqlReadFieldJson
 from Pgsql.ConnPgsql.ConnPgsqlDataGet import ConnPgsqlDataGet
 from Pgsql.ConnPgsql.ConnPgsqlDataPut import ConnPgsqlDataPut
+from Pgsql.ConnPgsql.ConnPgsqlDataTypes import ConnPgsqlDataTypes
 
 
-class ContPgsqlDataFieldsTable(ConnPgsqlTables, ContPgsqlReadFieldJson, ContPgsqlMainClass, ConnPgsqlDataGet, ConnPgsqlDataPut):
+class ContPgsqlDataFieldsTable(ConnPgsqlTables, ContPgsqlReadFieldJson, ContPgsqlMainClass,
+                               ConnPgsqlDataGet, ConnPgsqlDataPut, ConnPgsqlDataTypes):
     """ connector for read fields tables from pgsql database"""
     fields_dict = None
 
