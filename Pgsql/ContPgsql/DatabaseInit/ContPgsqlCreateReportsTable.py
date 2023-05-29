@@ -12,7 +12,7 @@ from Pgsql.ContPgsql.ContPgsqlReadJsonTablesDict import ContPgsqlReadJsonTablesD
 class ContPgsqlCreateReportsTable(ContPgsqlMainClass, MSMain, ConnPgsqlTables, ConnPgsqlDataGet, ConnPgsqlDataPut):
     """ class for creation report tables from fields tables"""
     ms_reports = None
-    unique_columns = ['id', 'fields_name', 'code']
+    unique_columns = ['id', 'fields_name']
     tables_dict = None
 
     def __init__(self):
@@ -26,7 +26,10 @@ class ContPgsqlCreateReportsTable(ContPgsqlMainClass, MSMain, ConnPgsqlTables, C
         self.create_table_with_id(table_name=table_name)
 
     def add_col_2report_table(self, table_name=None, col_name=None, col_type=None):
-        if col_name in self.unique_columns:
+        table_dict = self.tables_dict.get(table_name)
+        unique_col = table_dict.get("unique")
+        # if col_name in self.unique_columns:
+        if col_name == unique_col:
             self.create_col_in_table(table_name=table_name, col_name=col_name, col_type=col_type)
             self.mark_unique_col_in_table(table_name=table_name, col_name=col_name)
         else:
