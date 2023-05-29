@@ -19,10 +19,15 @@ class Main(CAPMainClass):
         from API_Tbot.TGBotMain import TGBotMain
         self.telegram_service = TGBotMain()
 
+    def start_api_db_updater(self):
+        from Pgsql.PgsqlMain import PgsqlMain
+        self.updater_service = PgsqlMain()
+
     def main(self):
         self.start_socket_service()
         time.sleep(3)
         self.start_telegrambot_service()
+
 
 
 if __name__ == '__main__':

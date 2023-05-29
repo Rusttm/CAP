@@ -11,6 +11,7 @@ class PgsqlMain(PgsqlMainClass):
 
     def __init__(self):
         super().__init__()
+        self.main_pgsql()
 
     def start_pgsql_socket_service(self):
         from Pgsql.PgsqlSocSrv.PgsqlSocSrvCont.ContPgsqlSocSrvClient import ContPgsqlSocSrvClient
