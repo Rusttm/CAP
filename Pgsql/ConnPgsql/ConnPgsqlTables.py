@@ -83,9 +83,14 @@ class ConnPgsqlTables(ConnPgsqlMainClass):
 
     def table_is_exist(self, table_name=None):
         """ check is table exist in db? """
-        if self.get_table_schema(table_name=table_name):
+        tables_list = self.get_tables_list()
+        if table_name in tables_list:
             return True
-        return False
+        else:
+            return False
+        # if self.get_table_schema(table_name=table_name):
+        #     return True
+        # return False
 
     def table_col_is_exist(self, table_name=None, col_name=None):
         """ check is col  exist in table? """

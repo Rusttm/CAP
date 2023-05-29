@@ -58,6 +58,7 @@ class PgsqlMain(PgsqlMainClass):
         out_msgs = self.outgoing_messages
         self.outgoing_messages = []
         return out_msgs
+
     def pgsql_db_init(self):
         from Pgsql.ContPgsql.DatabaseInit.ContPgsqlInitMain import ContPgsqlInitMain
         self.send_msg_2telegram("start initiating databases")
