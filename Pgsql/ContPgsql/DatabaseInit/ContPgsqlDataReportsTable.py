@@ -114,4 +114,5 @@ class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlData
 
 if __name__ == '__main__':
     controller = ContPgsqlDataReportsTable()
-    controller.fill_report_tables(from_date="2023-05-01", to_date="2023-05-10")
+    controller.fill_report_tables()
+    # controller.fill_report_tables(from_date="2023-05-01", to_date="2023-05-10")

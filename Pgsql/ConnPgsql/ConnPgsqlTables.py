@@ -1,6 +1,7 @@
 from Pgsql.ConnPgsql.ConnPgsqlMainClass import ConnPgsqlMainClass
 
 
+
 class ConnPgsqlTables(ConnPgsqlMainClass):
     """ class for tables connection"""
     pgsql_conn = None
@@ -58,8 +59,9 @@ class ConnPgsqlTables(ConnPgsqlMainClass):
         return False
 
     def create_col_in_table(self, table_name=None, col_name=None, col_type=None):
+        from Pgsql.ConnPgsql.ConnPgsqlDataTypes import ConnPgsqlDataTypes
         if table_name and col_name and col_type and self.table_is_exist(table_name=table_name):
-            column_type = self.types_mapper(type_ms=col_type)
+            column_type = ConnPgsqlDataTypes().types_mapper(type_ms=col_type)
             if column_type:
                 req_line = f"ALTER TABLE IF EXISTS {table_name} ADD IF NOT EXISTS {col_name} {column_type}"
                 ans = self.send_set_request(req_line=req_line)

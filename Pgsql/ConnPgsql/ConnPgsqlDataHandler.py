@@ -1,8 +1,8 @@
 from Pgsql.ConnPgsql.ConnPgsqlMainClass import ConnPgsqlMainClass
-from Pgsql.ConnPgsql.ConnPgsqlDataTypes import ConnPgsqlDataTypes
 
 
-class ConnPgsqlDataHandler(ConnPgsqlMainClass, ConnPgsqlDataTypes):
+
+class ConnPgsqlDataHandler(ConnPgsqlMainClass):
     def __init__(self):
         super().__init__()
         from Pgsql.ContPgsql.ContPgsqlReadJsonTablesDict import ContPgsqlReadJsonTablesDict
@@ -11,6 +11,7 @@ class ConnPgsqlDataHandler(ConnPgsqlMainClass, ConnPgsqlDataTypes):
     def col_and_values_list_pre_handler(self, data_string, table_name, fields_dict=None):
         """ add '' for json and cast array[]::json[] and array[]::text[] to list
         return corrected """
+        # from Pgsql.ConnPgsql.ConnPgsqlDataTypes import ConnPgsqlDataTypes
         col_names_list = []
         col_values_list = []
         if fields_dict is None:

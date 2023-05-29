@@ -1,5 +1,7 @@
 from Pgsql.ContPgsql.ContPgsqlMainClass import ContPgsqlMainClass
+
 import time
+
 
 class ContPgsqlInitMain(ContPgsqlMainClass):
     """ controller for initiate db"""
@@ -27,13 +29,14 @@ class ContPgsqlInitMain(ContPgsqlMainClass):
         self.service_messages.append(f"report tables created at {time.ctime()}, result: {result}")
         return result
 
-    def initial_fill_report_tables(self):
+    def initial_fill_report_tables(self, from_date=None, to_date=None):
         from Pgsql.ContPgsql.DatabaseInit.ContPgsqlDataReportsTable import ContPgsqlDataReportsTable
-        result = ContPgsqlDataReportsTable().fill_report_tables(from_date="2023-05-01", to_date="2023-05-10")
+        # result = ContPgsqlDataReportsTable().fill_report_tables(from_date="2023-05-01", to_date="2023-05-10")
+        result = ContPgsqlDataReportsTable().fill_report_tables(from_date=from_date, to_date=to_date)
         print(f" report tables filled!")
         self.service_messages.append(f"report tables filled at {time.ctime()}, result: {result}")
         return result
-    def initial_base_main(self):
+    def initiate_bases(self):
         start = time.time()
         print(f"start db initialize at {time.ctime(start)}")
         fields_result = self.initial_create_fields_tables()
@@ -55,4 +58,4 @@ class ContPgsqlInitMain(ContPgsqlMainClass):
 
 if __name__ == '__main__':
     controller = ContPgsqlInitMain()
-    print(controller.initial_base_main())
+    print(controller.initiate_bases())
