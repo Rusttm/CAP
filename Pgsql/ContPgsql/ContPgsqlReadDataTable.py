@@ -1,12 +1,13 @@
 from Pgsql.ContPgsql.ContPgsqlMainClass import ContPgsqlMainClass
-from Pgsql.ConnPgsql.ConnPgsqlData import ConnPgsqlData
+from Pgsql.ConnPgsql.ConnPgsqlDataGet import ConnPgsqlDataGet
+from Pgsql.ConnPgsql.ConnPgsqlDataPut import ConnPgsqlDataPut
 
-
-class ContPgsqlReadDataTable(ContPgsqlMainClass, ConnPgsqlData):
+class ContPgsqlReadDataTable(ContPgsqlMainClass, ConnPgsqlDataGet, ConnPgsqlDataPut):
     """ connector for read data from table"""
 
     def __init__(self):
         super().__init__()
+
 
 
 if __name__ == '__main__':
