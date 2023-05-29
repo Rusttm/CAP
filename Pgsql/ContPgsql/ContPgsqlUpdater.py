@@ -18,7 +18,7 @@ class ContPgsqlUpdater(ContPgsqlMainClass, ConnPgsqlDataGet, ConnPgsqlDataPut, C
 
     def update_all_report_tables(self):
         """ auto updater get info from service table and update table automatically"""
-        req_data = []
+        result_messages = []
         from API_MS.MSMain import MSMain
         ms_connector = MSMain()
         for table_name, data_dict in self.tables_dict.items():
@@ -53,9 +53,10 @@ class ContPgsqlUpdater(ContPgsqlMainClass, ConnPgsqlDataGet, ConnPgsqlDataPut, C
             end = time.time()
             rows_in_table = self.count_rows_in_table(table_name=table_name)
             event_string = f"table: {table_name} ({rows_in_table}rows from {len(data_list)}) downloaded in {round(end - gen_start, 2)}sec"
+            result_messages.append(event_string)
             print(f"table: {table_name} ({rows_in_table}rows from {len(data_list)}) downloaded in {round(end - gen_start, 2)}sec")
             self.put_event_2service_table_updates(table_name=table_name, description=event_string, from_date=from_date, to_date=to_date)
-        return True
+        return result_messages
 
 
     def get_last_update_date_from_service(self, event_table=None):
@@ -65,8 +66,6 @@ class ContPgsqlUpdater(ContPgsqlMainClass, ConnPgsqlDataGet, ConnPgsqlDataPut, C
                    f"FROM pgsql_service " \
                    f"WHERE event_table='{event_table}' AND event_from='updater' " \
                    f"GROUP BY event_table, event_from"
-        # req_line = f"SELECT field_name FROM {table_name}"
-        # req_line = f"SELECT json_build_object('id', json_agg({table_name}.field_name)) FROM {table_name}"
         if event_table:
             try:
                 ans = self.send_get_request(req_line=req_line)
@@ -78,6 +77,7 @@ class ContPgsqlUpdater(ContPgsqlMainClass, ConnPgsqlDataGet, ConnPgsqlDataPut, C
             self.logger.warning(f"{__class__.__name__} request not specified event_table_name={event_table}")
             self.logger.info(f"{__class__.__name__} please try request 'pgsql_table_list'")
         return None
+
 
 if __name__ == '__main__':
     connector = ContPgsqlUpdater()

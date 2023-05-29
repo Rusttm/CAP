@@ -56,7 +56,10 @@ class PgsqlMain(ContPgsql):
         self.logger.debug(f"{__file__.__name__} init database {init_db_controller}")
 
     def pgsql_db_updater(self):
-        pass
+        from Pgsql.ContPgsql.ContPgsqlUpdater import ContPgsqlUpdater
+        start_updates_controller = ContPgsqlUpdater().update_all_report_tables()
+        self.logger.debug(f"{__file__.__name__}  start_updates {start_updates_controller}")
+        return start_updates_controller
 
     def main_pgsql(self):
         try:
@@ -65,9 +68,12 @@ class PgsqlMain(ContPgsql):
         except Exception as e:
             print(f"{self.socket_name} cant run socket client error: {e}")
             self.logger.error(f"{__file__.__name__} cant run socket service error: {e}")
-        for i in range(10):
-            self.send_service_msg_to(to_user="admin", msg_text=f"{i} message from {self.socket_name}")
-            time.sleep(3)
+        self.pgsql_db_init()
+        self.send_service_msg_to(to_user="telegram", msg_text=f"message from database initiated")
+        while True:
+            result_updater_messages = self.pgsql_db_updater()
+            self.outgoing_messages.append(result_updater_messages)
+            time.sleep(3600)
 
 
 if __name__ == '__main__':
