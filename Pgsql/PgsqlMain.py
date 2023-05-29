@@ -59,7 +59,7 @@ class PgsqlMain(PgsqlMainClass):
         self.outgoing_messages = []
         return out_msgs
     def pgsql_db_init(self):
-        from ContPgsql.DatabaseInit.ContPgsqlInitMain import ContPgsqlInitMain
+        from Pgsql.ContPgsql.DatabaseInit.ContPgsqlInitMain import ContPgsqlInitMain
         self.send_msg_2telegram("start initiating databases")
         init_db_controller = ContPgsqlInitMain().initiate_bases()
         self.logger.debug(f"{__class__.__name__} init database {init_db_controller}")
