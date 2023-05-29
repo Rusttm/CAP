@@ -68,7 +68,7 @@ class ContPgsqlCreateReportsTable(ContPgsqlMainClass, MSMain, ConnPgsqlTables, C
         """ just create tables """
         tables_in_db = self.get_tables_list()
         for table_name, data_dict in self.tables_dict.items():
-            if data_dict.get('sql', None) != 1 or table_name in tables_in_db:
+            if data_dict.get('sql_upd', None) != 1 or table_name in tables_in_db:
                 continue
             field_table_name = data_dict.get('fields_table', None)
             self.create_new_report_table(table_name=table_name)
