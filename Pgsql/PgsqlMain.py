@@ -73,6 +73,13 @@ class PgsqlMain(PgsqlMainClass):
         self.send_msg_2telegram("databases updated")
         return start_updates_controller
 
+    def pgsql_db_updater_loop(self):
+        while True:
+            result_updater_messages = self.pgsql_db_updater()
+            self.send_msg_2telegram(f"result: {result_updater_messages}")
+            time.sleep(600)
+
+
     def main_pgsql(self):
         try:
             Thread(target=self.start_pgsql_socket_service, args=[]).start()
@@ -80,11 +87,16 @@ class PgsqlMain(PgsqlMainClass):
         except Exception as e:
             print(f"{self.socket_name} cant run socket client error: {e}")
             self.logger.error(f"{__class__.__name__} cant run socket service error: {e}")
+
         self.pgsql_db_init()
-        while True:
-            result_updater_messages = self.pgsql_db_updater()
-            self.send_msg_2telegram(f"result: {result_updater_messages}")
-            time.sleep(600)
+
+        try:
+            Thread(target=self.pgsql_db_updater_loop(), args=[]).start()
+            print(f"{self.socket_name} updater started at {time.ctime()}")
+        except Exception as e:
+            print(f"{self.socket_name} cant run updater error: {e}")
+            self.logger.error(f"{__class__.__name__} cant run updater error: {e}")
+
 
 
 if __name__ == '__main__':
