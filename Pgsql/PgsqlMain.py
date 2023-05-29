@@ -59,14 +59,18 @@ class PgsqlMain(PgsqlMainClass):
         return out_msgs
     def pgsql_db_init(self):
         from ContPgsql.DatabaseInit.ContPgsqlInitMain import ContPgsqlInitMain
+        self.send_msg_2telegram("start initiating databases")
         init_db_controller = ContPgsqlInitMain().initiate_bases()
         self.logger.debug(f"{__class__.__name__} init database {init_db_controller}")
         self.send_msg_2telegram("databases initiated")
 
     def pgsql_db_updater(self):
         from Pgsql.ContPgsql.ContPgsqlUpdater import ContPgsqlUpdater
+        self.send_msg_2telegram("start updating databases")
+        self.logger.debug(f"{__class__.__name__}  start_updates report tables")
         start_updates_controller = ContPgsqlUpdater().update_all_report_tables()
-        self.logger.debug(f"{__class__.__name__}  start_updates {start_updates_controller}")
+        self.logger.debug(f"{__class__.__name__}  report tables updated {start_updates_controller}")
+        self.send_msg_2telegram("databases updated")
         return start_updates_controller
 
     def main_pgsql(self):
@@ -77,11 +81,9 @@ class PgsqlMain(PgsqlMainClass):
             print(f"{self.socket_name} cant run socket client error: {e}")
             self.logger.error(f"{__class__.__name__} cant run socket service error: {e}")
         self.pgsql_db_init()
-        self.send_service_msg_to(to_user="telegram", msg_text=f"database initiated")
         while True:
-            self.send_msg_2telegram("start updater")
             result_updater_messages = self.pgsql_db_updater()
-            self.send_msg_2telegram(result_updater_messages)
+            self.send_msg_2telegram(f"result: {result_updater_messages}")
             time.sleep(600)
 
 
