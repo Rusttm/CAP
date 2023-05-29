@@ -1,25 +1,21 @@
 from Pgsql.ContPgsql.ContPgsqlMainClass import ContPgsqlMainClass
 from Pgsql.ConnPgsql.ConnPgsqlTables import ConnPgsqlTables
-from Pgsql.ConnPgsql.ConnPgsqlJson import ConnPgsqlJson
-from Pgsql.ConnPgsql.ConnPgsqlData import ConnPgsqlData
+# from Pgsql.ConnPgsql.ConnPgsqlJson import ConnPgsqlJson
+# from Pgsql.ConnPgsql.ConnPgsqlData import ConnPgsqlData
 from Pgsql.ContPgsql.DatabaseInit.ContPgsqlReadFieldJson import ContPgsqlReadFieldJson
+from Pgsql.ConnPgsql.ConnPgsqlDataGet import ConnPgsqlDataGet
+from Pgsql.ConnPgsql.ConnPgsqlDataPut import ConnPgsqlDataPut
 
 
-class ContPgsqlCreateFieldsTable(ConnPgsqlTables, ContPgsqlReadFieldJson, ContPgsqlMainClass, ConnPgsqlData):
+class ContPgsqlCreateFieldsTable(ConnPgsqlTables, ContPgsqlReadFieldJson, ContPgsqlMainClass, ConnPgsqlDataGet, ConnPgsqlDataPut):
     """ connector for read fields tables from pgsql database"""
-    # tables_list = ['product_fields',
-    #                'payins_fields', 'payouts_fields',
-    #                'packin_fields', 'packout_fields',
-    #                'invout_fields', 'invin_fields',
-    #                'stockall_fields', 'stockstore_fields',
-    #                'customers_bal_fields', 'customers_fields',
-    #                'profit_byprod_fields', 'profit_bycust_fields']
     fields_dict = None
 
     def __init__(self):
         super().__init__()
         from Pgsql.ContPgsql.ContPgsqlReadJsonTablesDict import ContPgsqlReadJsonTablesDict
         self.tables_dict = ContPgsqlReadJsonTablesDict().get_tables_dict()
+        self.fields_tables_list = ContPgsqlReadJsonTablesDict().get_field_tables_list()
 
     def create_field_table_from_json(self, field_file_name=None, table_name=None):
         """ get data from field file create tables for fields names and types and fulfillment them"""
@@ -33,46 +29,35 @@ class ContPgsqlCreateFieldsTable(ConnPgsqlTables, ContPgsqlReadFieldJson, ContPg
             # print(self.table_is_exist(table_name=table_name))
             self.add_columns_2table_from_json(table_name=table_name, fields_dict=self.fields_dict)
             # fill the field table
-            self.put_data_from_json(table_name=table_name, fields_dict=self.fields_dict)
+            # this class only create fields tables
+            # self.put_data_from_json(table_name=table_name, fields_dict=self.fields_dict)
             return result
         return False
 
     def add_columns_2table_from_json(self, table_name, fields_dict):
         for _, data_dict in fields_dict["data"].items():
             self.create_col_in_table(table_name=table_name, col_name="field_name", col_type="VARCHAR(255)")
-            self.create_unique_col_in_table(table_name=table_name, col_name="field_name")
+            self.mark_unique_col_in_table(table_name=table_name, col_name="field_name")
             # create column with datatypes of Postgresql
             self.create_col_in_table(table_name=table_name, col_name=f"field_pg_type", col_type="VARCHAR(255)")
             for name_col, _ in data_dict.items():
                 self.create_col_in_table(table_name=table_name, col_name=f"field_{name_col}", col_type="VARCHAR(255)")
             break
 
-    def put_data_from_json(self, table_name, fields_dict):
-        """ takes data from json file and put it in sql table"""
-        data = dict(fields_dict["data"])
-        for key, data_dict in data.items():
-            col_names_list = ["field_name"] + [f"field_{col_name}" for col_name in data_dict.keys()] + ["field_pg_type"]
-            col_values_list = [key] + [str(value) for value in data_dict.values()]
-            col_pg_type = self.types_mapper(data_dict.get("type"))
-            col_values_list.append(col_pg_type)
-            self.put_data_2table(table_name=table_name, col_names_list=col_names_list, col_values_list=col_values_list)
-
     def create_all_field_tables(self):
         """ create all field tables and fulfillment them"""
-        from Pgsql.ContPgsql.ContPgsqlReadJsonTablesDict import ContPgsqlReadJsonTablesDict
-        fields_tables_list = ContPgsqlReadJsonTablesDict().get_field_tables_list()
-        tables_in_db = self.get_tables_list()
         for table_name, data_dict in self.tables_dict.items():
             # create tables only with sql==1 in tables_dict
-            if data_dict.get('sql_upd', None) != 1 or table_name in tables_in_db:
+            # if data_dict.get('sql_upd', 0) != 1 or table_name in tables_in_db:
+            if data_dict.get('sql_upd', 0) != 1:
                 try:
-                    fields_tables_list.remove(data_dict.get('fields_table', None))
+                    self.fields_tables_list.remove(data_dict.get('fields_table', None))
                 except Exception as e:
                     print(e)
-        for i, file_name in enumerate(fields_tables_list):
+        for i, file_name in enumerate(self.fields_tables_list):
             # self.table_is_exist(table_name=)
             self.create_field_table_from_json(field_file_name=file_name)
-            print(f"created table {i+1}({len(fields_tables_list)}) {file_name}")
+            print(f"created table {i+1}({len(self.fields_tables_list)}) {file_name}")
 
     def delete_all_fields_tables(self):
         from Pgsql.ContPgsql.ContPgsqlReadJsonTablesDict import ContPgsqlReadJsonTablesDict

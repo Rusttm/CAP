@@ -1,0 +1,75 @@
+from Pgsql.ConnPgsql.ConnPgsqlMainClass import ConnPgsqlMainClass
+
+
+class ConnPgsqlDataPut(ConnPgsqlMainClass):
+    """returns data from tables"""
+    pgsql_conn = None
+    # cursor = None
+
+    def __init__(self):
+        super().__init__()
+
+    def put_data_2table(self, table_name: str, col_names_list: list, col_values_list: list):
+        # column_string = ', '.join(col_names_list)
+        col_values_string = self.values_in_request_handler(col_values_list, table_name)
+        col_names_string = self.columns_in_request_handler(col_names_list, table_name)
+        req_line = f"INSERT INTO {table_name}  {col_names_string} VALUES {col_values_string}"
+        try:
+            ans = self.send_get_request(req_line=req_line)
+            return ans
+        except Exception as e:
+            # print(e)
+            self.logger.error(f"{__class__.__name__} error while put data to table {table_name}: {e}")
+
+    def columns_in_request_handler(self, col_names_list, table_name=None):
+        result_string = '( '
+        for i, elem in enumerate(col_names_list):
+            if elem == 'group':
+                elem = 'group_ms'
+            result_string += f'{elem}'
+            if i < len(col_names_list) - 1:
+                result_string += ", "
+
+        result_string += ' )'
+        result_string = result_string.replace("\\", "")
+        return result_string
+
+    def values_in_request_handler(self, col_values_list, table_name=None):
+        """ add '{}' for json and
+        return corrected list []"""
+        temp_array = list()
+        for elem in col_values_list:
+            if elem == 'group':
+                elem = 'group_ms'
+            # null -> None -> null
+            elif elem is None:
+                elem = "null"
+            temp_array.append(elem)
+        result_string = str(tuple(temp_array))
+        result_string = result_string.replace("\\'", "'")
+        result_string = result_string.replace("json[]'", "json[]")
+        result_string = result_string.replace('text[]"', 'text[]')
+        result_string = result_string.replace("'array", "array")
+        result_string = result_string.replace('"array', 'array')
+        return result_string
+
+    # def values_list_in_request_handler(self, col_values_lists):
+    #     result_string = ""
+    #     for i, values_list in enumerate(col_values_lists):
+    #         result_string += self.values_in_request_handler(values_list)
+    #         if i < len(col_values_lists) - 1:
+    #             result_string += ", "
+    #     return result_string
+
+
+
+if __name__ == '__main__':
+    connector = ConnPgsqlDataPut()
+    # data_from_table = connector.get_cols_from_table(table_name='product_fields', col_list=['id', 'field_name', 'field_pg_type'])
+    # data_from_table = connector.get_value_cols_from_table(table_name='product_fields',
+    #                                                       col_name='field_name',
+    #                                                       col_value='attributes',
+    #                                                       col_ans='field_pg_type')
+    # data_from_table = connector.get_full_data(table_name='product_fields')
+    # print(f"try to get data from table 'test' {connector.get_full_data(table_name='product_fields')}")
+    # print(f"try to get info from table 'product_fields' {data_from_table}")

@@ -70,7 +70,7 @@ class ConnPgsqlTables(ConnPgsqlMainClass):
             self.logger.warning(f"{__class__.__name__} receive wrong parameters")
         return False
 
-    def create_unique_col_in_table(self, table_name=None, col_name=None):
+    def mark_unique_col_in_table(self, table_name=None, col_name=None):
         if table_name and col_name and self.table_is_exist(table_name=table_name):
             req_line = f"ALTER TABLE IF EXISTS {table_name} ADD UNIQUE ({col_name})"
             ans = self.send_set_request(req_line=req_line)
