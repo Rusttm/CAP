@@ -22,9 +22,16 @@ class ConnPgsqlDataHandler(ConnPgsqlMainClass):
                 col_name = "group_ms"
             if col_value is None:
                 continue
-            col_names_list.append(col_name)
             # field_table = dict(self.tables_dict).get(table_name)['fields_table']
-            col_type = fields_dict.get(col_name, 'TEXT')
+            col_type = fields_dict.get(col_name, None)
+            # sometimes in data presence new columns
+            if col_type is None:
+                warn_string = f"column {col_name} doesnt have datatype in {table_name}"
+                warn_string += f"please declare {col_name} in configuration file!"
+                print(warn_string)
+                self.logger.warning(warn_string)
+                continue
+            col_names_list.append(col_name)
             if type(col_value) == str:
                 col_value = f'{col_value}'
             elif col_type == "JSON":
