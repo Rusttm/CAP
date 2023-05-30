@@ -76,9 +76,15 @@ class PgsqlMain(PgsqlMainClass):
         return start_updates_controller
 
     def pgsql_db_updater_loop(self):
+        from Pgsql.ContPgsql.ContPgsqlUpdater import ContPgsqlUpdater
+        self.send_msg_2telegram("start updating databases")
+        self.logger.debug(f"{__class__.__name__}  start_updates report tables")
+        updater_controller = ContPgsqlUpdater()
         while True:
-            result_updater_messages = self.pgsql_db_updater()
-            self.send_msg_2telegram(f"result: {result_updater_messages}")
+            # result_updater_messages = self.pgsql_db_updater()
+            # self.send_msg_2telegram(f"result: {result_updater_messages}")
+            start_updates_controller = updater_controller.update_all_report_tables()
+            self.send_msg_2telegram(f"result: {start_updates_controller}")
             time.sleep(600)
 
 
@@ -105,4 +111,4 @@ if __name__ == '__main__':
     controller = PgsqlMain()
     controller.main_pgsql()
     print("pgsql service is working ...")
-    controller.send_msg_2telegram(msg_text=f"Hello, everybody, iam spam")
+    controller.send_msg_2telegram(msg_text=f"Hello, everybody, iam pgsql spam")
