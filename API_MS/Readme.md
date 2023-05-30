@@ -1,0 +1,1 @@
+module for getting information from MoiSklad API (see MSMain)

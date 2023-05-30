@@ -9,6 +9,7 @@ from API_Tbot.ConnTbot.ConnTGBotMainClass import ConnTGBotMainClass
 
 
 class ConnTGBot(ConnTGBotMainClass):
+    """ main class for API Telegram"""
     __token = None
     admin_id = None
     users_group_name_dict = dict() # {'fin':['alex', 'mans']}
