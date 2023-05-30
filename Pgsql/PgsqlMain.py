@@ -8,6 +8,7 @@ class PgsqlMain(PgsqlMainClass):
     socket_name = "pgsql"
     outgoing_messages = [] # messages dictionary msg = {to_user=msg.get("to"), msg_text=msg.get("msg_text")}
     incoming_messages = []
+    update_period = 3600
 
     def __init__(self):
         super().__init__()
@@ -85,8 +86,7 @@ class PgsqlMain(PgsqlMainClass):
             # self.send_msg_2telegram(f"result: {result_updater_messages}")
             start_updates_controller = updater_controller.update_all_report_tables()
             self.send_msg_2telegram(f"result: {start_updates_controller}")
-            time.sleep(600)
-
+            time.sleep(self.update_period)
 
     def main_pgsql(self):
         try:

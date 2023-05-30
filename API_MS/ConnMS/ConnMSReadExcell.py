@@ -11,6 +11,7 @@ class ConnMSReadExcell(ConnMSMainClass):
     dir_name = "data"
     names_dict = {"Название": "name", "Тип": "type", "Фильтрация": "filter", "Описание": "descr"}
     table_columns = []
+    file_ext = '.xlsx'
     def __init__(self):
         super().__init__()
 
@@ -20,8 +21,8 @@ class ConnMSReadExcell(ConnMSMainClass):
         result = dict({"table": file_name.split('.')[0], "data": {}})
         if file_name:
             self.table_columns = []
-            if not re.search('xlsx', file_name):
-                file_name += '.xlsx'
+            if not re.search(self.file_ext, file_name):
+                file_name += self.file_ext
             try:
                 # choose directory to read data
                 if self.dir_name == "config":
