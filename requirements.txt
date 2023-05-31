@@ -13,4 +13,6 @@ logging~=0.4.9.6
 # aiogram~=3.0.0b7
 SQLAlchemy==2.0.15
 SQLAlchemy_Utils==0.41.1
-psutil
+psutil~=5.9.5
+psycopg2~=2.9.6
+tqdm~=4.65.0

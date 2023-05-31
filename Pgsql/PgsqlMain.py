@@ -9,6 +9,7 @@ class PgsqlMain(PgsqlMainClass):
     outgoing_messages = [] # messages dictionary msg = {to_user=msg.get("to"), msg_text=msg.get("msg_text")}
     incoming_messages = []
     update_period = 3600
+    base_initiated = False
 
     def __init__(self):
         super().__init__()
@@ -66,6 +67,7 @@ class PgsqlMain(PgsqlMainClass):
         init_db_controller = ContPgsqlInitMain().initiate_bases()
         self.logger.debug(f"{__class__.__name__} init database {init_db_controller}")
         self.send_msg_2telegram("databases initiated")
+        self.base_initiated = True
 
     def pgsql_db_updater(self):
         from Pgsql.ContPgsql.ContPgsqlUpdater import ContPgsqlUpdater
