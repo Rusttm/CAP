@@ -36,7 +36,7 @@ class ContPgsqlUpdater(ContPgsqlMainClass, ConnPgsqlDataGet, ConnPgsqlDataPut, C
                 from_date = str(min(ans[0][-1], ans[0][-2]))
             except:
                 self.logger.error(f"{__class__.__name__} cant get last data update")
-                from_date = "2021-01-01"
+                from_date = "2018-01-01"
             to_date = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}"
             # req_data = request_func()
             req_data = request_func(from_date=from_date, to_date=to_date)
@@ -44,7 +44,7 @@ class ContPgsqlUpdater(ContPgsqlMainClass, ConnPgsqlDataGet, ConnPgsqlDataPut, C
             field_table = data_dict.get('fields_table')
             fields_dict = self.get_pgtype_info_fields_table(field_table_name=field_table)
             gen_start = time.time()
-            print(f"start :{time.ctime()} download in table: {table_name} positions: {len(data_list)}")
+            print(f"start :{time.ctime()} downloading in table: {table_name} positions: {len(data_list)}")
             time.sleep(1)
             # for i, data_string in enumerate(data_list):
             for i in tqdm(range(len(data_list))):

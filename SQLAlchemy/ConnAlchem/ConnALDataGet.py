@@ -39,5 +39,5 @@ if __name__ == '__main__':
     connector = ConnALDataGet()
     print(connector.create_engine())
     print(connector.get_all_tables_list())
-    print(connector.get_pd_from_table(table_name='products_table', to_file=True))
+    print(connector.get_pd_from_table(table_name='payments_out_table', to_file=True))
     # print(connector.get_pd_from_table(table_name='pgsql_service_fields', to_file=True))

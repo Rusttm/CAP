@@ -23,7 +23,7 @@ class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlData
         from API_MS.MSMain import MSMain
         ms_connector = MSMain()
         for table_name, data_dict in self.tables_dict.items():
-            if data_dict.get('sql_upd', None) != 1:
+            if data_dict.get('sql_crt', None) != 1:
                 continue
             table_data_function = data_dict.get('function', None)
             if not table_data_function:
