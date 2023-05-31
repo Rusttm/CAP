@@ -46,7 +46,7 @@ class ContPgsqlDataFieldsTable(ConnPgsqlTables, ContPgsqlReadFieldJson, ContPgsq
     def fill_all_field_tables(self):
         """ fill all field tables"""
         for table_name, data_dict in self.tables_dict.items():
-            if data_dict.get('sql_upd', 0) != 1:
+            if data_dict.get('sql_crt', 0) != 1:
                 try:
                     self.fields_tables_list.remove(data_dict.get('fields_table', None))
                 except Exception as e:

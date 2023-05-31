@@ -49,7 +49,7 @@ class ContPgsqlCreateFieldsTable(ConnPgsqlTables, ContPgsqlReadFieldJson, ContPg
         for table_name, data_dict in self.tables_dict.items():
             # create tables only with sql==1 in tables_dict
             # if data_dict.get('sql_upd', 0) != 1 or table_name in tables_in_db:
-            if data_dict.get('sql_upd', 0) != 1:
+            if data_dict.get('sql_crt', 0) != 1:
                 try:
                     self.fields_tables_list.remove(data_dict.get('fields_table', None))
                 except Exception as e:
