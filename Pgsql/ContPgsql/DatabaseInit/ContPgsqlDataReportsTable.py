@@ -44,7 +44,7 @@ class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlData
             fields_dict = self.get_pgtype_info_fields_table(field_table_name=field_table)
             gen_start = time.time()
             print("\n")
-            print(f"start :{time.ctime()} download in table: {table_name} positions: {len(data_list)}")
+            print(f"start downloading {table_name}, at {time.strftime('%d:%m:%y %H:%M:%S')}, {len(data_list)}pos. :")
             # for i, data_string in enumerate(data_list):
             for i in tqdm(range(len(data_list))):
                 data_string = data_list[i]
