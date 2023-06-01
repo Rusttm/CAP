@@ -28,31 +28,6 @@ class ConnPgsqlMainClass(PgsqlMainClass):
             # print(f"configuration data not loaded {e}")
             self.logger.error(f"{__class__.__name__} can't create connector for PostgreSQL! {e}")
 
-    # def send_get_request(self, req_line=None):
-    #     self.init_connection()
-    #     if req_line:
-    #         req_line = req_line.replace("\n", "")
-    #         if self.pgsql_conn:
-    #             try:
-    #                 with self.pgsql_conn:
-    #                     # make cursor
-    #                     with self.pgsql_conn.cursor() as my_cursor:
-    #                         my_cursor.execute(req_line)
-    #                         self.pgsql_conn.commit()
-    #                         db_answer = my_cursor.fetchall()
-    #                         self.logger.debug(f"{__class__.__name__} fetch cursor -'{req_line}'")
-    #                         # my_cursor.close()
-    #                         # self.logger.debug(f"{__class__.__name__} closed cursor -'{req_line}'")
-    #                 return db_answer
-    #             except Exception as e:
-    #                 self.logger.error(f"{__class__.__name__} can't request: '{e}'")
-    #             finally:
-    #                 self.pgsql_conn.close()
-    #                 self.logger.debug(f"{__class__.__name__} closed connector")
-    #     else:
-    #         self.logger.error(f"{__class__.__name__} command line for request is not valid-'{req_line}'")
-    #     return None
-
     def send_get_request(self, req_line=None):
         self.init_connection()
         if req_line:
@@ -108,26 +83,6 @@ class ConnPgsqlMainClass(PgsqlMainClass):
         else:
             self.logger.error(f"{__class__.__name__} command line for request is not valid-'{req_line}'")
         return None
-
-    # def types_mapper(self, type_ms):
-    #     """ mapper fo datatypes from MoiSklad to Postgresql"""
-    #     mapper = dict({
-    #         "String(255)": "VARCHAR(255)",
-    #         "Boolean": "BOOLEAN",
-    #         "UUID": "UUID",
-    #         "Array(Object)": "JSON[]",
-    #         "Object": "JSON",
-    #         "Meta": "JSON",
-    #         "String(4096)": "TEXT",
-    #         "Int": "INTEGER",
-    #         "MetaArray": "JSON[]",
-    #         "String": "TEXT",
-    #         "Enum": "VARCHAR(255)", # no enum in postgresql
-    #         "DateTime": "TIMESTAMP",
-    #         "Float": "REAL",
-    #         "Array(String)": "TEXT[]"
-    #     })
-    #     return mapper.get(type_ms, type_ms)
 
 
 if __name__ == '__main__':
