@@ -47,6 +47,7 @@ class ContPgsqlCreateReportsTable(ContPgsqlMainClass, MSMain, ConnPgsqlTables, C
             for col_name, col_type in data_fields:
                 self.add_col_2report_table(table_name=table_name, col_name=col_name, col_type=col_type)
             print(f"table: {table_name} created")
+        return True
 
 
 if __name__ == '__main__':

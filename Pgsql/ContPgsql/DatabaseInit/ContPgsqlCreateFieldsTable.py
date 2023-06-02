@@ -58,6 +58,7 @@ class ContPgsqlCreateFieldsTable(ConnPgsqlTables, ContPgsqlReadFieldJson, ContPg
             # self.table_is_exist(table_name=)
             self.create_field_table_from_json(field_file_name=file_name)
             print(f"created table {i+1}({len(self.fields_tables_list)}) {file_name}")
+        return True
 
     def delete_all_fields_tables(self):
         from Pgsql.ContPgsql.ContPgsqlReadJsonTablesDict import ContPgsqlReadJsonTablesDict

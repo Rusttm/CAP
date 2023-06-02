@@ -55,6 +55,7 @@ class ContPgsqlDataFieldsTable(ConnPgsqlTables, ContPgsqlReadFieldJson, ContPgsq
             # self.table_is_exist(table_name=)
             self.fill_field_table_from_json(field_file_name=file_name)
             print(f"filled table {i+1}({len(self.fields_tables_list)}) {file_name}")
+        return True
 
 
 if __name__ == '__main__':

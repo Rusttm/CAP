@@ -34,7 +34,7 @@ class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlData
                 from_date = str(min(ans[0][-1], ans[0][-2]))
             except:
                 self.logger.error(f"{__class__.__name__} cant get last data update")
-                from_date = "2021-01-01"
+                from_date = "2018-01-01"
             to_date = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}"
             # req_data = request_func()
             req_data = request_func(from_date=from_date, to_date=to_date)
@@ -58,8 +58,8 @@ class ContPgsqlDataReportsTable(ContPgsqlMainClass, ConnPgsqlData, ConnPgsqlData
             # count rows in table
             end = time.time()
             rows_in_table = self.count_rows_in_table(table_name=table_name)
-            event_string = f"table: {table_name} ({rows_in_table}rows from {len(data_list)}) downloaded in {round(end - gen_start, 2)}sec"
-            print(f"table: {table_name} ({rows_in_table}rows from {len(data_list)}) downloaded in {round(end - gen_start, 2)}sec")
+            event_string = f"table: {table_name} ({rows_in_table}rows from {len(data_list)}) downloaded in {round(end - gen_start, 2)}sec\n"
+            print(event_string)
             self.put_event_2service_table_updates(table_name=table_name, description=event_string,
                                                   from_date=from_date, to_date=to_date)
         return True

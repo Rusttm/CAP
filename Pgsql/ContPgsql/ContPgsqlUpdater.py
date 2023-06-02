@@ -44,7 +44,7 @@ class ContPgsqlUpdater(ContPgsqlMainClass, ConnPgsqlDataGet, ConnPgsqlDataPut, C
             field_table = data_dict.get('fields_table')
             fields_dict = self.get_pgtype_info_fields_table(field_table_name=field_table)
             gen_start = time.time()
-            print(f"start :{time.ctime()} downloading in table: {table_name} positions: {len(data_list)}")
+            print(f"start :{time.ctime()} updating table: {table_name} positions: {len(data_list)}")
             time.sleep(1)
             # for i, data_string in enumerate(data_list):
             for i in tqdm(range(len(data_list))):
@@ -56,9 +56,9 @@ class ContPgsqlUpdater(ContPgsqlMainClass, ConnPgsqlDataGet, ConnPgsqlDataPut, C
                                      col_values_list=col_values_list)
             end = time.time()
             rows_in_table = self.count_rows_in_table(table_name=table_name)
-            event_string = f"table: {table_name} ({rows_in_table}rows from {len(data_list)}) downloaded in {round(end - gen_start, 2)}sec"
+            event_string = f"table: {table_name} ({rows_in_table}rows from {len(data_list)}) updated in {round(end - gen_start, 2)}sec\n"
             result_messages.append(event_string)
-            print(f"table: {table_name} ({rows_in_table}rows from {len(data_list)}) downloaded in {round(end - gen_start, 2)}sec")
+            print(event_string)
             self.put_event_2service_table_updates(table_name=table_name, description=event_string, from_date=from_date, to_date=to_date)
         return result_messages
 

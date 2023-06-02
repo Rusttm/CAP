@@ -1,0 +1,1 @@
+json column cant be a unique column

@@ -42,7 +42,7 @@ class ContPgsqlInitMain(ContPgsqlMainClass):
         fields_result = self.initial_create_fields_tables()
         now0 = time.time()
         print(f" fields tables created in {round(now0 - start, 2)}sec")
-        fields_result = self.initial_fill_fields_tables()
+        fields_fill_result = self.initial_fill_fields_tables()
         now1 = time.time()
         print(f" fields tables filled in {round(now1 - start, 2)}sec")
         tables_result = self.initial_create_report_tables()
@@ -53,7 +53,7 @@ class ContPgsqlInitMain(ContPgsqlMainClass):
         print(f" report tables filled in {round(now3 - now2, 2)}sec")
         end = time.time()
         print(f" database initiated in {round(end - start, 2)}sec")
-        return {"fields_result": fields_result, "tables_result": tables_result, "tables_fill_result": tables_fill_result}
+        return {"fields_result": fields_result, "fields_fill_result": fields_fill_result, "tables_result": tables_result, "tables_fill_result": tables_fill_result}
 
 
 if __name__ == '__main__':

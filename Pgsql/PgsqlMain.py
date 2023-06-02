@@ -39,13 +39,16 @@ class PgsqlMain(PgsqlMainClass):
                     print(f"received new msg: {msg}")
 
     def send_msg_2telegram(self, msg_text=None):
-        if self.socket_controller:
-            if msg_text:
-                msg = dict({"to": "telegram", "from": self.socket_name, "msg_text": msg_text})
-                self.outgoing_messages.append(msg)
-                return True
-        else:
-            return False
+        try:
+            if self.socket_controller:
+                if msg_text:
+                    msg = dict({"to": "telegram", "from": self.socket_name, "msg_text": msg_text})
+                    self.outgoing_messages.append(msg)
+                    return True
+            else:
+                return False
+        except Exception as e:
+            print(f"{__class__.__name__} cant send msg to telegram")
 
     def send_service_msg_to(self, to_user="admin", msg_text=None):
         if self.socket_controller:
@@ -79,6 +82,8 @@ class PgsqlMain(PgsqlMainClass):
         return start_updates_controller
 
     def pgsql_db_updater_loop(self):
+        """ initiator and updater"""
+        self.pgsql_db_init()
         from Pgsql.ContPgsql.ContPgsqlUpdater import ContPgsqlUpdater
         self.send_msg_2telegram("start updating databases")
         self.logger.debug(f"{__class__.__name__}  start_updates report tables")
@@ -98,10 +103,17 @@ class PgsqlMain(PgsqlMainClass):
             print(f"{self.socket_name} cant run socket client error: {e}")
             self.logger.error(f"{__class__.__name__} cant run socket service error: {e}")
 
-        self.pgsql_db_init()
+        # self.pgsql_db_init()
+
+        # try:
+        #     Thread(target=self.pgsql_db_init, args=[]).start()
+        #     print(f"{self.socket_name} database initiator started at {time.ctime()}")
+        # except Exception as e:
+        #     print(f"{self.socket_name} cant run database initiator, error: {e}")
+        #     self.logger.error(f"{__class__.__name__} cant run database initiator, error: {e}")
 
         try:
-            Thread(target=self.pgsql_db_updater_loop(), args=[]).start()
+            Thread(target=self.pgsql_db_updater_loop, args=[]).start()
             print(f"{self.socket_name} updater started at {time.ctime()}")
         except Exception as e:
             print(f"{self.socket_name} cant run updater error: {e}")
@@ -111,6 +123,6 @@ class PgsqlMain(PgsqlMainClass):
 
 if __name__ == '__main__':
     controller = PgsqlMain()
-    controller.main_pgsql()
+    # controller.main_pgsql()
     print("pgsql service is working ...")
     controller.send_msg_2telegram(msg_text=f"Hello, everybody, iam pgsql spam")
