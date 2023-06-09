@@ -69,11 +69,11 @@ class ConnTGBotMainClass(TGBotMainClass):
         # coro = self.polling_bot(self.dp, self.bot, loop)
         # send_task = asyncio.run_coroutine_threadsafe(coro, loop)
         # print(send_task.result())
-        # asyncio.run(self.polling_bot(self.dp, self.bot, loop))
-        self.polling_bot(self.dp, self.bot, loop)
+        asyncio.run(self.polling_bot(self.dp, self.bot, loop))
+        # self.polling_bot(self.dp, self.bot, loop)
         # Thread(target=self.polling_bot, args=[self.dp, self.bot, loop]).start()
 
-    def polling_bot(self, dp, bot, loop):
+    async def polling_bot(self, dp, bot, loop):
         nest_asyncio.apply()
         # dp = self.dp
         # bot = self.bot
@@ -148,15 +148,13 @@ class ConnTGBotMainClass(TGBotMainClass):
             while self.outgoing_msgs_list:
                 msg = self.outgoing_msgs_list.pop()
                 current_time = datetime.datetime.now().strftime('%y:%m:%d :%H:%M:%S')
-                await send_message(self.admin_id, text=f"{current_time}\n {self.count} message: {msg}")
+                await send_message(self.admin_id, text=f"{current_time}\n message: {msg}")
             return True
 
         def message_outcome(loop):
-            self.count = 0
             # current_loop = asyncio.get_event_loop()
             while True:
-                time.sleep(3600)
-                self.count += 1
+                time.sleep(6)
                 coro = scheduled_msg()
                 send_task = asyncio.run_coroutine_threadsafe(coro, loop)
                 send_task.result()
@@ -166,10 +164,10 @@ class ConnTGBotMainClass(TGBotMainClass):
         # loop = asyncio.new_event_loop()
         # asyncio.set_event_loop(loop)
         Thread(target=message_outcome, args=[current_loop]).start()
-        # executor.start_polling(dp, skip_updates=True)
+        executor.start_polling(dp, skip_updates=True)
         # loop = asyncio.new_event_loop()
-        polling_task = asyncio.run_coroutine_threadsafe(executor.start_polling(dp, skip_updates=True), loop)
-        polling_task.result()
+        # polling_task = asyncio.run_coroutine_threadsafe(executor.start_polling(dp, skip_updates=True), loop)
+        # polling_task.result()
         return True
 
 def main():
