@@ -15,8 +15,11 @@ class Main(CAPMainClass):
         from SocSrv.SocSrvMain import SocSrvMain
         self.socket_service = SocSrvMain()
 
+    # def start_telegrambot_service(self):
+    #     from API_Tbot.TGBotMain import TGBotMain
+    #     self.telegram_service = TGBotMain()
     def start_telegrambot_service(self):
-        from API_Tbot.TGBotMain import TGBotMain
+        from API_Aiogram.TGBotMain import TGBotMain
         self.telegram_service = TGBotMain()
 
     def start_api_db_updater(self):
@@ -26,9 +29,9 @@ class Main(CAPMainClass):
     def main(self):
         self.start_socket_service()
         time.sleep(3)
-        self.start_telegrambot_service()
-        time.sleep(3)
-        self.start_api_db_updater()
+        # self.start_telegrambot_service()
+        # time.sleep(3)
+        # self.start_api_db_updater()
 
 
 if __name__ == '__main__':

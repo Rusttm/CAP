@@ -15,6 +15,7 @@ class ConnTGBotMainClass(TGBotMainClass):
     """ main class for API Telegram"""
     __token = None
     admin_id = None
+    count = 0
     users_group_name_dict = dict()  # {'fin':['alex', 'mans']}
     users_group_ids_dict = dict()  # {'fin':['365758', '9595873']}
     users_id_name_dict = dict()  # {'75768996': 'alex'}
@@ -63,20 +64,23 @@ class ConnTGBotMainClass(TGBotMainClass):
     def start_telegrambot(self):
         print("start tegbot")
         loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
         # loop = asyncio.get_event_loop()
-        self.bot = Bot(token=self.__token, loop=loop)
-        self.dp = Dispatcher(self.bot, storage=MemoryStorage())
-        # coro = self.polling_bot(self.dp, self.bot, loop)
+        # self.bot = Bot(token=self.__token, loop=loop)
+        # self.dp = Dispatcher(self.bot, storage=MemoryStorage())
+        # coro = self.polling_bot()
         # send_task = asyncio.run_coroutine_threadsafe(coro, loop)
         # print(send_task.result())
-        # asyncio.run(self.polling_bot(self.dp, self.bot, loop))
-        self.polling_bot(self.dp, self.bot, loop)
-        # Thread(target=self.polling_bot, args=[self.dp, self.bot, loop]).start()
+        asyncio.run(self.polling_bot(loop))
+        # self.polling_bot(loop)
+        # Thread(target=self.polling_bot, args=[loop]).start()
 
-    def polling_bot(self, dp, bot, loop):
+    async def polling_bot(self, loop):
+        # loop = asyncio.new_event_loop()
+        # asyncio.set_event_loop(loop)
         nest_asyncio.apply()
-        # dp = self.dp
-        # bot = self.bot
+        bot = Bot(token=self.__token, loop=loop)
+        dp = Dispatcher(bot, storage=MemoryStorage())
         @dp.message_handler(commands=['start', 'help'])
         async def send_welcome(message: types.Message):
             """
@@ -145,30 +149,37 @@ class ConnTGBotMainClass(TGBotMainClass):
             return False
 
         async def scheduled_msg():
-            while self.outgoing_msgs_list:
-                msg = self.outgoing_msgs_list.pop()
+            while True:
+                self.count += 1
+                await asyncio.sleep(5)
                 current_time = datetime.datetime.now().strftime('%y:%m:%d :%H:%M:%S')
-                await send_message(self.admin_id, text=f"{current_time}\n {self.count} message: {msg}")
+                while self.outgoing_msgs_list:
+                    msg = self.outgoing_msgs_list.pop()
+                    current_time = datetime.datetime.now().strftime('%y:%m:%d :%H:%M:%S')
+                    await send_message(self.admin_id, text=f"{current_time}\n {self.count} message: {msg}")
+                # await send_message(self.admin_id, text=f"{current_time}\n {self.count} message: Hi from aiogram")
             return True
 
         def message_outcome(loop):
             self.count = 0
             # current_loop = asyncio.get_event_loop()
             while True:
-                time.sleep(3600)
+                time.sleep(3)
                 self.count += 1
                 coro = scheduled_msg()
                 send_task = asyncio.run_coroutine_threadsafe(coro, loop)
                 send_task.result()
                 # asyncio.run(coro)
 
-        current_loop = asyncio.get_event_loop()
+        # current_loop = asyncio.get_event_loop()
+        # Thread(target=message_outcome, args=[current_loop]).start()
+
         # loop = asyncio.new_event_loop()
         # asyncio.set_event_loop(loop)
-        Thread(target=message_outcome, args=[current_loop]).start()
         # executor.start_polling(dp, skip_updates=True)
         # loop = asyncio.new_event_loop()
-        polling_task = asyncio.run_coroutine_threadsafe(executor.start_polling(dp, skip_updates=True), loop)
+        asyncio.create_task(scheduled_msg())
+        polling_task = asyncio.run_coroutine_threadsafe(executor.start_polling(dp, skip_updates=True), loop=loop)
         polling_task.result()
         return True
 
@@ -178,6 +189,7 @@ def main():
     coro = connector.start_telegrambot()
     start_tg_task = asyncio.run_coroutine_threadsafe(coro, loop)
     print(start_tg_task.result())
+
 
 if __name__ == '__main__':
     connector = ConnTGBotMainClass()
