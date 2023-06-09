@@ -1,0 +1,7 @@
+configparser==5.3.0
+requests==2.29.0
+docker==6.1.1
+python-on-whales
+logging~=0.4.9.6
+aiogram==2.25.1
+psutil~=5.9.5
