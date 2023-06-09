@@ -1,7 +1,8 @@
 from API_Aiogram.TGBotMainClass import TGBotMainClass
 from API_Aiogram.ConnTGbot.ConnTGBConfig import ConnTGBConfig
-from aiogram import Bot, Dispatcher, executor, types
-
+import asyncio
+from aiogram import Bot, Dispatcher, types
+from aiogram.utils import exceptions, executor
 
 class ConnTGBotMainClass(TGBotMainClass):
     """ main class for API Telegram"""
@@ -51,7 +52,6 @@ class ConnTGBotMainClass(TGBotMainClass):
         bot = Bot(token=self.__token)
         dp = Dispatcher(bot)
 
-
         @dp.message_handler(commands=['start', 'help'])
         async def send_welcome(message: types.Message):
             """
@@ -73,15 +73,58 @@ class ConnTGBotMainClass(TGBotMainClass):
                 '''
                 await message.reply_photo(photo, caption='Cats are here 😺')
 
-        @dp.message_handler()
-        async def echo(message: types.Message):
-            # old style:
-            # await bot.send_message(message.chat.id, message.text)
-            await message.answer(message.text)
+        # @dp.message_handler()
+        # async def echo(message: types.Message):
+        #     # old style:
+        #     # await bot.send_message(message.chat.id, message.text)
+        #     print(message.text)
+        #     print(message)
+        #     await message.answer(message.text)
 
+        @dp.message_handler()
+        async def listener(message: types.Message):
+            """ check only employees"""
+            user_name = message["from"]["first_name"]
+            user_id = message["from"]["id"]
+            msg_text = message.text
+            self.incoming_msg_list.append(dict({"from": user_name, "id": user_id, "text": msg_text}))
+            self.logger.info(f"aiogram receives message: {msg_text} from {user_name}")
+            if str(user_id) in self.employees_set:
+                await message.answer(f"Hi {user_name} ({user_id})! Welcome to Serman telegram service")
+                self.logger.warning(f"unknown user {user_id} send msg to chat")
+            else:
+                await message.answer(f"Hi {user_name} ({user_id})! You are not in staff list, please send request to admin {self.admin_id}")
+                await send_message(user_id=self.admin_id, text=f" Unknown user {user_name} ({user_id}) send msg {msg_text} ")
+                self.logger.warning(f"unknown user {user_id} send msg to chat")
+
+        async def send_message(user_id: int, text: str, disable_notification: bool = False) -> bool:
+            """
+            Safe messages sender
+            :param user_id:
+            :param text:
+            :param disable_notification:
+            :return:
+            """
+            try:
+                await bot.send_message(user_id, text, disable_notification=disable_notification)
+            except exceptions.BotBlocked:
+                self.logger.error(f"Target [ID:{user_id}]: blocked by user")
+            except exceptions.ChatNotFound:
+                self.logger.error(f"Target [ID:{user_id}]: invalid user ID")
+            except exceptions.RetryAfter as e:
+                self.logger.error(f"Target [ID:{user_id}]: Flood limit is exceeded. Sleep {e.timeout} seconds.")
+                await asyncio.sleep(e.timeout)
+                return await send_message(user_id, text)  # Recursive call
+            except exceptions.UserDeactivated:
+                self.logger.error(f"Target [ID:{user_id}]: user is deactivated")
+            except exceptions.TelegramAPIError:
+                self.logger.exception(f"Target [ID:{user_id}]: failed")
+            else:
+                self.logger.info(f"Target [ID:{user_id}]: success")
+                return True
+            return False
         executor.start_polling(dp, skip_updates=True)
 
 
 if __name__ == '__main__':
     connector = ConnTGBotMainClass()
-
