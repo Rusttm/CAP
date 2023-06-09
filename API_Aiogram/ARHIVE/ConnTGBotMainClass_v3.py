@@ -1,7 +1,6 @@
 
+# works
 import time
-import datetime
-from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 from API_Aiogram.TGBotMainClass import TGBotMainClass
 from API_Aiogram.ConnTGbot.ConnTGBConfig import ConnTGBConfig
@@ -19,25 +18,25 @@ class ConnTGBotMainClass(TGBotMainClass):
     users_group_ids_dict = dict()  # {'fin':['365758', '9595873']}
     users_id_name_dict = dict()  # {'75768996': 'alex'}
     employees_set = set()
-    outgoing_msgs_list = ['initiation telegram bot aiogram successfully run']
+    outgoing_msgs_list = []
     incoming_msg_list = []
 
     def __init__(self):
         super().__init__()
-        self.main_loop = None
         self.bot = None
         self.dp = None
         try:
             config = ConnTGBConfig()
             self.__token = config.get_config()['TELEGRAMBOT']['token']
             self.convert_users_2ids(config=config)
-            self.admin_id = self.users_group_ids_dict.get('admin', None)[0]
+            self.admin_id = self.users_group_ids_dict.get('admin', None)
             print(f"TelegramBot administrated by {self.admin_id}")
 
         except Exception as e:
             self.logger.warning("Cant read configuration!", e)
         else:
-            # self.start_telegrambot()
+            self.start_telegrambot()
+            # Thread(target=self.start_telegrambot, args=[]).start()
             self.logger.debug(f"{__class__.__name__} runs TBot")
 
     def convert_users_2ids(self, config):
@@ -58,16 +57,18 @@ class ConnTGBotMainClass(TGBotMainClass):
         return True
 
     def start_telegrambot(self):
-        loop = asyncio.new_event_loop()
-        # loop = asyncio.get_event_loop()
-        self.bot = Bot(token=self.__token, loop=loop)
-        self.dp = Dispatcher(self.bot, storage=MemoryStorage())
-        asyncio.run(self.polling_bot(loop))
+        # loop = asyncio.new_event_loop()
+        # asyncio.set_event_loop(loop)
+        # task = loop.create_task(self.polling_bot(loop))
+        # loop.run_until_complete(task)
 
-    async def polling_bot(self, loop):
+        # Thread(target=self.background_task_creator, args=[]).start()
+
+        asyncio.run(self.polling_bot())
+    async def polling_bot(self):
         nest_asyncio.apply()
-        dp = self.dp
-        bot = self.bot
+        self.bot = Bot(token=self.__token)
+        dp = Dispatcher(self.bot)
         @dp.message_handler(commands=['start', 'help'])
         async def send_welcome(message: types.Message):
             """
@@ -89,6 +90,15 @@ class ConnTGBotMainClass(TGBotMainClass):
                 '''
                 await message.reply_photo(photo, caption='Cats are here 😺')
 
+        # @dp.message_handler()
+        # async def echo(message: types.Message):
+        #     # old style:
+        #     # await bot.send_message(message.chat.id, message.text)
+        #     print(message.text)
+        #     print(message)
+        #     await message.answer(message.text)
+        # the on_throttled object can be either a regular function or coroutine
+
         @dp.message_handler()
         async def listener(message: types.Message):
             """ check only employees"""
@@ -99,8 +109,6 @@ class ConnTGBotMainClass(TGBotMainClass):
             self.logger.info(f"aiogram receives message: {msg_text} from {user_name}")
             if str(user_id) in self.employees_set:
                 await message.answer(f"Hi {user_name} ({user_id})! Welcome to Serman telegram service")
-                await send_message(user_id=self.admin_id, text=f" User {user_name} ({user_id}) send msg {msg_text} ")
-                # await self.message_outcome()
                 self.logger.warning(f"unknown user {user_id} send msg to chat")
             else:
                 await message.answer(f"Hi {user_name} ({user_id})! You are not in staff list, please send request to admin {self.admin_id}")
@@ -109,15 +117,14 @@ class ConnTGBotMainClass(TGBotMainClass):
 
         async def send_message(user_id: int, text: str, disable_notification: bool = False) -> bool:
             """
-                Safe messages sender
-                :param user_id:
-                :param text:
-                :param disable_notification:
-                :return:
-                """
+            Safe messages sender
+            :param user_id:
+            :param text:
+            :param disable_notification:
+            :return:
+            """
             try:
-                await bot.send_message(user_id, text, disable_notification=disable_notification)
-                # await bot.send_message(731370983, text, disable_notification=disable_notification)
+                await self.bot.send_message(user_id, text, disable_notification=disable_notification)
             except exceptions.BotBlocked:
                 self.logger.error(f"Target [ID:{user_id}]: blocked by user")
             except exceptions.ChatNotFound:
@@ -135,35 +142,17 @@ class ConnTGBotMainClass(TGBotMainClass):
                 return True
             return False
 
-        async def scheduled_msg():
-            while self.outgoing_msgs_list:
-                msg = self.outgoing_msgs_list.pop()
-                current_time = datetime.datetime.now().strftime('%y:%m:%d :%H:%M:%S')
-                await send_message(self.admin_id, text=f"{current_time}\n message: {msg}")
-            return True
-
-        def message_outcome(loop):
-            while True:
-                time.sleep(60)
-                coro = scheduled_msg()
-                send_task = asyncio.run_coroutine_threadsafe(coro, loop)
-                result = send_task.result()
-            return result
-        current_loop = asyncio.get_event_loop()
-        Thread(target=message_outcome, args=[current_loop]).start()
+        # async def message_outcome():
+        #     while True:
+        #         time.sleep(2)
+        #         print("test time")
+        #         await send_message(user_id=self.admin_id, text="sdfgsdfgsdfg")
+        #     return True
+        #
+        # # Thread(target=message_outcome, args=[]).start()
+        # loop.call_soon_threadsafe(message_outcome)
         executor.start_polling(dp, skip_updates=True)
-        return True
-
-# def main(loop):
-#     connector = ConnTGBotMainClass()
-#     # loop = asyncio.get_event_loop()
-#     coro = connector.start_telegrambot()
-#     start_tg_task = asyncio.run_coroutine_threadsafe(coro, loop)
-#     print(start_tg_task.result())
 
 if __name__ == '__main__':
     connector = ConnTGBotMainClass()
-    connector.start_telegrambot()
-    # current_loop = asyncio.new_event_loop()
-    # Thread(target=main, args=[current_loop]).start()
     print("run in background")
