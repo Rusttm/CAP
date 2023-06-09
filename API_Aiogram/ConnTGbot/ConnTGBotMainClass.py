@@ -1,5 +1,5 @@
 from API_Aiogram.TGBotMainClass import TGBotMainClass
-from API_Tbot.ConnTbot.ConnTGBConfig import ConnTGBConfig
+from API_Aiogram.ConnTGbot.ConnTGBConfig import ConnTGBConfig
 from aiogram import Bot, Dispatcher, executor, types
 
 
@@ -50,7 +50,6 @@ class ConnTGBotMainClass(TGBotMainClass):
     def start_telegrambot(self):
         bot = Bot(token=self.__token)
         dp = Dispatcher(bot)
-        executor.start_polling(dp, skip_updates=True)
 
 
         @dp.message_handler(commands=['start', 'help'])
@@ -62,7 +61,7 @@ class ConnTGBotMainClass(TGBotMainClass):
 
         @dp.message_handler(regexp='(^cat[s]?$|puss)')
         async def cats(message: types.Message):
-            with open('data/cats.jpg', 'rb') as photo:
+            with open('../data/cats.jpeg', 'rb') as photo:
                 '''
                 # Old fashioned way:
                 await bot.send_photo(
@@ -79,6 +78,8 @@ class ConnTGBotMainClass(TGBotMainClass):
             # old style:
             # await bot.send_message(message.chat.id, message.text)
             await message.answer(message.text)
+
+        executor.start_polling(dp, skip_updates=True)
 
 
 if __name__ == '__main__':
