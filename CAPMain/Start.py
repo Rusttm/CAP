@@ -3,6 +3,8 @@ import time
 import setup
 from CAPMain.CAPMainClass import CAPMainClass
 import psutil
+from threading import Thread
+
 
 class Main(CAPMainClass):
 
@@ -15,12 +17,15 @@ class Main(CAPMainClass):
         from SocSrv.SocSrvMain import SocSrvMain
         self.socket_service = SocSrvMain()
 
-    # def start_telegrambot_service(self):
-    #     from API_Tbot.TGBotMain import TGBotMain
-    #     self.telegram_service = TGBotMain()
     def start_telegrambot_service(self):
-        from API_Aiogram.TGBotMain import TGBotMain
+        from API_Tbot.TGBotMain import TGBotMain
         self.telegram_service = TGBotMain()
+        # Thread(target=TGBotMain, args=[]).start()
+
+    # def start_telegrambot_service(self):
+    #     from API_Aiogram.TGBotMain import TGBotMain
+    #     self.telegram_service = TGBotMain()
+
 
     def start_api_db_updater(self):
         from Pgsql.PgsqlMain import PgsqlMain
@@ -29,8 +34,8 @@ class Main(CAPMainClass):
     def main(self):
         self.start_socket_service()
         time.sleep(3)
-        # self.start_telegrambot_service()
-        # time.sleep(3)
+        self.start_telegrambot_service()
+        time.sleep(3)
         # self.start_api_db_updater()
 
 
@@ -46,7 +51,7 @@ if __name__ == '__main__':
         msg_line = f"CAP msg from admin\n at {now}:\n {memory_msg}\n {cpu_msg}"
         main_class.socket_service.admin_client.send_socket_msg(to_user="telegram",
                                                                msg_text=msg_line)
-        time.sleep(3600)
+        time.sleep(6)
 
     # msapi1 = ContCAPMS.ContCAPMS()
     # msapi1.get_cont_id()

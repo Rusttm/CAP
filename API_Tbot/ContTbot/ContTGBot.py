@@ -2,9 +2,10 @@ import time
 
 from API_Tbot.ContTbot.ContMainClass import ContMainClass
 from API_Tbot.ConnTbot.ConnTGBot import ConnTGBot
+from threading import Thread
 
 
-class ContTGBot(ContMainClass, ConnTGBot):
+class ContTGBot(ConnTGBot, ContMainClass):
     """ Controller """
 
     def __init__(self):
@@ -51,6 +52,8 @@ class ContTGBot(ContMainClass, ConnTGBot):
 
 if __name__ == '__main__':
     connector = ContTGBot()
+    # connector.start_telegrambot()
+
     print("bot is working ...")
     connector.send_spam_msg(msg=f"Hello iam spam")
     time.sleep(10)

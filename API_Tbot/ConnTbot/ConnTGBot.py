@@ -36,6 +36,7 @@ class ConnTGBot(ConnTGBotMainClass):
             # self.start_telegrambot()
             Thread(target=self.start_telegrambot, args=[]).start()
             # self.start_telegrambot()
+            # self.bot.infinity_polling()
             self.logger.debug(f"{__class__.__name__} runs TBot thread")
 
     def convert_users_2ids(self, config):
@@ -120,6 +121,7 @@ class ConnTGBot(ConnTGBotMainClass):
 
 if __name__ == '__main__':
     connector = ConnTGBot()
+    # connector.bot.infinity_polling()
     print("bot is working ...")
     # connector.bot.send_message(connector.admin_id, text="hello from MainClass")
 
