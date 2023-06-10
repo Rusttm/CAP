@@ -181,3 +181,4 @@ cython_debug/
 #.idea/
 .idea/CAP.iml
 Pgsql/config/config.zip
+CAPMain/postgressql.log.1
