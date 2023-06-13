@@ -36,7 +36,7 @@ class Main(CAPMainClass):
         time.sleep(3)
         self.start_telegrambot_service()
         time.sleep(3)
-        # self.start_api_db_updater()
+        self.start_api_db_updater()
 
 
 if __name__ == '__main__':
@@ -51,7 +51,7 @@ if __name__ == '__main__':
         msg_line = f"CAP msg from admin\n at {now}:\n {memory_msg}\n {cpu_msg}"
         main_class.socket_service.admin_client.send_socket_msg(to_user="telegram",
                                                                msg_text=msg_line)
-        time.sleep(6)
+        time.sleep(60)
 
     # msapi1 = ContCAPMS.ContCAPMS()
     # msapi1.get_cont_id()
