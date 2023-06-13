@@ -23,6 +23,19 @@ class ContTGBot(ConnTGBot, ContMainClass):
                 self.logger.warning(f" tgbot cant format dict {msg} to text ")
             self.bot.send_message(chat_id=admin, text=msg, parse_mode="HTML")  # allowed "MarkdownV2"
 
+    def send_service_msg_dict(self, msg_dict: dict):
+        """ send msg to telegrambot user in admin group"""
+        text_html = "<strong>Empty message</strong>"
+        for admin in self.users_group_ids_dict.get('admin', []):
+            try:
+                text_html = f"at:<strong>{msg_dict.get('at', time.ctime())}</strong>\n " \
+                            f"from:<strong>{msg_dict.get('from','unknown')}</strong>\n " \
+                            f"new message: <b>{msg_dict.get('text', 'empty')}</b>"
+            except Exception as e:
+                self.logger.warning(f" tgbot cant format dict {msg_dict} to text ")
+            self.bot.send_message(chat_id=admin, text=text_html, parse_mode="HTML")  # allowed "MarkdownV2"
+
+
     def send_finance_msg(self, msg=None):
         """ send msg to telegrambot user in fin group"""
         for fin in self.users_group_ids_dict.get('fin', []):

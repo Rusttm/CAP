@@ -20,13 +20,15 @@ class TGBotMain(ContTGBot, ContTGBotSocSrvClient):
             try:
                 # new_msg_list = self.socket_controller.get_all_incoming_msgs()
                 new_msg_list = self.get_all_incoming_msgs()
+                print(f"forward msgs list {new_msg_list}")
             except Exception as e:
                 self.logger.critical(f"{__class__.__name__} doesn't work, socket client closed, error: {e}")
                 break
             else:
                 if new_msg_list:
-                    for msg in new_msg_list:
-                        self.send_service_msg(msg=msg)
+                    for msg_dict in new_msg_list:
+                        # self.send_service_msg(msg=msg)
+                        self.send_service_msg_dict(msg_dict=msg_dict)
 
 
 if __name__ == '__main__':
