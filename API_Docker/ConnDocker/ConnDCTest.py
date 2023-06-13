@@ -1,4 +1,4 @@
-""" this docker-compose library from
+""" this docker-compose.yml library from
 https://gabrieldemarmiesse.github.io/python-on-whales/sub-commands/compose/#some-notes-about-the-compose-functions"""
 
 from API_Docker.ConnDocker.ConnDCMainClass import ConnDCMainClass
@@ -13,7 +13,7 @@ class ConnDCTest(ConnDCMainClass):
         super().__init__()
         # self.client = docker.from_env()
         self.client = docker.DockerClient(base_url='unix://var/run/docker.sock')
-        self.docker_compose = DockerClient(compose_files=["../Dockerfiles/Pgsql/docker-compose.yml"])
+        self.docker_compose = DockerClient(compose_files=["../Dockerfiles/Pgsql/docker-compose.yml.yml"])
 
     def get_cont_list(self):
         cont_list = self.client.containers.list()
@@ -24,10 +24,10 @@ class ConnDCTest(ConnDCMainClass):
         return cont_list
 
     def up_docker_compose(self):
-        # docker_compose = DockerClient(compose_files=["../Dockerfiles/Pgsql/docker-compose.yml"])
+        # docker_compose = DockerClient(compose_files=["../Dockerfiles/Pgsql/docker-compose.yml.yml"])
         self.docker_compose.compose.up()
     def build_docker_compose(self):
-        # docker_compose = DockerClient(compose_files=["../Dockerfiles/Pgsql/docker-compose.yml"])
+        # docker_compose = DockerClient(compose_files=["../Dockerfiles/Pgsql/docker-compose.yml.yml"])
         self.docker_compose.compose.build()
 
 
