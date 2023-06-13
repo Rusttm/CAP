@@ -126,7 +126,7 @@ class ConnSCServer(SocketMainClass):
             if data:
                 # change reply message
                 msg = pickle.loads(data)
-                # print(f"incoming msg: {msg}")
+                print(f"incoming msg: {msg}")
                 self.logger.info(f"{__class__.__name__} receive msg: {msg}")
                 self.incoming_msg_list.append(msg)
                 # make dictionary client:socket like {"server":_socket}
@@ -140,7 +140,7 @@ class ConnSCServer(SocketMainClass):
             else:
                 """ if msg empty delete clients from sockets_list and clients_dict"""
                 self.empty_msg_handler(_socket)
-                # print("client send empty request")
+                print("client send empty request")
         except ConnectionResetError as e:
             _socket.close()
             self.sockets_set_4select.remove(_socket)
@@ -155,6 +155,7 @@ class ConnSCServer(SocketMainClass):
                 next_msg_data = self.message_queues_socket_data_dict[_socket]
                 _socket.send(next_msg_data)
                 msg = pickle.loads(next_msg_data)
+                print(f"new socsrv msg {msg}")
                 self.logger.info(f"{__class__.__name__} send msg to: {msg}")
                 try:
                     # delete data after sending msg
@@ -206,6 +207,7 @@ class ConnSCServer(SocketMainClass):
 
     def server_msg_handler(self, msg: dict, _socket):
         # if msg for server and registering msgs
+        print(f"socsrv get msg {msg}")
         msg["to"], msg["from"] = msg["from"], msg["to"]
         msg['text'] = f"{time.ctime()} request received: {msg['text']}"
         data = pickle.dumps(msg)
