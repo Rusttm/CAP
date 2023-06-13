@@ -57,10 +57,7 @@ class ConnSCClientMainClass(SocketMainClass):
         try:
             data = b''
             while True:
-                try:
-                    request = client_socket.recv(self.buffer)
-                except:
-                    break
+                request = client_socket.recv(self.buffer)
                 data += request
                 if len(request) < self.buffer:
                     break

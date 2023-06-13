@@ -9,6 +9,7 @@ services:
       - .env
     environment:
       - SOC_SERVER_PORT=${SOC_SERVER_PORT}
+      - SOC_PING_TIME=${SOC_PING_TIME}
     networks:
       default: null
     ports:

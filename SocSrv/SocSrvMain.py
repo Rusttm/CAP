@@ -16,6 +16,12 @@ from SocSrv.ContSC.ContSCServer import ContSCServer
 from SocSrv.ContSC.ContSCClientAdmin import ContSCClientAdmin
 
 
+try:
+    SOC_PING_TIME = os.environ["SOC_PING_TIME"]
+except:
+    os.environ["SOC_PING_TIME"] = "3600"  # every hour
+
+
 class SocSrvMain(SocketMainClass):
     """ main class for Socket Service Server and Admin Client"""
     
@@ -39,7 +45,7 @@ if __name__ == '__main__':
     # socket_service.main()
     while True:
         # time.sleep(86400) # everyday
-        time.sleep(6)  # every minute
+        time.sleep(int(os.environ["SOC_PING_TIME"]))
         current_time = datetime.datetime.now().strftime('%y:%m:%d :%H:%M:%S')
         print(f"incoming messages on server {socket_service.server.get_socserver_incomings()}")
         print(f"outgoing messages on server {socket_service.server.get_socserver_outgoins()}")
