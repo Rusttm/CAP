@@ -1,7 +1,7 @@
 version: "1"
 
 services:
-  bot:
+  flask_server:
     build:
       context: .
       dockerfile: Dockerfile
@@ -9,6 +9,14 @@ services:
       - .env
     environment:
       - FLASK_TOKEN=${FLASK_TOKEN}
+    networks:
+      default: null
+    volumes:
+      - ../config:/app/config:rw
     ports:
       - "5000:5000"
     restart: always
+
+networks:
+  default:
+    name: flask_docker_default
