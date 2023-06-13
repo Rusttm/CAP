@@ -104,6 +104,22 @@ class ConnTGBotSocSrvMainClass(TGBotMainClass):
             self.logger.error(f"{self.client_name} new message not specified 'to' receiver: {to_user}")
         return False
 
+    def send_msg_dict_2socket_admin(self, msg_dict: dict):
+        if msg_dict:
+            try:
+                msg_dict["from"] = self.client_name
+                msg_dict["to"] = "admin"
+                msg_dict["command"] = msg_dict.get("text", None)
+                # msg_dict["text"] = msg_text
+                msg_dict["at"] = time.ctime()
+                self.outgoing_msg_queue.append(msg_dict)
+                return True
+            except Exception as e:
+                self.logger.error(f"{self.client_name} can't add message: {e}")
+        else:
+            self.logger.error(f"{self.client_name} new message is empty: {to_user}")
+        return False
+
     def get_all_incoming_msgs(self):
         all_messages_list= self.incoming_msg_list
         self.incoming_msg_list = []

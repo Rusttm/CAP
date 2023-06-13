@@ -134,9 +134,9 @@ class ConnSCServer(SocketMainClass):
                 self.clients_socket_name_dict[_socket] = msg['from']
                 # handling initial msg with request to server
                 if msg["to"] == "server":
-                    self.server_msg_handler(msg=msg, _socket=_socket)
+                    self.server_msg_handler(msg_dict=msg, _socket=_socket)
                 else:
-                    self.forward_msg_handler(msg=msg, _socket=_socket)
+                    self.forward_msg_handler(msg_dict=msg, _socket=_socket)
             else:
                 """ if msg empty delete clients from sockets_list and clients_dict"""
                 self.empty_msg_handler(_socket)
@@ -205,28 +205,29 @@ class ConnSCServer(SocketMainClass):
         except Exception as e:
             self.logger.error(f"{__class__.__name__} cant handling empty msg error: {e}")
 
-    def server_msg_handler(self, msg: dict, _socket):
+    def server_msg_handler(self, msg_dict: dict, _socket):
         # if msg for server and registering msgs
-        print(f"socsrv get msg {msg}")
-        msg["to"], msg["from"] = msg["from"], msg["to"]
-        msg['text'] = f"{time.ctime()} request received: {msg['text']}"
-        data = pickle.dumps(msg)
+        print(f"socsrv get msg {msg_dict}")
+        msg_dict["to"], msg_dict["from"] = msg_dict["from"], msg_dict["to"]
+        msg_dict['text'] = f"{time.ctime()} request received: {msg_dict['text']}"
+        data = pickle.dumps(msg_dict)
         # make reply to client in queue socket:msg
         self.message_queues_socket_data_dict[_socket] = data
 
-    def forward_msg_handler(self, msg: dict, _socket):
+    def forward_msg_handler(self, msg_dict: dict, _socket):
         # append to msgs queue list
-        self.incoming_msg_queue.append(msg)
+        self.incoming_msg_queue.append(msg_dict)
         # if forwarding message
-        to_client = msg['to']
+        to_client = msg_dict['to']
         try:
-            # print(f"try to send '{to_client}'")
+
             # take socket of recipient from dict client_name:socket
             client_socket = self.clients_name_socket_dict[to_client]
             # append this msg to queue for outgoing msgs
-            self.outgoing_msg_queue.append(msg)
-            self.outgoing_msg_list.append(msg)
-            data = pickle.dumps(msg)
+            self.outgoing_msg_queue.append(msg_dict)
+            self.outgoing_msg_list.append(msg_dict)
+            data = pickle.dumps(msg_dict)
+            print(f"forwarded message {msg_dict}")
             # put data in dictionary socket:data
             # if already have data
             temp_data = self.message_queues_socket_data_dict.get(client_socket, b'')

@@ -18,6 +18,7 @@ class ConnTGBot(ConnTGBotMainClass):
     employees_set = set()
     outgoing_msgs_list = []
     incoming_msg_list = []
+    command_msg_list = []
     # srv_msg_queue = []
     # """messages from socket server"""
 
@@ -106,6 +107,7 @@ class ConnTGBot(ConnTGBotMainClass):
                 user_id = message.from_user.id
                 msg_text = message.text
                 self.incoming_msg_list.append(dict({"from": user_name, "id": user_id, "text": msg_text}))
+                self.command_msg_list.append(dict({"from": user_name, "to": "admin", "id": user_id, "text": msg_text}))
                 self.logger.info(f"{__name__} receive message: {msg_text} from {user_name}")
                 if str(user_id) in self.employees_set:
                     self.bot.reply_to(message, text_messages['welcome'].format(name=user_name, id=user_id))

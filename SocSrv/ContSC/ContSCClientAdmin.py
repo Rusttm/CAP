@@ -21,7 +21,7 @@ class ContSCClientAdmin(ConnSCClientAdmin, ContSCMainClass):
             self.logger.warning(f"{__name__} cant send msg to {to_user} empty fields 'to_user' or 'msg_text'")
             return False
     def send_socket_msg_dict(self, msg_dict: dict):
-        if  msg_dict:
+        if msg_dict:
             try:
                 # self.send_dict_2client(to_user=to_user, msg_text=msg_text)
                 msg_dict["from"] = self.client_name

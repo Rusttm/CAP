@@ -62,6 +62,11 @@ class ContTGBot(ConnTGBot, ContMainClass):
         self.outgoing_msgs_list = []
         return msg_list
 
+    def get_command_msg_list(self):
+        msg_list = self.command_msg_list
+        self.command_msg_list = []
+        return msg_list
+
 
 if __name__ == '__main__':
     connector = ContTGBot()

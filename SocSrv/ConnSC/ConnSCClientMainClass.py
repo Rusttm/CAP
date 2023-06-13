@@ -56,7 +56,8 @@ class ConnSCClientMainClass(SocketMainClass):
     def client_outgoing_msg_handler(self, client_socket=None):
         try:
             data = b''
-            while True:
+            # while True:
+            for _ in range(10):
                 request = client_socket.recv(self.buffer)
                 data += request
                 if len(request) < self.buffer:
@@ -65,13 +66,11 @@ class ConnSCClientMainClass(SocketMainClass):
         except BlockingIOError as e:
             self.logger.error(f"{self.client_name} blocking error in receive: {e}")
         except TimeoutError as e:
-            # self.logger.debug(f"{self.client_name} timeout error in receive: {e}")
-            pass
+            self.logger.debug(f"{self.client_name} timeout error in receive: {e}")
         except EOFError as e:
             self.logger.error(f"{self.client_name} data convert error in received msg: {e}")
         else:
             # time.sleep(3)
-
             self.logger.info(f"{self.client_name} receive msg: {msg_dict}")
             # print(f"{self.client_name} receive from {msg_dict['from']} msg: {msg_dict}")
             self.incoming_msg_list.append(msg_dict)
