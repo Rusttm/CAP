@@ -7,12 +7,17 @@ import select
 import socket
 import queue
 from threading import Thread
+import os
 
+try:
+    server_port = os.environ["SOC_SERVER_PORT"]
+except:
+    os.environ["SOC_SERVER_PORT"] = "1977"
 
 class ConnSCServer(SocketMainClass):
     """ starts socket server"""
     host = 'localhost'
-    server_port = 1977
+    server_port = int(os.environ["SOC_SERVER_PORT"])
     buffer = 1024
     message_queues_socket_data_dict = {}
     """ dictionary {_socket: msg.data, client_socket:  msg.data}"""

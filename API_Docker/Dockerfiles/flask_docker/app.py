@@ -2,9 +2,12 @@ from flask import Flask
 import os
 import configparser
 
+try:
+    flask_token = os.environ['FLASK_TOKEN']
+except:
+    os.environ['FLASK_TOKEN'] = "NEWTOKEN"
 
-# flask_token = os.environ['FLASK_TOKEN']
-flask_token = 'XXXX'
+flask_token = os.environ['FLASK_TOKEN']
 app = Flask(__name__)
 
 dir_name = "config"
@@ -24,7 +27,7 @@ def get_from_ini():
         return e
 
 
-
+print(flask_token)
 @app.route('/')
 def hello_world():
     return f'Hello, Docker! token is: {flask_token} ini file {get_from_ini()}'

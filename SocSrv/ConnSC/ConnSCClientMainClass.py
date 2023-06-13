@@ -4,7 +4,12 @@ from SocSrv.SocketMainClass import SocketMainClass
 from socket import socket
 import socket
 import pickle
+import os
 
+try:
+    server_port = os.environ["SOC_SERVER_PORT"]
+except:
+    os.environ["SOC_SERVER_PORT"] = "1977"
 
 class ConnSCClientMainClass(SocketMainClass):
     """ main class for socket clients
@@ -12,7 +17,7 @@ class ConnSCClientMainClass(SocketMainClass):
     incoming_msg_list = []  # list for all incoming msg
     outgoing_msg_list = []  # list for all outgoing msg
     outgoing_msg_queue = []
-    server_port = 1977
+    server_port = int(os.environ["SOC_SERVER_PORT"])
     server_host = 'localhost'
     buffer = 3072
     # client_name = "main"
@@ -52,7 +57,10 @@ class ConnSCClientMainClass(SocketMainClass):
         try:
             data = b''
             while True:
-                request = client_socket.recv(self.buffer)
+                try:
+                    request = client_socket.recv(self.buffer)
+                except:
+                    break
                 data += request
                 if len(request) < self.buffer:
                     break

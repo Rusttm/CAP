@@ -1,0 +1,17 @@
+version: "2"
+
+services:
+  socket_server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      - SOC_SERVER_PORT=${SOC_SERVER_PORT}
+    networks:
+      default: null
+    ports:
+      - ${SOC_SERVER_PORT}:${SOC_SERVER_PORT}
+    restart: always
+
