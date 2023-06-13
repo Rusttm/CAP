@@ -27,7 +27,7 @@ class ContSCServer(ConnSCServer):
 if __name__ == '__main__':
     controller = ContSCServer()
     print("Server runs!")
-    for i in range(10):
+    for i in range(100):
         time.sleep(5)
         print(f"incoming messages on server {controller.get_socserver_incomings()}")
         print(f"outgoing messages on server {controller.get_socserver_outgoins()}")

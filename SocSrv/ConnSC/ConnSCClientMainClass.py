@@ -17,7 +17,7 @@ class ConnSCClientMainClass(SocketMainClass):
     buffer = 3072
     # client_name = "main"
 
-    def __init__(self, name=None):
+    def __init__(self, name: str):
         super().__init__()
         self.client_name = name
         # if server_port:
@@ -31,7 +31,8 @@ class ConnSCClientMainClass(SocketMainClass):
         self.outgoing_msg_queue.append(itself_start_msg)
         Thread(target=self.start_socket_client, args=[]).start()
         # self.__start_socket_client()
-    def set_client_name(self, name=None):
+
+    def set_client_name(self, name: str):
         if name:
             self.client_name = name
 
@@ -101,8 +102,22 @@ class ConnSCClientMainClass(SocketMainClass):
             self.logger.error(f"{self.client_name} new message not specified 'to' receiver: {to_user}")
         return False
 
+    def send_msg_dict_2client(self, msg_dict: dict):
+        if msg_dict:
+            try:
+                new_msg = msg_dict.copy()
+                new_msg["from"] = self.client_name
+                new_msg["at"] = f"{time.ctime()}"
+                self.outgoing_msg_queue.append(new_msg)
+                return True
+            except Exception as e:
+                self.logger.error(f"{self.client_name} can't add {msg_dict} message: {e}")
+        else:
+            self.logger.error(f"{self.client_name} new message not specified 'to' receiver: {to_user}")
+        return False
+
     def get_all_incoming_msgs(self):
-        all_messages_list= self.incoming_msg_list
+        all_messages_list = self.incoming_msg_list
         self.incoming_msg_list = []
         self.logger.debug(f"{self.client_name} erased all incoming messages")
         return all_messages_list
@@ -123,9 +138,12 @@ if __name__ == '__main__':
     to_user = "server"
     print(f", at: {time.ctime()} client {client_name} successfully started")
     for i in range(10):
-        time.sleep(1)
+        time.sleep(3)
         msg_text = f"msg No {i} it's again me {client_name}"
-        send = connector.send_dict_2client(to_user=to_user, msg_text=msg_text)
+        msg = dict({"to": to_user, "from": client_name, "text": msg_text})
+        # send = connector.send_dict_2client(to_user=to_user, msg_text=msg_text)
+        send = connector.send_msg_dict_2client(msg_dict=msg)
+        print(connector.get_all_incoming_msgs())
         # if send:
         #     print(f"{client_name} send to {to_user} msg: {msg_text} ")
         # else:

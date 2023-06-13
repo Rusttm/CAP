@@ -199,7 +199,7 @@ class ConnSCServer(SocketMainClass):
         except Exception as e:
             self.logger.error(f"{__class__.__name__} cant handling empty msg error: {e}")
 
-    def server_msg_handler(self, msg, _socket):
+    def server_msg_handler(self, msg: dict, _socket):
         # if msg for server and registering msgs
         msg["to"], msg["from"] = msg["from"], msg["to"]
         msg['text'] = f"{time.ctime()} request received: {msg['text']}"
@@ -207,7 +207,7 @@ class ConnSCServer(SocketMainClass):
         # make reply to client in queue socket:msg
         self.message_queues_socket_data_dict[_socket] = data
 
-    def forward_msg_handler(self, msg, _socket):
+    def forward_msg_handler(self, msg: dict, _socket):
         # append to msgs queue list
         self.incoming_msg_queue.append(msg)
         # if forwarding message

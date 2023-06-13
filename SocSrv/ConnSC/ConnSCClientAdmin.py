@@ -3,7 +3,7 @@ import time
 from SocSrv.ConnSC.ConnSCClientMainClass import ConnSCClientMainClass
 
 class ConnSCClientAdmin(ConnSCClientMainClass):
-    """ socket client for telegram bot"""
+    """ socket client for admin"""
 
     def __init__(self, name="admin"):
         super().__init__(name=name)
