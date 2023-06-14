@@ -1,11 +1,12 @@
 # from CAPMain.CAPMainClass import CAPMainClass
 # from API_MS.ConnMS.ConnMSMainClass import ConnMSMainClass
+from AcyncSQL.ConnASQL.ConnASQLMainClass import ConnASQLMainClass
 import os
 import pandas as pd
 import re
 
 
-class ConnASQLSaveExcell():
+class ConnASQLSaveExcell(ConnASQLMainClass):
     """ connector: save dictionary data file to json """
     dir_name = "data"
     file_name = "alchemy_requested_data.xlsx"
@@ -57,5 +58,5 @@ class ConnASQLSaveExcell():
 
 
 if __name__ == '__main__':
-    connector = ConnMSSaveJson()
-    print(connector.save_data_json_file(data_dict={"data": "some data"}, file_name="temporary_file"))
+    connector = ConnASQLSaveExcell()
+    # print(connector.save_data_json_file(data_dict={"data": "some data"}, file_name="temporary_file"))

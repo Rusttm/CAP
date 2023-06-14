@@ -1,5 +1,5 @@
 # simple realize async in thread
-# !!! doesnt works
+# !!! works
 import asyncio
 
 ## Define a coroutine that takes in a future

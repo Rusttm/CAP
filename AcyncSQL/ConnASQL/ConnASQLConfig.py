@@ -13,16 +13,16 @@ class ConnASQLConfig(ASQLMainClass):
     def __init__(self):
         super().__init__()
 
-    def get_config(self, url='url', port='port', user='user', user_pass='user_pass', db_name='db_name'):
+    def get_config(self, host='host', port='port', user='user', password='password', database='database'):
         """ return information from config file"""
-        from AcyncAlchemy.ConnAA.ConnAAConfigFile import ConnAAConfigFile
+        from AcyncSQL.ConnASQL.ConnASQLConfigFile import ConnASQLConfigFile
         if self.method == "file":
-            self.conf = ConnAAConfigFile().get_config_data()
-        return {'url': self.conf[url],
+            self.conf = ConnASQLConfigFile().get_config_data()
+        return {'host': self.conf[host],
                 'port': self.conf[port],
                 'user': self.conf[user],
-                'user_pass': self.conf[user_pass],
-                'db_name': self.conf[db_name]}
+                'password': self.conf[password],
+                'database': self.conf[database]}
 
 
 if __name__ == '__main__':
