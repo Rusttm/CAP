@@ -67,7 +67,10 @@ class ConnTGBotMainClass(TGBotMainClass):
         return True
 
     def start_telegrambot(self):
-        print("start tegbot")
+        print("start async tgbot")
+        first_msg = dict({"from": "tgbot", "to": self.admin_id,
+                          "text": f"aiogram bot strats", "at": time.ctime()})
+        self.outgoing_dict_msgs_list.append(first_msg)
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         asyncio.run(self.polling_bot(loop))
@@ -76,6 +79,21 @@ class ConnTGBotMainClass(TGBotMainClass):
         nest_asyncio.apply()
         bot = Bot(token=self.__token, loop=loop)
         dp = Dispatcher(bot, storage=MemoryStorage())
+
+        @dp.message_handler(commands=['file'])
+        async def request_file(message: types.Message):
+            """This handler will be called when user sends `/file` command"""
+            data_dict = await get_table_data()
+            if type(data_dict) == dict:
+                msg_dict = data_dict
+                msg_dict["text"] = data_dict.get("table_name", "unknown table")
+            else:
+                msg_dict = dict()
+                msg_dict["text"] = "cant get data from sql"
+            msg_dict["to"] = message.from_user.id
+            # print(f"added new msg {msg_dict['text']}")
+            self.outgoing_dict_msgs_list.append(msg_dict)
+            # await message.reply(f"Hi!\n gets file command {user_id}")
 
         @dp.message_handler(commands=['start', 'help'])
         async def send_welcome(message: types.Message):
@@ -118,19 +136,21 @@ class ConnTGBotMainClass(TGBotMainClass):
                                    text=f" Unknown user {user_name} ({user_id}) send msg {msg_text} ")
                 self.logger.warning(f"unknown user {user_id} send msg to chat")
 
-        async def send_file(user_id: int, file_path, file_name):
+        async def send_file_2user(user_id: int, file_path, file_name):
             current_time = datetime.datetime.now().strftime('%y:%m:%d %H:%M:%S')
             try:
-                # file_send = InputFile(file_path, filename=file_name)
                 file_send = open(file_path, "rb")
                 msg_text = f"at {current_time} send file {file_name}"
-                # await bot.send_message(chat_id=user_id, text=f"{current_time}\n {self.count} message: {msg_text}")
                 await bot.send_document(chat_id=user_id, document=file_send, caption=msg_text)
             except Exception as e:
                 print(e)
+
         async def msg_dict_handler(msg_dict: dict):
             """ handler for dict messages translate dictionary to html text"""
-            return msg_dict
+            text_html = f"at:<strong>{msg_dict.get('at', time.ctime())}</strong>\n " \
+                        f"from:<strong>{msg_dict.get('from', 'unknown')}</strong>\n " \
+                        f"new message: <b>{msg_dict.get('text', 'empty')}</b>"
+            return text_html
 
         async def send_message(user_id: int, text: str = None, msg_dict: dict = None, disable_notification: bool = False) -> bool:
             """
@@ -165,10 +185,10 @@ class ConnTGBotMainClass(TGBotMainClass):
         async def get_table_data():
             """ gets table {"table_name": table_name, "pd_dataframe": pd_data, "file_path": excell_path}"""
             from AcyncSQL.AsyncSQLMain import AsyncSQLMain
-            data = await AsyncSQLMain().async_get_pd_data_from_table_with_path('pgsql_service_fields')
+            data = await AsyncSQLMain().async_get_pd_data_from_table_with_path('payments_in_table')
             return data
 
-        async def scheduled_msg():
+        async def sending_scheduled_msg_from_queue():
             """ gets messages from list and send them"""
             while True:
                 await asyncio.sleep(5)
@@ -176,14 +196,14 @@ class ConnTGBotMainClass(TGBotMainClass):
                     self.count += 1
                     msg_dict = self.outgoing_dict_msgs_list.pop()
                     current_time = datetime.datetime.now().strftime('%y:%m:%d %H:%M:%S')
-                    if (type(msg_dict) == dict):
+                    if type(msg_dict) == dict:
                         to_user = msg_dict.get("to", self.admin_id)
                         msg_text = msg_dict.get("text", "no text in msg")
                         # print(f"gets new msg in queue {msg_dict}")
                         if msg_dict.get("table_name", None):
                             file_path = msg_dict.get("file_path", None)
                             file_name = msg_dict.get("table_name", None)
-                            await send_file(user_id=to_user, file_path=file_path, file_name=file_name)
+                            await send_file_2user(user_id=to_user, file_path=file_path, file_name=file_name)
                         else:
                             await send_message(user_id=to_user, msg_dict=msg_dict)
                     else:
@@ -191,23 +211,25 @@ class ConnTGBotMainClass(TGBotMainClass):
                                            text=f"{current_time}\n {self.count} message: {msg_dict}")
             return True
 
-        async def scheduled_loop():
-            """ test loop for debugging put messages in outgoing list"""
-            while True:
-                await asyncio.sleep(3600)
-                # self.outgoing_dict_msgs_list.append(time.ctime())
-                data_dict = await get_table_data()
-                if type(data_dict) == dict:
-                    msg_dict = data_dict
-                    msg_dict["text"] = data_dict.get("table_name", "unknown table")
-                else:
-                    msg_dict = dict()
-                    msg_dict["text"] = "cant get data from sql"
-                msg_dict["to"] = self.admin_id
-                # print(f"added new msg {msg_dict['text']}")
-                self.outgoing_dict_msgs_list.append(msg_dict)
-        asyncio.create_task(scheduled_loop())
-        asyncio.create_task(scheduled_msg())
+        # async def scheduled_loop():
+        #     """ test loop for debugging put messages in outgoing list"""
+        #     while True:
+        #         await asyncio.sleep(3600)
+        #         # self.outgoing_dict_msgs_list.append(time.ctime())
+        #         data_dict = await get_table_data()
+        #         if type(data_dict) == dict:
+        #             msg_dict = data_dict
+        #             msg_dict["text"] = data_dict.get("table_name", "unknown table")
+        #         else:
+        #             msg_dict = dict()
+        #             msg_dict["text"] = "cant get data from sql"
+        #         msg_dict["to"] = self.admin_id
+        #         # print(f"added new msg {msg_dict['text']}")
+        #         self.outgoing_dict_msgs_list.append(msg_dict)
+        # asyncio.create_task(scheduled_loop())
+
+
+        asyncio.create_task(sending_scheduled_msg_from_queue())
         polling_task = asyncio.run_coroutine_threadsafe(executor.start_polling(dp, skip_updates=True), loop=loop)
         polling_task.result()
         return True
