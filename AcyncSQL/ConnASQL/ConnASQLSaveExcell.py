@@ -31,11 +31,11 @@ class ConnASQLSaveExcell(ConnASQLMainClass):
             if os.path.exists(DATA_FILE_PATH):
                 data_pd.to_excel(DATA_FILE_PATH, index=False)
                 self.logger.debug(f"{__class__.__name__} saved data to excell file {DATA_FILE_PATH}")
-                return True
+                return DATA_FILE_PATH
             else:
                 self.logger.error(f"{__class__.__name__} can't read excell file, it doesnt exist!")
                 # print(f"{__class__.__name__} can't write data to file {self.file_name}")
-                return False
+                return None
         except Exception as e:
             self.logger.error(f"{__class__.__name__} can't write to excell file! {e}")
             # print(e)

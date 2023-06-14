@@ -1,3 +1,4 @@
+
 import time
 import datetime
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
@@ -7,10 +8,8 @@ from API_Aiogram.ConnTGbot.ConnTGBConfig import ConnTGBConfig
 import asyncio
 from aiogram import Bot, Dispatcher, types
 from aiogram.utils import exceptions, executor
-from aiogram.types import InputFile
 import nest_asyncio
 from threading import Thread
-
 
 class ConnTGBotMainClass(TGBotMainClass):
     """ main class for API Telegram"""
@@ -21,7 +20,7 @@ class ConnTGBotMainClass(TGBotMainClass):
     users_group_ids_dict = dict()  # {'fin':['365758', '9595873']}
     users_id_name_dict = dict()  # {'75768996': 'alex'}
     employees_set = set()
-    outgoing_dict_msgs_list = []
+    outgoing_msgs_list = ['initiation telegram bot aiogram successfully run']
     incoming_msg_list = []
 
     def __init__(self):
@@ -59,24 +58,29 @@ class ConnTGBotMainClass(TGBotMainClass):
             self.users_group_ids_dict[group] = temp_list_id
         return True
 
-    def send_msg_tgbot_2admin(self, msg_text: str, from_user_id: str = None):
-        msg_dict = dict({"text": msg_text})
-        msg_dict["from"] = from_user_id
-        msg_dict["to"] = self.admin_id
-        self.outgoing_dict_msgs_list.append(msg_dict)
+    def send_msg_tgbot_2admin(self, msg_text: str):
+        self.outgoing_msgs_list.append(msg_text)
         return True
-
     def start_telegrambot(self):
         print("start tegbot")
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
+        # loop = asyncio.get_event_loop()
+        # self.bot = Bot(token=self.__token, loop=loop)
+        # self.dp = Dispatcher(self.bot, storage=MemoryStorage())
+        # coro = self.polling_bot()
+        # send_task = asyncio.run_coroutine_threadsafe(coro, loop)
+        # print(send_task.result())
         asyncio.run(self.polling_bot(loop))
+        # self.polling_bot(loop)
+        # Thread(target=self.polling_bot, args=[loop]).start()
 
     async def polling_bot(self, loop):
+        # loop = asyncio.new_event_loop()
+        # asyncio.set_event_loop(loop)
         nest_asyncio.apply()
         bot = Bot(token=self.__token, loop=loop)
         dp = Dispatcher(bot, storage=MemoryStorage())
-
         @dp.message_handler(commands=['start', 'help'])
         async def send_welcome(message: types.Message):
             """
@@ -108,31 +112,15 @@ class ConnTGBotMainClass(TGBotMainClass):
             self.logger.info(f"aiogram receives message: {msg_text} from {user_name}")
             if str(user_id) in self.employees_set:
                 await message.answer(f"Hi {user_name} ({user_id})! Welcome to Serman telegram service")
-                # await send_message(user_id=self.admin_id, text=f" User {user_name} ({user_id}) send msg {msg_text} ")
+                await send_message(user_id=self.admin_id, text=f" User {user_name} ({user_id}) send msg {msg_text} ")
                 # await self.message_outcome()
                 self.logger.warning(f"unknown user {user_id} send msg to chat")
             else:
-                await message.answer(
-                    f"Hi {user_name} ({user_id})! You are not in staff list, please send request to admin {self.admin_id}")
-                await send_message(user_id=self.admin_id,
-                                   text=f" Unknown user {user_name} ({user_id}) send msg {msg_text} ")
+                await message.answer(f"Hi {user_name} ({user_id})! You are not in staff list, please send request to admin {self.admin_id}")
+                await send_message(user_id=self.admin_id, text=f" Unknown user {user_name} ({user_id}) send msg {msg_text} ")
                 self.logger.warning(f"unknown user {user_id} send msg to chat")
 
-        async def send_file(user_id: int, file_path, file_name):
-            current_time = datetime.datetime.now().strftime('%y:%m:%d %H:%M:%S')
-            try:
-                # file_send = InputFile(file_path, filename=file_name)
-                file_send = open(file_path, "rb")
-                msg_text = f"at {current_time} send file {file_name}"
-                # await bot.send_message(chat_id=user_id, text=f"{current_time}\n {self.count} message: {msg_text}")
-                await bot.send_document(chat_id=user_id, document=file_send, caption=msg_text)
-            except Exception as e:
-                print(e)
-        async def msg_dict_handler(msg_dict: dict):
-            """ handler for dict messages translate dictionary to html text"""
-            return msg_dict
-
-        async def send_message(user_id: int, text: str = None, msg_dict: dict = None, disable_notification: bool = False) -> bool:
+        async def send_message(user_id: int, text: str, disable_notification: bool = False) -> bool:
             """
                 Safe messages sender
                 :param user_id:
@@ -140,10 +128,8 @@ class ConnTGBotMainClass(TGBotMainClass):
                 :param disable_notification:
                 :return:
                 """
-            if msg_dict:
-                text = await msg_dict_handler(msg_dict)
             try:
-                await bot.send_message(user_id, text, disable_notification=disable_notification, parse_mode='HTML')
+                await bot.send_message(user_id, text, disable_notification=disable_notification)
                 # await bot.send_message(731370983, text, disable_notification=disable_notification)
             except exceptions.BotBlocked:
                 self.logger.error(f"Target [ID:{user_id}]: blocked by user")
@@ -162,56 +148,40 @@ class ConnTGBotMainClass(TGBotMainClass):
                 return True
             return False
 
-        async def get_table_data():
-            """ gets table {"table_name": table_name, "pd_dataframe": pd_data, "file_path": excell_path}"""
-            from AcyncSQL.AsyncSQLMain import AsyncSQLMain
-            data = await AsyncSQLMain().async_get_pd_data_from_table_with_path('pgsql_service_fields')
-            return data
-
         async def scheduled_msg():
-            """ gets messages from list and send them"""
             while True:
+                self.count += 1
                 await asyncio.sleep(5)
-                while self.outgoing_dict_msgs_list:
-                    self.count += 1
-                    msg_dict = self.outgoing_dict_msgs_list.pop()
-                    current_time = datetime.datetime.now().strftime('%y:%m:%d %H:%M:%S')
-                    if (type(msg_dict) == dict):
-                        to_user = msg_dict.get("to", self.admin_id)
-                        msg_text = msg_dict.get("text", "no text in msg")
-                        # print(f"gets new msg in queue {msg_dict}")
-                        if msg_dict.get("table_name", None):
-                            file_path = msg_dict.get("file_path", None)
-                            file_name = msg_dict.get("table_name", None)
-                            await send_file(user_id=to_user, file_path=file_path, file_name=file_name)
-                        else:
-                            await send_message(user_id=to_user, msg_dict=msg_dict)
-                    else:
-                        await send_message(user_id=self.admin_id,
-                                           text=f"{current_time}\n {self.count} message: {msg_dict}")
+                current_time = datetime.datetime.now().strftime('%y:%m:%d :%H:%M:%S')
+                while self.outgoing_msgs_list:
+                    msg = self.outgoing_msgs_list.pop()
+                    current_time = datetime.datetime.now().strftime('%y:%m:%d :%H:%M:%S')
+                    await send_message(self.admin_id, text=f"{current_time}\n {self.count} message: {msg}")
+                # await send_message(self.admin_id, text=f"{current_time}\n {self.count} message: Hi from aiogram")
             return True
 
-        async def scheduled_loop():
-            """ test loop for debugging put messages in outgoing list"""
+        def message_outcome(loop):
+            self.count = 0
+            # current_loop = asyncio.get_event_loop()
             while True:
-                await asyncio.sleep(3600)
-                # self.outgoing_dict_msgs_list.append(time.ctime())
-                data_dict = await get_table_data()
-                if type(data_dict) == dict:
-                    msg_dict = data_dict
-                    msg_dict["text"] = data_dict.get("table_name", "unknown table")
-                else:
-                    msg_dict = dict()
-                    msg_dict["text"] = "cant get data from sql"
-                msg_dict["to"] = self.admin_id
-                # print(f"added new msg {msg_dict['text']}")
-                self.outgoing_dict_msgs_list.append(msg_dict)
-        asyncio.create_task(scheduled_loop())
+                time.sleep(3)
+                self.count += 1
+                coro = scheduled_msg()
+                send_task = asyncio.run_coroutine_threadsafe(coro, loop)
+                send_task.result()
+                # asyncio.run(coro)
+
+        # current_loop = asyncio.get_event_loop()
+        # Thread(target=message_outcome, args=[current_loop]).start()
+
+        # loop = asyncio.new_event_loop()
+        # asyncio.set_event_loop(loop)
+        # executor.start_polling(dp, skip_updates=True)
+        # loop = asyncio.new_event_loop()
         asyncio.create_task(scheduled_msg())
         polling_task = asyncio.run_coroutine_threadsafe(executor.start_polling(dp, skip_updates=True), loop=loop)
         polling_task.result()
         return True
-
 
 def main():
     connector = ConnTGBotMainClass()

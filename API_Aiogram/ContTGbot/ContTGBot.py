@@ -46,7 +46,7 @@ class ContTGBot(ContTGBotMainClass, ConnTGBotMainClass):
         return msg_list
 
     def get_outgoing_msg_list(self):
-        msg_list = self.outgoing_msgs_list
+        msg_list = self.outgoing_dict_msgs_list
         self.outgoing_msgs_list = []
         return msg_list
 

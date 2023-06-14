@@ -6,9 +6,8 @@ class ContASQLGetData(ContASQLMainClass, ConnASQLDataGet):
     def __init__(self):
         super().__init__()
 
-    async def get_table_data(self, table_name: str):
-        task = asyncio.create_task(self.get_all_data_from_table(table_name))
-        result = await task
+    async def async_get_table_data(self, table_name: str):
+        result = await asyncio.create_task(self.get_all_data_from_table_with_path(table_name))
         return result
 
 
