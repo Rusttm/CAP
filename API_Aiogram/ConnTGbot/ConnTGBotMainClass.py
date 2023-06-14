@@ -57,6 +57,7 @@ class ConnTGBotMainClass(TGBotMainClass):
                     self.employees_set.add(user_id)
             self.users_group_name_dict[group] = temp_list_name
             self.users_group_ids_dict[group] = temp_list_id
+        print(self.employees_set)
         return True
 
     def send_msg_tgbot_2admin(self, msg_text: str, from_user_id: str = None):
@@ -84,6 +85,7 @@ class ConnTGBotMainClass(TGBotMainClass):
         async def request_file(message: types.Message):
             """This handler will be called when user sends `/file` command"""
             data_dict = await get_table_data()
+            print(f"data gathered")
             if type(data_dict) == dict:
                 msg_dict = data_dict
                 msg_dict["text"] = data_dict.get("table_name", "unknown table")
@@ -138,6 +140,7 @@ class ConnTGBotMainClass(TGBotMainClass):
 
         async def send_file_2user(user_id: int, file_path, file_name):
             current_time = datetime.datetime.now().strftime('%y:%m:%d %H:%M:%S')
+            print("sending file 2user")
             try:
                 file_send = open(file_path, "rb")
                 msg_text = f"at {current_time} send file {file_name}"
@@ -199,7 +202,7 @@ class ConnTGBotMainClass(TGBotMainClass):
                     if type(msg_dict) == dict:
                         to_user = msg_dict.get("to", self.admin_id)
                         msg_text = msg_dict.get("text", "no text in msg")
-                        # print(f"gets new msg in queue {msg_dict}")
+                        print(f"gets new msg in queue {msg_dict}")
                         if msg_dict.get("table_name", None):
                             file_path = msg_dict.get("file_path", None)
                             file_name = msg_dict.get("table_name", None)
@@ -230,23 +233,29 @@ class ConnTGBotMainClass(TGBotMainClass):
 
 
         asyncio.create_task(sending_scheduled_msg_from_queue())
-        polling_task = asyncio.run_coroutine_threadsafe(executor.start_polling(dp, skip_updates=True), loop=loop)
-        polling_task.result()
+        asyncio.create_task(executor.start_polling(dp, skip_updates=True))
+
+        # asyncio.gather(sending_scheduled_msg_from_queue(), executor.start_polling(dp, skip_updates=True))
+
+        # polling_task = asyncio.run_coroutine_threadsafe(executor.start_polling(dp, skip_updates=True), loop=loop)
+        # polling_task.result()
+
+
         return True
 
 
-def main():
-    connector = ConnTGBotMainClass()
-    loop = asyncio.new_event_loop()
-    coro = connector.start_telegrambot()
-    start_tg_task = asyncio.run_coroutine_threadsafe(coro, loop)
-    print(start_tg_task.result())
+# def main():
+#     connector = ConnTGBotMainClass()
+#     loop = asyncio.new_event_loop()
+#     coro = connector.start_telegrambot()
+#     start_tg_task = asyncio.run_coroutine_threadsafe(coro, loop)
+#     print(start_tg_task.result())
 
 
 if __name__ == '__main__':
     connector = ConnTGBotMainClass()
     connector.start_telegrambot()
     # current_loop = asyncio.new_event_loop()
-    # Thread(target=main, args=[]).start()
+    Thread(target=connector.start_telegrambot, args=[]).start()
     # main()
     print("run in background")

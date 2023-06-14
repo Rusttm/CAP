@@ -5,3 +5,4 @@ python-on-whales
 logging~=0.4.9.6
 aiogram==2.25.1
 psutil~=5.9.5
+nest_asyncio==1.5.6
