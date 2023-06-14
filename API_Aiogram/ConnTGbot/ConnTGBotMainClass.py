@@ -57,7 +57,7 @@ class ConnTGBotMainClass(TGBotMainClass):
                     self.employees_set.add(user_id)
             self.users_group_name_dict[group] = temp_list_name
             self.users_group_ids_dict[group] = temp_list_id
-        print(self.employees_set)
+        print(f"Serman employees: {self.employees_set}")
         return True
 
     def send_msg_tgbot_2admin(self, msg_text: str, from_user_id: str = None):
@@ -85,7 +85,7 @@ class ConnTGBotMainClass(TGBotMainClass):
         async def request_file(message: types.Message):
             """This handler will be called when user sends `/file` command"""
             data_dict = await get_table_data()
-            print(f"data gathered")
+            # print(f"data gathered")
             if type(data_dict) == dict:
                 msg_dict = data_dict
                 msg_dict["text"] = data_dict.get("table_name", "unknown table")
@@ -140,7 +140,7 @@ class ConnTGBotMainClass(TGBotMainClass):
 
         async def send_file_2user(user_id: int, file_path, file_name):
             current_time = datetime.datetime.now().strftime('%y:%m:%d %H:%M:%S')
-            print("sending file 2user")
+            print(f"sending file 2user {self.users_id_name_dict.get(str(user_id), user_id)}")
             try:
                 file_send = open(file_path, "rb")
                 msg_text = f"at {current_time} send file {file_name}"
@@ -202,7 +202,7 @@ class ConnTGBotMainClass(TGBotMainClass):
                     if type(msg_dict) == dict:
                         to_user = msg_dict.get("to", self.admin_id)
                         msg_text = msg_dict.get("text", "no text in msg")
-                        print(f"gets new msg in queue {msg_dict}")
+                        print(f"gets new msg for queue {self.users_id_name_dict.get(str(to_user), to_user)}")
                         if msg_dict.get("table_name", None):
                             file_path = msg_dict.get("file_path", None)
                             file_name = msg_dict.get("table_name", None)
