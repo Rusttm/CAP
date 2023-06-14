@@ -214,24 +214,24 @@ class ConnTGBotMainClass(TGBotMainClass):
                                            text=f"{current_time}\n {self.count} message: {msg_dict}")
             return True
 
-        # async def scheduled_loop():
-        #     """ test loop for debugging put messages in outgoing list"""
-        #     while True:
-        #         await asyncio.sleep(3600)
-        #         # self.outgoing_dict_msgs_list.append(time.ctime())
-        #         data_dict = await get_table_data()
-        #         if type(data_dict) == dict:
-        #             msg_dict = data_dict
-        #             msg_dict["text"] = data_dict.get("table_name", "unknown table")
-        #         else:
-        #             msg_dict = dict()
-        #             msg_dict["text"] = "cant get data from sql"
-        #         msg_dict["to"] = self.admin_id
-        #         # print(f"added new msg {msg_dict['text']}")
-        #         self.outgoing_dict_msgs_list.append(msg_dict)
-        # asyncio.create_task(scheduled_loop())
+        async def scheduled_loop():
+            """ test loop for debugging put messages in outgoing list"""
+            while True:
+                await asyncio.sleep(3600)
+                text = f"aiogram bot send report every hour"
+                data_dict = dict({"from": "tgbot", "to": self.admin_id, "text": text, "at": time.ctime()})
+                if type(data_dict) == dict:
+                    msg_dict = data_dict
+                    msg_dict["text"] = data_dict.get("text", "unreadable text")
+                else:
+                    msg_dict = dict()
+                    msg_dict["text"] = "cant get data from sql"
+                msg_dict["to"] = self.admin_id
+                self.outgoing_dict_msgs_list.append(msg_dict)
+        asyncio.create_task(scheduled_loop())
 
 
+        asyncio.create_task(scheduled_loop())
         asyncio.create_task(sending_scheduled_msg_from_queue())
         asyncio.create_task(executor.start_polling(dp, skip_updates=True))
 
