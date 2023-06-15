@@ -1,5 +1,5 @@
 
-from API_Aiogram.TGBotMainClass import TGBotMainClass
+from API_Aiogram.ATGBotMainClass import ATGBotMainClass
 import time
 from threading import Thread
 from socket import socket
@@ -7,7 +7,7 @@ import socket
 import pickle
 
 
-class ConnTGBotSocSrvMainClass(TGBotMainClass):
+class ConnATGBotSocSrvMainClass(ATGBotMainClass):
     """ main class for socket clients
     for new child class please rename 'client_name' """
     incoming_msg_list = []  # list for all incoming msg
@@ -118,7 +118,7 @@ class ConnTGBotSocSrvMainClass(TGBotMainClass):
 
 if __name__ == '__main__':
     client_name = "main"
-    connector = ConnTGBotSocSrvMainClass(name=client_name)
+    connector = ConnATGBotSocSrvMainClass(name=client_name)
     # Thread(target=connector.start_socket_client, args=[]).start()
     # connector.start_socket_client()
     connector.outgoing_msg_queue.append({'from': 'main', 'to': 'main',

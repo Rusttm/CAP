@@ -1,8 +1,8 @@
 import time
 
-from API_Aiogram.ConnTGbot.ConnTGBotSocSrvMainClass import ConnTGBotSocSrvMainClass
+from API_Aiogram.ConnATGbot.ConnATGBotSocSrvMainClass import ConnATGBotSocSrvMainClass
 
-class ConnTGBotSocSrvClient(ConnTGBotSocSrvMainClass):
+class ConnATGBotSocSrvClient(ConnATGBotSocSrvMainClass):
     """ socket client for telegram bot"""
 
     def __init__(self, name="telegram"):
@@ -10,7 +10,7 @@ class ConnTGBotSocSrvClient(ConnTGBotSocSrvMainClass):
 
 
 if __name__ == '__main__':
-    connector = ConnTGBotSocSrvClient(name="telegram")
+    connector = ConnATGBotSocSrvClient(name="telegram")
     to = "main"
     msg_text = "Hi, main! This message from telegrambot. "
     connector.send_dict_2client(to_user=to, msg_text=msg_text)

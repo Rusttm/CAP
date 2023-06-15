@@ -3,8 +3,8 @@ import time
 import datetime
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
-from API_Aiogram.TGBotMainClass import TGBotMainClass
-from API_Aiogram.ConnTGbot.ConnTGBConfig import ConnTGBConfig
+from API_Aiogram.ATGBotMainClass import TGBotMainClass
+from API_Aiogram.ConnATGbot.ConnATGBConfig import ConnTGBConfig
 import asyncio
 from aiogram import Bot, Dispatcher, types
 from aiogram.utils import exceptions, executor

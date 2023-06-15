@@ -1,9 +1,9 @@
 import time
 
-from API_Aiogram.ContTGbot.ContTGBot import ContTGBot
+from API_Aiogram.ContATGbot.ContATGBot import ContATGBot
 from threading import Thread
 
-class TGBotMain(ContTGBot):
+class ATGBotMain(ContATGBot):
 
     def __init__(self):
         super().__init__()
@@ -12,7 +12,7 @@ class TGBotMain(ContTGBot):
         self.start_telegrambot()
 
     def start_tg_socket_service(self):
-        from API_Aiogram.ContTGbot.ContTGBotSocSrvClient import ContTGBotSocSrvClient
+        from API_Aiogram.ContATGbot.ContTGBotSocSrvClient import ContTGBotSocSrvClient
         self.socket_controller = ContTGBotSocSrvClient()
         self.logger.debug(f"{__class__.__name__} started 'telegram' socket service")
         while True:
@@ -31,7 +31,7 @@ class TGBotMain(ContTGBot):
 
 
 if __name__ == '__main__':
-    controller = TGBotMain()
+    controller = ATGBotMain()
     print("bot is working ...")
     # controller.send_spam_msg(msg=f"Hello, everybody, iam spam")
     # controller.start_telegrambot()

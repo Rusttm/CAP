@@ -2,7 +2,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 
 
-class TGBotLogger(object):
+class ATGBotLogger(object):
     logger_name = "telegrambot"
     logger = None
 
@@ -17,5 +17,5 @@ class TGBotLogger(object):
 
 
 if __name__ == '__main__':
-    connector = TGBotLogger()
+    connector = ATGBotLogger()
     connector.logger.info("resting")

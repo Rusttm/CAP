@@ -1,10 +1,10 @@
 import time
 
-from API_Aiogram.ContTGbot.ContTGBotMainClass import ContTGBotMainClass
-from API_Aiogram.ConnTGbot.ConnTGBotMainClass import ConnTGBotMainClass
+from API_Aiogram.ContATGbot.ContATGBotMainClass import ContATGBotMainClass
+from API_Aiogram.ConnATGbot.ConnATGBotMainClass import ConnATGBotMainClass
 
 
-class ContTGBot(ContTGBotMainClass, ConnTGBotMainClass):
+class ContATGBot(ContATGBotMainClass, ConnATGBotMainClass):
     """ Controller for aiogram api """
 
     def __init__(self):
@@ -52,7 +52,7 @@ class ContTGBot(ContTGBotMainClass, ConnTGBotMainClass):
 
 
 if __name__ == '__main__':
-    connector = ContTGBot()
+    connector = ContATGBot()
     print("bot is working ...")
     # connector.send_spam_msg(msg=f"Hello iam spam")
     time.sleep(10)

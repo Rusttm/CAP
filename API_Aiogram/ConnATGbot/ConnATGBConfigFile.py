@@ -1,9 +1,9 @@
-from API_Aiogram.ConnTGbot.ConnTGBConfig import ConnTGBConfig
+from API_Aiogram.ConnATGbot.ConnATGBConfig import ConnATGBConfig
 import os
 import configparser
 import pathlib
 
-class ConnTGBConfigFile(ConnTGBConfig):
+class ConnATGBConfigFile(ConnATGBConfig):
     """ configfile connector"""
     dir_name = "config"
     file_name = "tgbconfig.ini"
@@ -26,5 +26,5 @@ class ConnTGBConfigFile(ConnTGBConfig):
 
 
 if __name__ == '__main__':
-    connector = ConnTGBConfigFile()
+    connector = ConnATGBConfigFile()
     print(connector.get_config_data())
