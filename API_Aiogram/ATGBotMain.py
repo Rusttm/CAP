@@ -12,8 +12,8 @@ class ATGBotMain(ContATGBot):
         self.start_telegrambot()
 
     def start_tg_socket_service(self):
-        from API_Aiogram.ContATGbot.ContTGBotSocSrvClient import ContTGBotSocSrvClient
-        self.socket_controller = ContTGBotSocSrvClient()
+        from API_Aiogram.ContATGbot.ContATGBotSocSrvClient import ContATGBotSocSrvClient
+        self.socket_controller = ContATGBotSocSrvClient()
         self.logger.debug(f"{__class__.__name__} started 'telegram' socket service")
         while True:
             time.sleep(2)

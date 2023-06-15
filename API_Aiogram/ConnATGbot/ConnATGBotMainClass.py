@@ -12,7 +12,7 @@ import nest_asyncio
 from threading import Thread
 
 
-class ConnTGBotMainClass(TGBotMainClass):
+class ConnATGBotMainClass(ATGBotMainClass):
     """ main class for API Telegram"""
     __token = None
     admin_id = None
@@ -30,7 +30,7 @@ class ConnTGBotMainClass(TGBotMainClass):
         self.bot = None
         self.dp = None
         try:
-            config = ConnTGBConfig()
+            config = ConnATGBConfig()
             self.__token = config.get_config()['TELEGRAMBOT']['token']
             self.convert_users_2ids(config=config)
             self.admin_id = self.users_group_ids_dict.get('admin', None)[0]
@@ -209,6 +209,7 @@ class ConnTGBotMainClass(TGBotMainClass):
                             await send_file_2user(user_id=to_user, file_path=file_path, file_name=file_name)
                         else:
                             await send_message(user_id=to_user, msg_dict=msg_dict)
+                            continue
                     else:
                         await send_message(user_id=self.admin_id,
                                            text=f"{current_time}\n {self.count} message: {msg_dict}")

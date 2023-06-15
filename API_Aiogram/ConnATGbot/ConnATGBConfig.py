@@ -15,9 +15,9 @@ class ConnATGBConfig(ATGBotMainClass):
         super().__init__()
 
     def get_config(self):
-        from API_Aiogram.ConnATGbot.ConnATGBConfigFile import ConnTGBConfigFile
+        from API_Aiogram.ConnATGbot.ConnATGBConfigFile import ConnATGBConfigFile
         if self.method == "file":
-            self.conf = ConnTGBConfigFile().get_config_data()
+            self.conf = ConnATGBConfigFile().get_config_data()
         return self.conf
 
 
