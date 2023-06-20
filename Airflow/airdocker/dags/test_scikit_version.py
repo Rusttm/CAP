@@ -17,7 +17,7 @@ def get_sklearn_version():
 with DAG(
     default_args=default_args,
     dag_id='test_sklearn_version',
-    start_date=datetime(2023,6, 21),
+    start_date=datetime(2023, 6, 20),
     schedule_interval='@daily'
 ) as dag:
     get_sklearn_version = PythonOperator(
