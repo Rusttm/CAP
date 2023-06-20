@@ -1,2 +1,0 @@
-apache_airflow==2.6.2
-apache_airflow_providers_telegram==4.1.0
