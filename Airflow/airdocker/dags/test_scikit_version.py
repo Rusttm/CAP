@@ -11,7 +11,7 @@ default_args = {
 
 def get_sklearn_version():
     import sklearn
-    print(f"aiogram version is {sklearn.__version__}")
+    print(f"sklearn version is {sklearn.__version__}")
 
 
 with DAG(
