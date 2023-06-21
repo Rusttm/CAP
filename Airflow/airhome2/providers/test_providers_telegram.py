@@ -28,8 +28,8 @@ from airflow.providers.telegram.operators.telegram import TelegramOperator
 
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
 DAG_ID = "example_telegram"
-CONN_ID = "telegram_conn_id"
-CHAT_ID = "-3222103937"
+CONN_ID = os.environ.get("TELEGRAM_TOKEN")
+CHAT_ID = "-731370983"
 
 with DAG(DAG_ID, start_date=datetime(2023, 6, 20), tags=["example"]) as dag:
 
