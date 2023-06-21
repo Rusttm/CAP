@@ -37,3 +37,11 @@ Docker dependencies installation
 # this code not works cause no postgres base
 # 6. $ docker-compose up -d --no-deps --build airflow-webserver airflow-scheduler 
 
+Start from commandline
+1. $ cd /home/rusttm/PycharmProjects/CAP/Airflow
+2. $ source air_ubuntu_env/bin/activate
+3. $ export AIRFLOW_HOME=/home/rusttm/PycharmProjects/CAP/Airflow/airhome2
+4. $ airflow webserver -p 8081
+in new terminal
+5. $ export AIRFLOW_HOME=/home/rusttm/PycharmProjects/CAP/Airflow/airhome2
+6. $ airflow scheduler
