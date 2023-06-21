@@ -28,75 +28,45 @@ from airflow.operators.python import PythonOperator
 default_args = {
     'owner': 'rusttm',
     'retry': 5,
-    'retry_delay': timedelta(minutes=5)
+    'retry_delay': timedelta(minutes=5),
+    'catchup': False,
+    'schedule_interval': '@hourly'  # or '0 * * * *' from https://crontab.guru/#0_1_*_*_*
 }
-
-
-
 
 from airflow import DAG
 from airflow.providers.telegram.operators.telegram import TelegramOperator
+
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
 DAG_ID = "test_telegram_v5"
-CONN_ID = os.environ.get("TELEGRAM_TOKEN")
-CHAT_ID = os.environ.get("ADMIN_TELEGRAM_ID")
-print(f"? telegram token {CONN_ID}")
-print(f"? telegram admin {CHAT_ID}")
 
-def get_token(ti) -> tuple:
+
+def get_token() -> tuple:
     import configparser
-    global CONN_ID
-    global CHAT_ID
     try:
-        print(f"? telegram token {CONN_ID}")
-        print(f"? telegram admin {CHAT_ID}")
         conf = configparser.ConfigParser()
         file = os.path.dirname(os.path.dirname(__file__))
         CONF_FILE_PATH = os.path.join(file, "config", "tgbconfig.ini")
         conf.read(CONF_FILE_PATH)
-        CONN_ID = conf['TELEGRAMBOT']['token']
-        os.environ["TELEGRAM_TOKEN"] = CONN_ID
-        CHAT_ID = conf['TELEGRAMBOT']['my_chat_id']
-        os.environ["ADMIN_TELEGRAM_ID"] = CHAT_ID
-        ti.xcom_push(key='token_tg', value=CONN_ID)
-        ti.xcom_push(key='admin_tg_id', value=CHAT_ID)
-        # return (CONN_ID, CHAT_ID)
+        token = os.environ["TELEGRAM_TOKEN"] = conf['TELEGRAMBOT']['token']
+        admin_id = os.environ["ADMIN_TELEGRAM_ID"] = conf['TELEGRAMBOT']['my_chat_id']
+        return (token, admin_id)
     except Exception as e:
         print(f"!!! cant get telegram data, error: {e}")
-        # return (None, None)
-    else:
-        print(f"!!! telegram token {os.environ.get('TELEGRAM_TOKEN')}")
-        print(f"!!! telegram admin {os.environ.get('ADMIN_TELEGRAM_ID')}")
+        return (None, None)
 
 
 with DAG(default_args=default_args,
          dag_id=DAG_ID,
          start_date=datetime(2023, 6, 20),
-         tags=["example"],
-         schedule_interval='@daily'
+         tags=["example"]
          ) as dag:
-
     # [START howto_operator_telegram]
 
     send_message_telegram_task = TelegramOperator(
         task_id="send_message_telegram_v5",
         telegram_conn_id="telegram_default",
-        token=CONN_ID,
-        chat_id=CHAT_ID,
-        text=f"Hello from Airflow! {datetime.now()}",
+        token=get_token()[0],
+        chat_id=get_token()[1],
+        text=f"Hello from Airflow! {datetime.now().strftime('%y:%m:%d %H:%M:%S')}",
         dag=dag
     )
-    get_token = PythonOperator(
-        task_id='get_token',
-        python_callable=get_token
-    )
-
-    get_token >> send_message_telegram_task
-
-    # [END howto_operator_telegram]
-
-
-# from tests.system.utils import get_test_run  # noqa: E402
-
-# Needed to run the example DAG with pytest (see: tests/system/README.md#run_via_pytest)
-# test_run = get_test_run(dag)
