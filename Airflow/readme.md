@@ -10,7 +10,7 @@ from https://airflow.apache.org/docs/apache-airflow/stable/installation/installi
 3. $ export AIRFLOW_HOME=/Users/johnlennon/RusttmGDrive/Python/CAP/Airflow/airhome
 4. $ airflow db init 
 5. $ airflow webserver -p 8081
-6. $ airflow users create  --username root --firstname firstname --lastname lastname --role Admin --email admin@domain.com
+6. $ airflow users create  --username root --firstname firstname --lastname lastname --role Admin --email rustammazhatov@gmail.com
 in new terminal
 7. $ export AIRFLOW_HOME=/Users/johnlennon/RusttmGDrive/Python/CAP/Airflow/airhome
 8. $ airflow scheduler
@@ -21,7 +21,7 @@ in new terminal
 Docker installation
 from https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html
 1. curl -LfO 'https://airflow.apache.org/docs/apache-airflow/2.6.2/docker-compose.yaml'
-2. cd /airhome
+2. cd /airdocker
 3. mkdir ./dags ./logs ./plugins
 4. echo -e "AIRFLOW_UID=$(id -u)" > .env
 5. $ docker-compose up airflow-init
