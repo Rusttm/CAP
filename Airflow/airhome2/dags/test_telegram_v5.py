@@ -21,9 +21,12 @@ Example use of Telegram operator.
 from __future__ import annotations
 
 import os
-import time
+
 from datetime import datetime, timedelta
 from airflow.operators.python import PythonOperator
+from airflow import DAG
+from airflow.providers.telegram.operators.telegram import TelegramOperator
+
 
 default_args = {
     'owner': 'rusttm',
@@ -33,12 +36,11 @@ default_args = {
     'schedule_interval': '@hourly'  # or '0 * * * *' from https://crontab.guru/#0_1_*_*_*
 }
 
-from airflow import DAG
-from airflow.providers.telegram.operators.telegram import TelegramOperator
-
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
-DAG_ID = "test_telegram_v5"
+DAG_ID = "test_telegram_v6"
 
+def get_info_4tgbot():
+    return f"information for bot: time.now {datetime.now().strftime('%y:%m:%d %H:%M:%S')}"
 
 def get_token() -> tuple:
     import configparser
@@ -60,13 +62,12 @@ with DAG(default_args=default_args,
          start_date=datetime(2023, 6, 20),
          tags=["example"]
          ) as dag:
-    # [START howto_operator_telegram]
 
     send_message_telegram_task = TelegramOperator(
-        task_id="send_message_telegram_v5",
+        task_id="task_send_message_telegram_v6",
         telegram_conn_id="telegram_default",
         token=get_token()[0],
         chat_id=get_token()[1],
-        text=f"Hello from Airflow! {datetime.now().strftime('%y:%m:%d %H:%M:%S')}",
+        text=get_info_4tgbot(),
         dag=dag
     )
