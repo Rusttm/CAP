@@ -39,7 +39,7 @@ default_args = {
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
 DAG_ID = "test_telegram_v6"
 
-def get_info_4tgbot():
+def get_text_4tgbot():
     return f"information for bot: time.now {datetime.now().strftime('%y:%m:%d %H:%M:%S')}"
 
 def get_token() -> tuple:
@@ -68,6 +68,6 @@ with DAG(default_args=default_args,
         telegram_conn_id="telegram_default",
         token=get_token()[0],
         chat_id=get_token()[1],
-        text=get_info_4tgbot(),
+        text=get_text_4tgbot(),
         dag=dag
     )
