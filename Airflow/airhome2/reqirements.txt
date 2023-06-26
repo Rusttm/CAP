@@ -1,5 +1,5 @@
-apache-airflow-providers-telegram==4.1.0
-apache_airflow_providers_apache_beam==5.1.0
-apache-airflow-providers-http==4.4.1
-apache-airflow-providers-slack==7.3.0
+apache-airflow-providers-telegram # ==4.1.0
+apache_airflow_providers_apache_beam # ==5.1.0
+apache-airflow-providers-http # ==4.4.1
+apache-airflow-providers-slack # ==7.3.0
 #apache-airflow-providers-slack[http]
