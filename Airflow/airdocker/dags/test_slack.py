@@ -27,18 +27,7 @@ from airflow.operators.python import PythonOperator
 from airflow import DAG
 from airflow.providers.slack.operators.slack import SlackAPIPostOperator
 
-# from airflow.hooks.base_hook import BaseHook
-
-
-def slack_failed_task(context):
-    failed_alert = SlackAPIPostOperator(
-        task_id='slack_failed',
-        channel="#Serman_airflow_slack",
-        token="0PS6G4bT1LcL3Qora0HKOTol ",
-        text=':red_circle: Task Failed',
-        username='airflow',)
-    return failed_alert.execute(context=context)
-
+from airflow.hooks.base_hook import BaseHook
 
 default_args = {
     'owner': 'rusttm',
@@ -79,21 +68,6 @@ with DAG(default_args=default_args,
          schedule_interval=timedelta(minutes=5),  # or '@hourly'  # or '* */1 * * *' from https://crontab.guru/#0_1_*_*_*
          dagrun_timeout=timedelta(seconds=5)
          ) as dag:
-
-    # slack = SlackAPIPostOperator(
-    #     task_id="slack_post_hello_v0",
-    #     dag=dag,
-    #     token=get_token()[0],
-    #     text=get_text_4slack(),
-    #     channel=get_token()[1],
-    # )
-
-    # task_with_failed_slack_alerts = BashOperator(
-    #     task_id='fail_task',
-    #     bash_command='exit 1',
-    #     on_failure_callback=slack_failed_task,
-    #     provide_context=True,
-    #     dag=dag)
 
     SlackAPIPostOperator(
         task_id='failure_v6',
