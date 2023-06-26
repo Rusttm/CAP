@@ -2,3 +2,4 @@ aiogram
 scikit-learn
 apache-airflow-providers-telegram
 apache-airflow-providers-slack
+apache-airflow-providers-http

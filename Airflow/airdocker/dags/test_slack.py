@@ -25,7 +25,19 @@ import os
 from datetime import datetime, timedelta
 from airflow.operators.python import PythonOperator
 from airflow import DAG
-from airflow.providers.telegram.operators.telegram import TelegramOperator
+from airflow.providers.slack.operators.slack import SlackAPIPostOperator
+
+# from airflow.hooks.base_hook import BaseHook
+
+
+def slack_failed_task(context):
+    failed_alert = SlackAPIPostOperator(
+        task_id='slack_failed',
+        channel="#Serman_airflow_slack",
+        token="0PS6G4bT1LcL3Qora0HKOTol ",
+        text=':red_circle: Task Failed',
+        username='airflow',)
+    return failed_alert.execute(context=context)
 
 
 default_args = {
@@ -36,9 +48,9 @@ default_args = {
 }
 
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
-DAG_ID = "test_telegram_v6"
+DAG_ID = "test_slack_v4"
 
-def get_text_4tgbot():
+def get_text_4slack():
     return f"information from airflow for bot: time.now {datetime.now().strftime('%y:%m:%d %H:%M:%S')}"
 
 def get_token() -> tuple:
@@ -46,14 +58,16 @@ def get_token() -> tuple:
     try:
         conf = configparser.ConfigParser()
         file = os.path.dirname(os.path.dirname(__file__))
-        CONF_FILE_PATH = os.path.join(file, "config", "tgbconfig.ini")
+        CONF_FILE_PATH = os.path.join(file, "config", "slackconfig.ini")
         conf.read(CONF_FILE_PATH)
-        token = os.environ["TELEGRAM_TOKEN"] = conf['TELEGRAMBOT']['token']
-        admin_id = os.environ["ADMIN_TELEGRAM_ID"] = conf['TELEGRAMBOT']['my_chat_id']
-        return (token, admin_id)
+        print(f"!!! my cof file is {conf}")
+        token = os.environ["SLACK_TOKEN"] = conf['SLACK']['slack_token']
+        chat_id = os.environ["SLACK_TOKEN"] = conf['SLACK']['my_chat_id']
+        print(f"!!! my slack token is {token}")
+        return token, chat_id
     except Exception as e:
-        print(f"!!! cant get telegram data, error: {e}")
-        return (None, None)
+        print(f"!!! cant get slack data, error: {e}")
+        return None, None
 
 
 with DAG(default_args=default_args,
@@ -66,11 +80,25 @@ with DAG(default_args=default_args,
          dagrun_timeout=timedelta(seconds=5)
          ) as dag:
 
-    send_message_telegram_task = TelegramOperator(
-        task_id="task_send_message_telegram_v6",
-        telegram_conn_id="telegram_default",
-        token=get_token()[0],
-        chat_id=get_token()[1],
-        text=get_text_4tgbot(),
-        dag=dag
+    # slack = SlackAPIPostOperator(
+    #     task_id="slack_post_hello_v0",
+    #     dag=dag,
+    #     token=get_token()[0],
+    #     text=get_text_4slack(),
+    #     channel=get_token()[1],
+    # )
+
+    # task_with_failed_slack_alerts = BashOperator(
+    #     task_id='fail_task',
+    #     bash_command='exit 1',
+    #     on_failure_callback=slack_failed_task,
+    #     provide_context=True,
+    #     dag=dag)
+
+    SlackAPIPostOperator(
+        task_id='failure_v4',
+        token="xoxb-5461036918469-5485995510562-urXxA23ToTQlu7xhGW7zXK3E",
+        text='Hello World !',
+        channel='#my_airflow',  # Replace with your Slack username
+        username='airflow'
     )
