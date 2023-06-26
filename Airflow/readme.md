@@ -33,9 +33,10 @@ Docker dependencies installation
 3. $ docker build . --tag extended_airflow:latest
 4. make changes in yaml: image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.6.2} to image: ${AIRFLOW_IMAGE_NAME:-extended_airflow:latest}
 5. write test dag
-6. $ docker-compose up airflow-init
+6. $ docker compose up airflow-init
 # this code not works cause no postgres base
 # 6. $ docker-compose up -d --no-deps --build airflow-webserver airflow-scheduler 
+# 7. if changes permissions sudo chmod -R 777
 
 Start from commandline
 1. $ cd /home/rusttm/PycharmProjects/CAP/Airflow

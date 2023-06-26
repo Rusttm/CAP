@@ -31,16 +31,17 @@ from airflow.providers.telegram.operators.telegram import TelegramOperator
 default_args = {
     'owner': 'rusttm',
     'retry': 5,
-    'retry_delay': timedelta(minutes=5),
-    'catchup': False,
-    'schedule_interval': '@hourly'  # or '0 * * * *' from https://crontab.guru/#0_1_*_*_*
+    # 'retry_delay': timedelta(minutes=5),
+    'catchup': False
+    # 'schedule_interval': '*/1 * * * *' # timedelta(minutes=5) every 5 minutes # or '*/5 * * * *' from https://crontab.guru/#0_1_*_*_*
+    # 'schedule_interval': '@hourly'  # or '0 * * * *' from https://crontab.guru/#0_1_*_*_*
 }
 
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
 DAG_ID = "test_telegram_v6"
 
 def get_text_4tgbot():
-    return f"information for bot: time.now {datetime.now().strftime('%y:%m:%d %H:%M:%S')}"
+    return f"information from airflow for bot: time.now {datetime.now().strftime('%y:%m:%d %H:%M:%S')}"
 
 def get_token() -> tuple:
     import configparser
@@ -59,8 +60,12 @@ def get_token() -> tuple:
 
 with DAG(default_args=default_args,
          dag_id=DAG_ID,
-         start_date=datetime(2023, 6, 20),
-         tags=["example"]
+         tags=["example"],
+         start_date=datetime(2023, 6, 26, 14, 45),
+         max_active_runs=1,
+         concurrency=4,
+         schedule_interval=timedelta(minutes=5),
+         dagrun_timeout=timedelta(seconds=5)
          ) as dag:
 
     send_message_telegram_task = TelegramOperator(
