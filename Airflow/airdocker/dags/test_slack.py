@@ -48,7 +48,7 @@ default_args = {
 }
 
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
-DAG_ID = "test_slack_v4"
+DAG_ID = "test_slack_v6"
 
 def get_text_4slack():
     return f"information from airflow for bot: time.now {datetime.now().strftime('%y:%m:%d %H:%M:%S')}"
@@ -96,9 +96,9 @@ with DAG(default_args=default_args,
     #     dag=dag)
 
     SlackAPIPostOperator(
-        task_id='failure_v4',
-        token="xoxb-5461036918469-5485995510562-urXxA23ToTQlu7xhGW7zXK3E",
-        text='Hello World !',
-        channel='#my_airflow',  # Replace with your Slack username
+        task_id='failure_v6',
+        token=get_token()[0],
+        text=get_text_4slack(),
+        channel=f'#{get_token()[1]}',
         username='airflow'
     )
