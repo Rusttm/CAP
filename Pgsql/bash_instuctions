@@ -1,3 +1,4 @@
 $ chmod 777 ./upd_air.sh
+$ ./upd_air.sh
 
 
