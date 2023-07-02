@@ -110,17 +110,16 @@ with DAG(default_args=default_args,
         text=f"at: {datetime.now().strftime('%y:%m:%d %H:%M:%S')}" + "{{ti.xcom_pull(task_ids='python_update_operator', key='updater_result')}}",
         dag=dag
     )
+
     python_updater = PythonOperator(
         task_id=f'python_update_operator',
         python_callable=python_update_operator,
         dag=dag
     )
 
-    # task_updater = BashOperator(
-    #     task_id="bash_task_updater",
-    #     # bash_command="./upd_air_test.sh",
-    #     bash_command="echo 'bash run correctly'",
-    #     # bash_command="/opt/airflow/CAP/cap_env/bin/python",
-    #     dag=dag)
+    bash_updater = BashOperator(
+        task_id="bash_task_updater",
+        bash_command="./upd_air_test.sh",
+        dag=dag)
 
     python_updater >> send_message_telegram_task
