@@ -22,7 +22,6 @@ from __future__ import annotations
 
 import os
 from datetime import datetime, timedelta
-from airflow.operators.python import PythonOperator
 from airflow import DAG
 from airflow.providers.telegram.operators.telegram import TelegramOperator
 from airflow.operators.bash_operator import BashOperator
