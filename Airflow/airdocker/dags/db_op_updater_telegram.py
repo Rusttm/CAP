@@ -39,6 +39,7 @@ VERSION = 6
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
 DAG_ID = f"db_updater_v{VERSION}"
 
+
 def telegram_on_fail(context):
     alarm_text = f"""\U0001F914: Task Failed.
              *Task*: {context.get('task_instance').task_id}
@@ -58,8 +59,6 @@ def telegram_on_fail(context):
     return failed_alert.execute(context=context)
 
 
-
-
 def python_update_operator(**kwargs):
     from Pgsql.PgsqlUpdaterAir import PgsqlUpdaterAir
     runner = PgsqlUpdaterAir()
@@ -68,6 +67,7 @@ def python_update_operator(**kwargs):
     ti = kwargs['ti']
     ti.xcom_push(key='updater_result', value=res_line)
     return res_line
+
 
 def get_token() -> tuple:
     import configparser
@@ -82,6 +82,7 @@ def get_token() -> tuple:
     except Exception as e:
         print(f"!!! cant get telegram data, error: {e}")
         return (None, None)
+
 
 default_args = {
     'owner': 'rusttm',
