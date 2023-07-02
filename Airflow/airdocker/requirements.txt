@@ -1,3 +1,13 @@
 apache-airflow-providers-telegram
 apache-airflow-providers-slack
 apache-airflow-providers-http
+
+
+# CAP modules
+configparser
+requests
+pandas
+openpyxl
+psycopg2-binary
+tqdm
+logging

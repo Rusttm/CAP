@@ -28,7 +28,13 @@ from airflow.providers.telegram.operators.telegram import TelegramOperator
 from airflow.operators.bash_operator import BashOperator
 
 import sys
-sys.path.append('/home/rusttm/PycharmProjects/CAP/Pgsql')
+
+# sys.path.append('/home/rusttm/PycharmProjects/CAP/Pgsql')
+CURRENT_DIR = os.getcwd()
+cap_dir = os.path.join(CURRENT_DIR, "CAP")
+sys.path.append(cap_dir)
+
+
 # from Pgsql.PgsqlUpdaterAir import PgsqlUpdaterAir
 
 def telegram_on_fail(context):
@@ -57,22 +63,25 @@ default_args = {
     'catchup': False,
     'on_failure_callback': telegram_on_fail
 }
-VERSION = 5
+VERSION = 9
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
 DAG_ID = f"test_updater_v{VERSION}"
 
+
 def get_text_4tgbot():
     import platform
-    import glob
     # from Pgsql.PgsqlUpdaterAir import PgsqlUpdaterAir
     text_line = ""
-    text_line += "///".join(glob.glob("."))
+    CURRENT_DIR = os.getcwd()
+    cap_dir = os.path.join(CURRENT_DIR, "CAP")
+    sys.path.append(cap_dir)
+    text_line += "///".join(os.listdir(cap_dir))
     sys_os = platform.platform()
     dir_path = os.path.dirname(os.path.realpath(__file__))
     # os.environ['PATH'] += ':' + dir_path
     # sys.path.insert(0, dir_path)
     # sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-    text_line = f"Current project path: {dir_path} added to System: {sys_os}, system paths {sys.path}"
+    text_line += f"Current project path: {dir_path} added to System: {sys_os}, system paths {sys.path}"
     text_line += f"information from airflow for bot: time.now {datetime.now().strftime('%y:%m:%d %H:%M:%S')}"
     # print(os.path.realpath(__file__))
     text_line += os.path.realpath(__file__)
@@ -97,7 +106,7 @@ def get_token() -> tuple:
 with DAG(default_args=default_args,
          dag_id=DAG_ID,
          tags=["example"],
-         start_date=datetime(2023, 7, 2, 14, 50), # only UTC time
+         start_date=datetime(2023, 7, 2, 14, 50),  # only UTC time
          max_active_runs=1,
          concurrency=4,
          schedule_interval=timedelta(minutes=5),
@@ -114,7 +123,10 @@ with DAG(default_args=default_args,
         dag=dag
     )
 
-    # task_updater = BashOperator(
-    #     task_id="bash_task_updater",
-    #     bash_command="ls -ial",
-    #     dag=dag)
+    task_updater = BashOperator(
+        task_id="bash_task_updater",
+        bash_command="./upd_air_test.sh",
+        # bash_command="/opt/airflow/CAP/cap_env/bin/python",
+        dag=dag)
+
+    task_updater >> send_message_telegram_task

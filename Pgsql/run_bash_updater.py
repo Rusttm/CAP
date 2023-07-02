@@ -13,3 +13,4 @@ from Pgsql.PgsqlUpdaterAir import PgsqlUpdaterAir
 
 runner = PgsqlUpdaterAir()
 runner.update_all_report_tables()
+print("script runed all is ok!!!")
