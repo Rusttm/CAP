@@ -26,6 +26,7 @@ from airflow.operators.python import PythonOperator
 from airflow import DAG
 from airflow.providers.telegram.operators.telegram import TelegramOperator
 from airflow.operators.bash_operator import BashOperator
+from airflow.operators.python_operator import PythonOperator
 
 import sys
 
@@ -34,8 +35,9 @@ CURRENT_DIR = os.getcwd()
 cap_dir = os.path.join(CURRENT_DIR, "CAP")
 sys.path.append(cap_dir)
 
-
-# from Pgsql.PgsqlUpdaterAir import PgsqlUpdaterAir
+VERSION = 6
+ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
+DAG_ID = f"db_updater_v{VERSION}"
 
 def telegram_on_fail(context):
     alarm_text = f"""\U0001F914: Task Failed.
@@ -56,28 +58,16 @@ def telegram_on_fail(context):
     return failed_alert.execute(context=context)
 
 
-default_args = {
-    'owner': 'rusttm',
-    'retry': 5,
-    'retry_delay': timedelta(minutes=5),
-    'catchup': False,
-    'on_failure_callback': telegram_on_fail
-}
-VERSION = 0
-ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
-DAG_ID = f"db_updater_v{VERSION}"
 
 
-def get_text_4tgbot():
-    import platform
+def python_update_operator(**kwargs):
     from Pgsql.PgsqlUpdaterAir import PgsqlUpdaterAir
     runner = PgsqlUpdaterAir()
-    text_line = ""
     res_line = runner.update_all_report_tables()
-    print(res_line)
-    # text_line += res_line
-    return text_line
-
+    print(f"hello world python, result: {res_line}")
+    ti = kwargs['ti']
+    ti.xcom_push(key='updater_result', value=res_line)
+    return res_line
 
 def get_token() -> tuple:
     import configparser
@@ -93,11 +83,18 @@ def get_token() -> tuple:
         print(f"!!! cant get telegram data, error: {e}")
         return (None, None)
 
+default_args = {
+    'owner': 'rusttm',
+    'retry': 5,
+    'retry_delay': timedelta(minutes=5),
+    'catchup': False,
+    'on_failure_callback': telegram_on_fail
+}
 
 with DAG(default_args=default_args,
          dag_id=DAG_ID,
          tags=["example"],
-         start_date=datetime(2023, 7, 2, 14, 50),  # only UTC time
+         start_date=datetime(2023, 7, 2, 22, 59),  # only UTC time
          max_active_runs=1,
          concurrency=4,
          schedule_interval=timedelta(minutes=60),
@@ -106,19 +103,24 @@ with DAG(default_args=default_args,
          ) as dag:
 
     send_message_telegram_task = TelegramOperator(
-        task_id=f"task_db_updater_v{VERSION}",
+        task_id=f"send_tg_db_updater_v{VERSION}",
         telegram_conn_id="telegram_default",
         token=get_token()[0],
         chat_id=get_token()[1],
-        text=get_text_4tgbot(),
+        text=f"at: {datetime.now().strftime('%y:%m:%d %H:%M:%S')}" + "{{ti.xcom_pull(task_ids='python_update_operator', key='updater_result')}}",
+        dag=dag
+    )
+    python_updater = PythonOperator(
+        task_id=f'python_update_operator',
+        python_callable=python_update_operator,
         dag=dag
     )
 
-    task_updater = BashOperator(
-        task_id="bash_task_updater",
-        # bash_command="./upd_air_test.sh",
-        bash_command="echo 'bash run correctly'",
-        # bash_command="/opt/airflow/CAP/cap_env/bin/python",
-        dag=dag)
+    # task_updater = BashOperator(
+    #     task_id="bash_task_updater",
+    #     # bash_command="./upd_air_test.sh",
+    #     bash_command="echo 'bash run correctly'",
+    #     # bash_command="/opt/airflow/CAP/cap_env/bin/python",
+    #     dag=dag)
 
-    task_updater >> send_message_telegram_task
+    python_updater >> send_message_telegram_task
