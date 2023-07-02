@@ -1,0 +1,11 @@
+[Unit]
+Description=Serman airflow update service
+After=multi-user.target
+
+[Service]
+Type=simple
+Restart=always
+ExecStart=/home/rusttm/cap_env/bin/python /home/rusttm/PycharmProjects/CAP/Pgsql/PgsqlUpdAir.py
+
+[Install]
+WantedBy=multi-user.target
