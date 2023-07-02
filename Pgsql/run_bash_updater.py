@@ -10,7 +10,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 print(f"Current project path: {dir_path} added to System: {sys_os}")
 print(os.path.realpath(__file__))
 from Pgsql.PgsqlUpdaterAir import PgsqlUpdaterAir
-
 runner = PgsqlUpdaterAir()
 runner.update_all_report_tables()
 print("script runed all is ok!!!")

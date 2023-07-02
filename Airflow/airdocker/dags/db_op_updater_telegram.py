@@ -29,7 +29,7 @@ from airflow.operators.bash_operator import BashOperator
 
 import sys
 
-# sys.path.append('/home/rusttm/PycharmProjects/CAP/Pgsql')
+sys.path.append('/opt/airflow/CAP')
 CURRENT_DIR = os.getcwd()
 cap_dir = os.path.join(CURRENT_DIR, "CAP")
 sys.path.append(cap_dir)
@@ -63,28 +63,19 @@ default_args = {
     'catchup': False,
     'on_failure_callback': telegram_on_fail
 }
-VERSION = 9
+VERSION = 0
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
-DAG_ID = f"test_updater_v{VERSION}"
+DAG_ID = f"db_updater_v{VERSION}"
 
 
 def get_text_4tgbot():
     import platform
-    # from Pgsql.PgsqlUpdaterAir import PgsqlUpdaterAir
+    from Pgsql.PgsqlUpdaterAir import PgsqlUpdaterAir
+    runner = PgsqlUpdaterAir()
     text_line = ""
-    CURRENT_DIR = os.getcwd()
-    cap_dir = os.path.join(CURRENT_DIR, "CAP")
-    sys.path.append(cap_dir)
-    text_line += "///".join(os.listdir(cap_dir))
-    sys_os = platform.platform()
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    # os.environ['PATH'] += ':' + dir_path
-    # sys.path.insert(0, dir_path)
-    # sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-    text_line += f"Current project path: {dir_path} added to System: {sys_os}, system paths {sys.path}"
-    text_line += f"information from airflow for bot: time.now {datetime.now().strftime('%y:%m:%d %H:%M:%S')}"
-    # print(os.path.realpath(__file__))
-    text_line += os.path.realpath(__file__)
+    res_line = runner.update_all_report_tables()
+    print(res_line)
+    # text_line += res_line
     return text_line
 
 
@@ -109,13 +100,13 @@ with DAG(default_args=default_args,
          start_date=datetime(2023, 7, 2, 14, 50),  # only UTC time
          max_active_runs=1,
          concurrency=4,
-         schedule_interval=timedelta(minutes=5),
+         schedule_interval=timedelta(minutes=60),
          # or '@hourly'  # or '* */1 * * *' from https://crontab.guru/#0_1_*_*_*
          dagrun_timeout=timedelta(seconds=60)
          ) as dag:
 
     send_message_telegram_task = TelegramOperator(
-        task_id=f"task_update_db_v{VERSION}",
+        task_id=f"task_db_updater_v{VERSION}",
         telegram_conn_id="telegram_default",
         token=get_token()[0],
         chat_id=get_token()[1],
@@ -125,7 +116,8 @@ with DAG(default_args=default_args,
 
     task_updater = BashOperator(
         task_id="bash_task_updater",
-        bash_command="./upd_air_test.sh",
+        # bash_command="./upd_air_test.sh",
+        bash_command="echo 'bash run correctly'",
         # bash_command="/opt/airflow/CAP/cap_env/bin/python",
         dag=dag)
 
