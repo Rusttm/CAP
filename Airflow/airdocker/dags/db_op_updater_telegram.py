@@ -107,7 +107,7 @@ with DAG(default_args=default_args,
         telegram_conn_id="telegram_default",
         token=get_token()[0],
         chat_id=get_token()[1],
-        text=f"at: {datetime.now().strftime('%y:%m:%d %H:%M:%S')}" + "{{ti.xcom_pull(task_ids='python_update_operator', key='updater_result')}}",
+        text=f"at: {datetime.now().strftime('%y:%m:%d %H:%M:%S')}\n" + "{{ti.xcom_pull(task_ids='python_update_operator', key='updater_result')}}",
         dag=dag
     )
 
