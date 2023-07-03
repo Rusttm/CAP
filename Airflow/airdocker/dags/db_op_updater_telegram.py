@@ -117,9 +117,9 @@ with DAG(default_args=default_args,
         dag=dag
     )
 
-    bash_updater = BashOperator(
-        task_id="bash_task_updater",
-        bash_command="./upd_air_test.sh",
-        dag=dag)
+    # bash_updater = BashOperator(
+    #     task_id="bash_task_updater",
+    #     bash_command="./upd_air_test.sh",
+    #     dag=dag)
 
     python_updater >> send_message_telegram_task

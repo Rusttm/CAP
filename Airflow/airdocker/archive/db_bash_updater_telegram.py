@@ -121,11 +121,10 @@ with DAG(default_args=default_args,
         dag=dag
     )
 
-    task_updater = BashOperator(
+    bash_task_updater = BashOperator(
         task_id="bash_task_updater",
         # bash_command="echo 'bash run correctly'",
-        bash_command="./upd_air_test.sh",
-        # bash_command="/opt/airflow/CAP/cap_env/bin/python",
+        bash_command="/bin/bash /opt/airflow/CAP/Pgsql/upd_air.sh",
         dag=dag)
 
-    task_updater >> send_message_telegram_task
+    bash_task_updater >> send_message_telegram_task
