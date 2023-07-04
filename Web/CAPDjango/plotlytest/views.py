@@ -30,4 +30,4 @@ def chart(request):
     })
     chart = fig.to_html()
     context = {'chart': chart, 'form': DateForm()}
-    return render(request, 'core/chart.html', context)
+    return render(request, 'plotlytest/chart.html', context)

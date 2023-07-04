@@ -4,7 +4,7 @@ from itertools import islice
 import pathlib
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from core.models import CO2
+from plotlytest.models import CO2
 
 class Command(BaseCommand):
     help = 'Load data from CO2 file'
