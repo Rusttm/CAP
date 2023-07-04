@@ -11,24 +11,6 @@ class CO2(models.Model):
 
 
 # from https://stackoverflow.com/questions/3519143/django-how-to-specify-a-database-for-a-model
-class CAPDbManager(models.Manager):
-    def get_queryset(self):
-        qs = super().get_queryset()
-
-        # if `use_db` is set on model use that for choosing the DB
-        if hasattr(self.model, 'use_db'):
-            qs = qs.using(self.model.use_db)
-
-        return qs
-
-
-class CAPDbBase(models.Model):
-    use_db = 'cap_db'
-    objects = CAPDbManager()
-
-    class Meta:
-        abstract = True
-
 
 class InvoicesOut(models.Model):
     moment = models.DateField()

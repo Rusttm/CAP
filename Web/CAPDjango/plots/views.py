@@ -32,7 +32,7 @@ def chart(request):
     })
     chart = fig.to_html()
     context = {'chart': chart, 'form': DateForm()}
-    return render(request, 'plotlytest/chart.html', context)
+    return render(request, 'plots/chart.html', context)
 
 
 def chart2(request):
@@ -60,5 +60,5 @@ def chart2(request):
         })
     res_chart = fig.to_html()
     context = {'chart': res_chart, 'form': DateForm()}
-    return render(request, 'plotlytest/chart.html', context)
+    return render(request, 'plots/chart.html', context)
 
