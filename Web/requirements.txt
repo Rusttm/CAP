@@ -4,3 +4,4 @@ configparser==5.3.0
 plotly==5.15.0
 django_extensions==3.2.3
 pandas==2.0.3
+psycopg2_binary==2.9.6

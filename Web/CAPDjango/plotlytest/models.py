@@ -10,6 +10,7 @@ class CO2(models.Model):
         ordering = ('date',)
 
 
+# from https://stackoverflow.com/questions/3519143/django-how-to-specify-a-database-for-a-model
 class CAPDbManager(models.Manager):
     def get_queryset(self):
         qs = super().get_queryset()
@@ -29,5 +30,10 @@ class CAPDbBase(models.Model):
         abstract = True
 
 
-# class InvoicesOut(CAPDbBase):
-#     date = CAPDbBase.objects.get_queryset()
+class InvoicesOut(models.Model):
+    moment = models.DateField()
+    sum = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'invoices_out_table'
