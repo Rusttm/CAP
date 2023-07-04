@@ -47,7 +47,7 @@ def chart2(request):
 
     fig = px.line(
         x=[c.moment for c in inv_out],
-        y=[c.sum for c in inv_out],
+        y=[c.sum/100 for c in inv_out],
         title="SUM of Invoices",
         labels={'x': 'Date', 'y': 'SUM'}
     )
