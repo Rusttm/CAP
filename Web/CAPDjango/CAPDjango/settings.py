@@ -25,9 +25,7 @@ import configparser
 config = configparser.ConfigParser()
 up_up_up_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 CONF_FILE_PATH = os.path.join(up_up_up_dir, 'config', 'webconfig.ini')
-print(CONF_FILE_PATH)
 config.read(CONF_FILE_PATH)
-print(config.sections())
 SECRET_KEY = config['TOKENS']['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
