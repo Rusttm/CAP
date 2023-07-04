@@ -20,6 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+#read key from configfile
 import os
 import configparser
 config = configparser.ConfigParser()
@@ -27,6 +28,11 @@ up_up_up_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 CONF_FILE_PATH = os.path.join(up_up_up_dir, 'config', 'webconfig.ini')
 config.read(CONF_FILE_PATH)
 SECRET_KEY = config['TOKENS']['SECRET_KEY']
+
+# read config for other CAP database
+CONF_FILE_PATH = os.path.join(up_up_up_dir, 'config', 'sqlconfig.ini')
+config.read(CONF_FILE_PATH)
+cap_db_config = config['POSTGRESQL']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -86,6 +92,14 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    },
+    'cap_db': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': cap_db_config.get('db_name', 'capdb'),
+        'USER': cap_db_config.get('user', 'root'),
+        'PASSWORD': cap_db_config.get('user_pass', 'root'),
+        'HOST': cap_db_config.get('url', '192.168.1.69'),
+        'PORT': cap_db_config.get('port', '5432'),
     }
 }
 

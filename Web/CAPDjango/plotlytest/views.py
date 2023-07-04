@@ -16,10 +16,10 @@ def chart(request):
         co2 = co2.filter(date__lte=end)
 
     fig = px.line(
-        # x=[c.date for c in co2],
-        # y=[c.average for c in co2],
-        x=[i for i in range(5)],
-        y=[i for i in range(5)],
+        x=[c.date for c in co2],
+        y=[c.average for c in co2],
+        # x=[i for i in range(5)],
+        # y=[i for i in range(5)],
         title="CO2 PPM",
         labels={'x': 'Date', 'y': 'CO2 PPM'}
     )
