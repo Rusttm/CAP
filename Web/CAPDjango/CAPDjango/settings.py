@@ -33,7 +33,7 @@ SECRET_KEY = config['TOKENS']['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['localhost', '128.0.129.250', '192.168.1.103']
 
 
 # Application definition
