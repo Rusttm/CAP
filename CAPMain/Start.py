@@ -36,7 +36,7 @@ class Main(CAPMainClass):
         time.sleep(3)
         self.start_telegrambot_service()
         time.sleep(3)
-        self.start_api_db_updater()
+        # self.start_api_db_updater()
 
 
 if __name__ == '__main__':

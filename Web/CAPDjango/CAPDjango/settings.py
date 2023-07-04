@@ -20,7 +20,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-^)wz-1tp6g5u^g-3uu%k(yh-8r136l8iz_95^c=7hcj(7gs7uk'
+import os
+import configparser
+config = configparser.ConfigParser()
+up_up_up_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+CONF_FILE_PATH = os.path.join(up_up_up_dir, 'config', 'webconfig.ini')
+print(CONF_FILE_PATH)
+config.read(CONF_FILE_PATH)
+print(config.sections())
+SECRET_KEY = config['TOKENS']['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
