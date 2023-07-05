@@ -51,7 +51,7 @@ if __name__ == '__main__':
         msg_line = f"CAP msg from admin\n at {now}:\n {memory_msg}\n {cpu_msg}"
         main_class.socket_service.admin_client.send_socket_msg(to_user="telegram",
                                                                msg_text=msg_line)
-        time.sleep(3600)
+        time.sleep(108000)
 
     # msapi1 = ContCAPMS.ContCAPMS()
     # msapi1.get_cont_id()
