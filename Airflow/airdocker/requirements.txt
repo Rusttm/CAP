@@ -10,4 +10,5 @@ pandas
 openpyxl
 psycopg2-binary
 tqdm
+psutil
 #logging
