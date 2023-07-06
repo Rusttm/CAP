@@ -45,5 +45,5 @@ class ConnMSCustList(ConnMSMainClass):
 
 if __name__ == '__main__':
     connector = ConnMSCustList()
-    custom = connector.get_custom_list_filtered_by_updated(from_date="2022-01-01", to_date="2023-02-01", to_file=True)
+    custom = connector.get_custom_list_filtered_by_updated(to_file=True)
     print(custom)
