@@ -3,7 +3,7 @@ import datetime
 from API_MS.ConnMS.ConnMSMainClass import ConnMSMainClass
 
 
-class ConnMSCustBal(ConnMSMainClass):
+class ConnMSCustBalByInn(ConnMSMainClass):
     """ connector to MoiSklad customers balances"""
     request_url = 'url_customers_bal_list'
     """ requested api url"""
@@ -22,6 +22,20 @@ class ConnMSCustBal(ConnMSMainClass):
 
     def get_cust_bal_on_date(self, inn: str = None, on_date: str = None, to_file: bool = False) -> float:
         """ general function to count client bal on date"""
+
+        current_bal_dict = self.get_cust_cur_bal_dict(inn=inn)
+        transactions_list = self.make_transactions_list_on_today(inn=inn)
+
+
+
+        # print(transactions_list)
+        result = self.count_bal_on_date(transactions_list=transactions_list, on_date=on_date)
+        if current_bal_dict.get('customer_cur_bal', None)!=result:
+            print(f"current balance client {current_bal_dict.get('customer_inn', None)} not matched with counted")
+            print(f"current balance={current_bal_dict.get('customer_cur_bal', None)} counted balance={result}")
+        return result
+
+    def make_transactions_list_on_today(self, inn: str = None):
         transactions_list = list()
         current_bal_dict = self.get_cust_cur_bal_dict(inn=inn)
         customer_id = current_bal_dict.get("customer_id", None)
@@ -35,13 +49,7 @@ class ConnMSCustBal(ConnMSMainClass):
             transactions_list.extend(transactions)
         transactions = self.get_cust_corr_bal_list(customer_id=customer_id)
         transactions_list.extend(transactions)
-        # print(transactions_list)
-        result = self.count_bal_on_date(transactions_list=transactions_list, on_date=on_date)
-        if current_bal_dict.get('customer_cur_bal', None)!=result:
-            print(f"current balance client {current_bal_dict.get('customer_inn', None)} not matched with counted")
-            print(f"current balance={current_bal_dict.get('customer_cur_bal', None)} counted balance={result}")
-        return result
-
+        return transactions
 
     def count_bal_on_date(self, transactions_list: list = None, on_date: str = None) -> float:
         """ count balance from client transactions list"""
@@ -53,8 +61,10 @@ class ConnMSCustBal(ConnMSMainClass):
             else:
                 break
         return round(result, 2)
+
     def get_cust_cur_bal_dict(self, inn: str = None, to_file: bool = False) -> dict:
-        """ return dict {"customer_bal": 0, "customer_inn": inn, "customer_href": str, "customer_id": str}"""
+        """ request user data inn, current balance, client id etc.
+        return dict {"customer_bal": 0, "customer_inn": inn, "customer_href": str, "customer_id": str}"""
         request_url = 'url_customers_bal_list'
         param = ""
         if inn:
@@ -109,6 +119,7 @@ class ConnMSCustBal(ConnMSMainClass):
         return res_list
 
     def request_data_by_inn(self, customer_id: str = None, req_tag: str = None, to_file: bool = False, positive: bool = True):
+        """ simple requester for"""
         customer_href = f"https://online.moysklad.ru/api/remap/1.2/entity/counterparty/{customer_id}"
         param = ""
         if customer_href:
@@ -145,7 +156,7 @@ class ConnMSCustBal(ConnMSMainClass):
 
 
 if __name__ == '__main__':
-    connector = ConnMSCustBal()
+    connector = ConnMSCustBalByInn()
     # data = connector.get_cust_cur_bal_dict(inn='5403362299')
     data = connector.get_cust_bal_on_date(inn='5403362299', on_date="2023-07-6 23:59:00.000")
     print(data)
