@@ -21,6 +21,6 @@ from . import views
 
 urlpatterns = [
     path('', views.chart2, name='chart'),
-    path('bar/', views.chart3, name='bar1'),
-    path('bar2/', views.chart4, name='bar2'),
+    path('plots_group/', views.charts_group, name='plots_group'),
+
 ]
