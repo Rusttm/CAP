@@ -6,6 +6,7 @@ class GenPgsqlMainClass(PgsqlMainClass):
     """initialise connection to pgsql database
         keys from config file"""
     pgsql_conn = None
+    logger_name = "pgsql_gen"
 
     def __init__(self):
         super().__init__()

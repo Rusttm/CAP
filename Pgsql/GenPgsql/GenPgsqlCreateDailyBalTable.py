@@ -33,7 +33,7 @@ class GenPgsqlCreateDailyBalTable(GenPgsqlMainClass):
         for col_name in inn_like_col_list:
             table_connector.create_col_in_table(table_name=table_name, col_name=col_name, col_type='REAL')
         end_time = time.time()
-        print(f"({round(end_time - start_time, 2)}sec) created columns {self.get_cols_from_table(table_name=table_name)} ")
+        self.logger.debug(msg=f"({round(end_time - start_time, 2)}sec) created columns {self.get_cols_from_table(table_name=table_name)} ")
 
     def get_cols_from_table(self, table_name='customers_daily_bal'):
         from Pgsql.GenPgsql.GenPgsqlColList import GenPgsqlColList
