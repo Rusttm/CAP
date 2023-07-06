@@ -68,6 +68,13 @@ def chart2(request):
 
 
 def charts_group(request):
+    start = request.GET.get('start')
+    end = request.GET.get('end')
+    if not(start and end):
+        start = datetime.datetime.strptime('2018-10-01', '%Y-%m-%d').strftime('%Y-%m-%d')
+        end = datetime.datetime.now().strftime('%Y-%m-%d')
+    initial_form_values = {'start': start, 'end': end}
+
     charts_context = []
     from .plotters.sales_bar_month_all import SalesBarMonthsAll
     res_chart = SalesBarMonthsAll().get_chart(request=request)
@@ -81,12 +88,7 @@ def charts_group(request):
     res_chart = SalesBarMonthsByYears().get_chart(request=request)
     charts_context.append(res_chart)
 
-    start = request.GET.get('start')
-    end = request.GET.get('end')
-    if not(start and end):
-        start = datetime.datetime.strptime('2018-10-01', '%Y-%m-%d').strftime('%Y-%m-%d')
-        end = datetime.datetime.now().strftime('%Y-%m-%d')
-    initial_form_values = {'start': start, 'end': end}
+
 
 
     context = {'charts': charts_context, 'form': DateForm(initial=initial_form_values)}
