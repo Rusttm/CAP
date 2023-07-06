@@ -29,6 +29,6 @@ class ContPgsqlReadFieldJson(ContPgsqlMainClass, ConnPgsqlJson):
 
 if __name__ == '__main__':
     connector = ContPgsqlReadFieldJson()
-    print(connector.get_fields_table_data_from_json('invin_fields.json'))
+    print(connector.get_fields_table_data_from_json('corr_bal_fields.json'))
     # print(f"tables list {connector.get_tables_list()}")
     # print(f"try to read from table 'testtable' result - {connector.get_table_data(table_name='testtable')}")

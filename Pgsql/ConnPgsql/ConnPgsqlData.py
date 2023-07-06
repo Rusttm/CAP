@@ -107,6 +107,8 @@ class ConnPgsqlData(ConnPgsqlMainClass):
             # null -> None -> null
             elif elem is None:
                 elem = "null"
+            if elem == "fccd49d8-a863-11ed-0a80-1096000cf832":
+                print(34)
             temp_array.append(elem)
         result_string = str(tuple(temp_array))
         result_string = result_string.replace("\\'", "'")

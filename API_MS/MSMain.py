@@ -162,6 +162,16 @@ class MSMain(MSMainClass):
             self.save_table_data_2file_json(data_dict=data, file_name=data_name)
         return data
 
+    def get_corr_bal(self, from_date=None, to_date=None, to_file=False):
+        data_name = "corr_bal_table"
+        from API_MS.ContMS.ContMSCorrBal import ContMSCorrBal
+        data = ContMSCorrBal().get_correction_filtered_by_date(from_date=from_date, to_date=to_date, to_file=False)
+        data = dict({"name": data_name, "data": data.get('rows', [])})
+        self.logger.debug(f"{__class__.__name__} {data_name} report ready")
+        if to_file:
+            self.save_table_data_2file_json(data_dict=data, file_name=data_name)
+        return data
+
     def save_table_data_2file_json(self, data_dict, file_name):
         """ method save dict data to file in class ConnMSSaveFile"""
         from API_MS.ConnMS.ConnMSSaveJson import ConnMSSaveJson

@@ -69,4 +69,4 @@ class ConnMSReadExcell(ConnMSMainClass):
 
 if __name__ == '__main__':
     connector = ConnMSReadExcell()
-    print(connector.get_excell_data(file_name='invin_fields.xlsx'))
+    print(connector.get_excell_data(file_name='corr_bal_fields.xlsx'))

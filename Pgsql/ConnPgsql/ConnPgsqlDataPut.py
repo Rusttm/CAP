@@ -29,6 +29,8 @@ class ConnPgsqlDataPut(ConnPgsqlMainClass):
             result_string += f'{elem}'
             if i < len(col_names_list) - 1:
                 result_string += ", "
+            if i == 33:
+                print(33)
 
         result_string += ' )'
         result_string = result_string.replace("\\", "")
