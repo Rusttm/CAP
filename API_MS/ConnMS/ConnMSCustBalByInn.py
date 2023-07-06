@@ -20,38 +20,41 @@ class ConnMSCustBal(ConnMSMainClass):
         super().__init__()
         self.logger.debug(f"module {__class__.__name__} started")
 
-    def get_cust_bal_on_date(self, inn: str = None, date_bal: str = None, to_file: bool = False) -> dict:
+    def get_cust_bal_on_date(self, inn: str = None, on_date: str = None, to_file: bool = False) -> float:
+        """ general function to count client bal on date"""
         transactions_list = list()
         current_bal_dict = self.get_cust_cur_bal_dict(inn=inn)
         customer_id = current_bal_dict.get("customer_id", None)
         for req_tag in self.used_requests.get("positive", []):
             transactions = self.request_data_by_inn(req_tag=req_tag, customer_id=customer_id, positive=True)
-            print(f"from {req_tag} ({len(transactions)}) transactions {sorted(transactions, key=lambda x:x[0])}")
+            # print(f"from {req_tag} ({len(transactions)}) transactions {sorted(transactions, key=lambda x:x[0])}")
             transactions_list.extend(transactions)
         for req_tag in self.used_requests.get("negative", []):
             transactions = self.request_data_by_inn(req_tag=req_tag, customer_id=customer_id, positive=False)
-            print(f"from {req_tag} ({len(transactions)}) transactions {sorted(transactions, key=lambda x:x[0])}")
+            # print(f"from {req_tag} ({len(transactions)}) transactions {sorted(transactions, key=lambda x:x[0])}")
             transactions_list.extend(transactions)
         transactions = self.get_cust_corr_bal_list(customer_id=customer_id)
         transactions_list.extend(transactions)
-        print(transactions_list)
-        self.count_bal_on_date(transactions_list=transactions_list, on_date="2023-07-6 23:59:00.000")
+        # print(transactions_list)
+        result = self.count_bal_on_date(transactions_list=transactions_list, on_date=on_date)
+        if current_bal_dict.get('customer_cur_bal', None)!=result:
+            print(f"current balance client {current_bal_dict.get('customer_inn', None)} not matched with counted")
+            print(f"current balance={current_bal_dict.get('customer_cur_bal', None)} counted balance={result}")
+        return result
 
 
     def count_bal_on_date(self, transactions_list: list = None, on_date: str = None) -> float:
-
+        """ count balance from client transactions list"""
         sorted_transactions_list = sorted(transactions_list, key=lambda x:x[0])
-        print(sorted_transactions_list)
         result = 0
         for date, transaction_sum in sorted_transactions_list:
             if datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S.%f") <= datetime.datetime.strptime(on_date, "%Y-%m-%d %H:%M:%S.%f"):
                 result += transaction_sum
             else:
                 break
-        print(result)
-        return result
+        return round(result, 2)
     def get_cust_cur_bal_dict(self, inn: str = None, to_file: bool = False) -> dict:
-        """ return dict {"customer_bal": 0, "customer_inn": inn, "customer_href": str}"""
+        """ return dict {"customer_bal": 0, "customer_inn": inn, "customer_href": str, "customer_id": str}"""
         request_url = 'url_customers_bal_list'
         param = ""
         if inn:
@@ -107,9 +110,6 @@ class ConnMSCustBal(ConnMSMainClass):
 
     def request_data_by_inn(self, customer_id: str = None, req_tag: str = None, to_file: bool = False, positive: bool = True):
         customer_href = f"https://online.moysklad.ru/api/remap/1.2/entity/counterparty/{customer_id}"
-        if req_tag == 'url_outinvoices_list':
-            print('url_outinvoices_list')
-
         param = ""
         if customer_href:
             if customer_href:
@@ -147,7 +147,7 @@ class ConnMSCustBal(ConnMSMainClass):
 if __name__ == '__main__':
     connector = ConnMSCustBal()
     # data = connector.get_cust_cur_bal_dict(inn='5403362299')
-    data = connector.get_cust_bal_on_date(inn='5403362299')
+    data = connector.get_cust_bal_on_date(inn='5403362299', on_date="2023-07-6 23:59:00.000")
     print(data)
     # print(data.get("customer_href", None))
     # data = connector.get_payments_in_cust(customer_id='https://online.moysklad.ru/api/remap/1.2/entity/counterparty/3257c64d-5783-11eb-0a80-06ec00b865d5', to_file=True)
