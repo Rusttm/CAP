@@ -46,9 +46,10 @@ class ConnASQLDataGet4Bal(ConnASQLMainClass):
         await _conn.close()
         result_dict = dict()
         for customer_href, customer_inn in table_data:
-            print(customer_href)
+
             customer_href_dict = json.loads(customer_href)
             customer_meta = dict({"meta": customer_href_dict})
+            print(customer_meta)
             # result_dict.update({customer_meta: customer_inn})
 
         if to_file:
@@ -78,7 +79,7 @@ class ConnASQLDataGet4Bal(ConnASQLMainClass):
         await _conn.close()
         result_list = []
         for agent_meta, doc_sum, doc_date in table_data:
-            result_list.append((doc_date, agent_meta, factor * doc_sum / 100))
+            result_list.append((doc_date, json.loads(agent_meta), factor * doc_sum / 100))
         excell_conn = None
         if to_file:
             pd_data = pd.DataFrame.from_records(table_data, columns=col_list)
