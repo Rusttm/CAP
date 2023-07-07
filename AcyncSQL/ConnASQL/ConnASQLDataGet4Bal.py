@@ -106,31 +106,10 @@ if __name__ == '__main__':
         'to_file': True,
     }
     task2 = connector.get_col_data_from_table_inn(**req_dict2)
-
     # print(f"number of transactions {len(transaction_list)}")
     # result_list = [(tr_date, href_dict.get(href, None), tr_sum) for tr_date, href, tr_sum in transaction_list]
-
     data = loop.run_until_complete(task1)
-
     loop.close()
     print(data)
 
-
-    # loop.run_until_complete(connector.test_connection())
-    # data = loop.run_until_complete(connector.get_all_data_from_table_with_path('pgsql_service_fields', to_file=True))
-    # print(data)
-
-
-
-
-    # loop.run_until_complete(connector.get_all_data_from_table('payments_in_table', to_file=True))
-    # print(connector.create_connection())
-    # print(connector.close_connection())
-
-
-
-
-    # print(connector.get_all_tables_list())
-    # print(connector.get_pd_from_table(table_name='payments_out_table', to_file=True))
-    # print(connector.get_pd_from_table(table_name='pgsql_service_fields', to_file=True))
     print("finish")
