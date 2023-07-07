@@ -1,6 +1,6 @@
+import pandas
+
 from AcyncSQL.ConnASQL.ConnASQLMainClass import ConnASQLMainClass
-import sqlalchemy
-import pandas.io.sql as pd_psql
 import pandas as pd
 import asyncio
 import asyncpg
@@ -57,6 +57,20 @@ class ConnASQLDataGet(ConnASQLMainClass):
             from AcyncSQL.ConnASQL.ConnASQLSaveExcell import ConnASQLSaveExcell
             excell_conn = ConnASQLSaveExcell().save_pd_excell_file(data_pd=pd_data, file_name=table_name)
         return dict({"table_name": table_name, "pd_dataframe": pd_data, "file_path": excell_conn})
+
+    async def get_col_data_from_table_pd(self, table_name: str = None, col_list: list = None, to_file=True) -> pandas.DataFrame:
+        """ dict({"table_name": table_name, "pd_dataframe": pd_data, "file_path": excell_conn})"""
+        _conn = await asyncpg.connect(**self.__config_dict)
+        table_data = await _conn.fetch(f'SELECT {",".join(col_list)} FROM {table_name}')
+        await _conn.close()
+        columns = [col for col in table_data[0].keys()]
+        # columns = [a.name for a in table_data.get_attributes()]
+        pd_data = pd.DataFrame.from_records(table_data, columns=columns)
+        excell_conn = None
+        if to_file:
+            from AcyncSQL.ConnASQL.ConnASQLSaveExcell import ConnASQLSaveExcell
+            excell_conn = ConnASQLSaveExcell().save_pd_excell_file(data_pd=pd_data, file_name=table_name)
+        return pd_data
 
     async def get_col_data_from_table_date_filtered(self, **kwargs) -> dict:
         table_name: str = None

@@ -1,6 +1,4 @@
 from AcyncSQL.ConnASQL.ConnASQLMainClass import ConnASQLMainClass
-import sqlalchemy
-import pandas.io.sql as pd_psql
 import pandas as pd
 import asyncio
 import asyncpg

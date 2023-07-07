@@ -59,11 +59,13 @@ class ContASQLGetData4Bal(ContASQLMainClass, ConnASQLDataGet4Bal):
         req_dict['factor'] = 1
         tasks_list.append(self.get_col_data_from_table_date_filtered_bal(**req_dict))
 
-        result = await asyncio.gather(*tasks_list)
+        # get data from tables to req_result
+        req_result = await asyncio.gather(*tasks_list)
         result_list = list()
-        while result:
-            transaction_result_list = result.pop()
+        while req_result:
+            transaction_result_list = req_result.pop()
             result_list.extend(transaction_result_list)
+        #sorting list
         result_list = sorted(result_list, key=lambda x: x[0])
         return result_list
 

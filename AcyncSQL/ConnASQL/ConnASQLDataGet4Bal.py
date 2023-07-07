@@ -1,9 +1,6 @@
 import datetime
 
 from AcyncSQL.ConnASQL.ConnASQLMainClass import ConnASQLMainClass
-from AcyncSQL.ConnASQL.ConnASQLDataGet import ConnASQLDataGet
-import sqlalchemy
-import pandas.io.sql as pd_psql
 import pandas as pd
 import asyncio
 import asyncpg
@@ -48,10 +45,11 @@ class ConnASQLDataGet4Bal(ConnASQLMainClass):
         for customer_meta, customer_inn in table_data:
             customer_href = json.loads(customer_meta)
             result_dict.update({customer_href["href"]: customer_inn})
+
         if to_file:
             pd_data = pd.DataFrame.from_records(table_data, columns=col_list)
             from AcyncSQL.ConnASQL.ConnASQLSaveExcell import ConnASQLSaveExcell
-            excell_conn = ConnASQLSaveExcell().save_pd_excell_file(data_pd=pd_data, file_name=table_name)
+            ConnASQLSaveExcell().save_pd_excell_file(data_pd=pd_data, file_name=table_name)
         return result_dict
 
     async def get_col_data_from_table_date_filtered_bal(self, **kwargs) -> list:
