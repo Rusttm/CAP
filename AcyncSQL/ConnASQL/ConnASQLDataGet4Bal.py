@@ -45,13 +45,9 @@ class ConnASQLDataGet4Bal(ConnASQLMainClass):
         table_data = await _conn.fetch(req_line)
         await _conn.close()
         result_dict = dict()
-        for customer_href, customer_inn in table_data:
-
-            customer_href_dict = json.loads(customer_href)
-            customer_meta = dict({"meta": customer_href_dict})
-            print(customer_meta)
-            # result_dict.update({customer_meta: customer_inn})
-
+        for customer_meta, customer_inn in table_data:
+            customer_href = json.loads(customer_meta)
+            result_dict.update({customer_href["href"]: customer_inn})
         if to_file:
             pd_data = pd.DataFrame.from_records(table_data, columns=col_list)
             from AcyncSQL.ConnASQL.ConnASQLSaveExcell import ConnASQLSaveExcell
@@ -79,8 +75,9 @@ class ConnASQLDataGet4Bal(ConnASQLMainClass):
         await _conn.close()
         result_list = []
         for agent_meta, doc_sum, doc_date in table_data:
-            result_list.append((doc_date, json.loads(agent_meta), factor * doc_sum / 100))
-        excell_conn = None
+            customer_meta = json.loads(agent_meta)
+            result_list.append((doc_date, customer_meta["meta"]["href"], factor * doc_sum / 100))
+
         if to_file:
             pd_data = pd.DataFrame.from_records(table_data, columns=col_list)
             from AcyncSQL.ConnASQL.ConnASQLSaveExcell import ConnASQLSaveExcell
@@ -91,32 +88,47 @@ class ConnASQLDataGet4Bal(ConnASQLMainClass):
 if __name__ == '__main__':
     connector = ConnASQLDataGet4Bal()
     loop = asyncio.new_event_loop()
-    # loop.run_until_complete(connector.test_connection())
-    # data = loop.run_until_complete(connector.get_all_data_from_table_with_path('pgsql_service_fields', to_file=True))
-    # print(data)
-    req_dict = {
+    req_dict1 = {
         'table_name': 'payments_in_table',
         'col_list': ['agent', 'sum', 'created'],
         'date_col': 'created',
-        'from_date': '2023-06-01 00:00:00',
-        'to_date': '2023-07-01 23:59:59',
+        'from_date': '2023-07-07 00:00:00.000',
+        'to_date': '2023-07-07 23:59:59.000',
         'factor': 1,
         'to_file': True,
     }
+    task1 = connector.get_col_data_from_table_date_filtered_bal(**req_dict1)
 
-    task1 = connector.get_col_data_from_table_date_filtered_bal(**req_dict)
-
-    # loop.run_until_complete(connector.get_all_data_from_table('payments_in_table', to_file=True))
-    # print(connector.create_connection())
-    # print(connector.close_connection())
+    # request inn dictionary
     req_dict2 = {
         'table_name': 'customers_table',
         'col_list': ['meta', 'inn'],
         'to_file': True,
     }
     task2 = connector.get_col_data_from_table_inn(**req_dict2)
-    data = loop.run_until_complete(task2)
+
+    # print(f"number of transactions {len(transaction_list)}")
+    # result_list = [(tr_date, href_dict.get(href, None), tr_sum) for tr_date, href, tr_sum in transaction_list]
+
+    data = loop.run_until_complete(task1)
+
+    loop.close()
     print(data)
+
+
+    # loop.run_until_complete(connector.test_connection())
+    # data = loop.run_until_complete(connector.get_all_data_from_table_with_path('pgsql_service_fields', to_file=True))
+    # print(data)
+
+
+
+
+    # loop.run_until_complete(connector.get_all_data_from_table('payments_in_table', to_file=True))
+    # print(connector.create_connection())
+    # print(connector.close_connection())
+
+
+
 
     # print(connector.get_all_tables_list())
     # print(connector.get_pd_from_table(table_name='payments_out_table', to_file=True))
