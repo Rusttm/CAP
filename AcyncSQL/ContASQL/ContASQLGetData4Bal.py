@@ -8,6 +8,8 @@ class ContASQLGetData4Bal(ContASQLMainClass, ConnASQLDataGet4Bal):
     def __init__(self):
         super().__init__()
 
+
+
     async def get_list_inn_transactions_on_date(self, **kwargs):
 
         req_dict1 = {
@@ -28,6 +30,7 @@ class ContASQLGetData4Bal(ContASQLMainClass, ConnASQLDataGet4Bal):
         href_dict = await self.get_col_data_from_table_inn(**req_dict2)
         print(f"number of transactions {len(transaction_list)}")
         result_list = [(tr_date, href_dict.get(href, None), tr_sum) for tr_date, href, tr_sum in transaction_list]
+        # result_list_sorted = sorted(result_list, key=lambda x: x[0])
 
         return result_list
 
@@ -74,8 +77,8 @@ if __name__ == '__main__':
     controller = ContASQLGetData4Bal()
     loop = asyncio.new_event_loop()
     req_dict = {
-        'from_date': '2017-07-07 00:00:00.000',
-        'to_date': '2023-07-07 23:59:59.000',
+        'from_date': '2018-07-07 00:00:00.000',
+        'to_date': '2021-02-05 23:59:59.000',
         'to_file': True,
     }
     data = loop.run_until_complete(controller.get_list_inn_transactions_on_date(**req_dict))
