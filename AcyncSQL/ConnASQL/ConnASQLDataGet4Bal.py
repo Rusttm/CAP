@@ -29,7 +29,7 @@ class ConnASQLDataGet4Bal(ConnASQLMainClass):
             self.logger.warning(f"{__class__.__name__} cant create new connection error: {e}")
             return False
 
-    async def get_col_data_from_table_inn(self, **kwargs) -> list:
+    async def get_col_data_from_table_inn(self, **kwargs) -> dict:
         table_name: str = None
         col_list: list = None
         from_date: str = None

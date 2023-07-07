@@ -8,10 +8,7 @@ class ContASQLGetData4Bal(ContASQLMainClass, ConnASQLDataGet4Bal):
     def __init__(self):
         super().__init__()
 
-
-
     async def get_list_inn_transactions_on_date(self, **kwargs):
-
         req_dict1 = {
             'from_date': kwargs.get('from_date', self.left_date),
             'to_date': kwargs.get('to_date', datetime.datetime.now()),
@@ -25,7 +22,6 @@ class ContASQLGetData4Bal(ContASQLMainClass, ConnASQLDataGet4Bal):
             'to_file': True,
         }
 
-
         transaction_list = await self.get_transactions_list_on_date(**req_dict1)
         href_dict = await self.get_col_data_from_table_inn(**req_dict2)
         print(f"number of transactions {len(transaction_list)}")
@@ -33,7 +29,6 @@ class ContASQLGetData4Bal(ContASQLMainClass, ConnASQLDataGet4Bal):
         # result_list_sorted = sorted(result_list, key=lambda x: x[0])
 
         return result_list
-
 
     async def get_transactions_list_on_date(self, **kwargs):
         req_dict = {
@@ -67,8 +62,8 @@ class ContASQLGetData4Bal(ContASQLMainClass, ConnASQLDataGet4Bal):
         result = await asyncio.gather(*tasks_list)
         result_list = list()
         while result:
-            l = result.pop()
-            result_list.extend(l)
+            transaction_result_list = result.pop()
+            result_list.extend(transaction_result_list)
         result_list = sorted(result_list, key=lambda x: x[0])
         return result_list
 
@@ -85,7 +80,6 @@ if __name__ == '__main__':
     loop.close()
     print(data)
     print(f"number of transactions {len(data)}")
-
 
     # # loop.run_until_complete(connector.create_connection())
     # # loop.run_until_complete(connector.close_connection())
