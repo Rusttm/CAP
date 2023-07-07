@@ -23,7 +23,7 @@ class GenASQLFulFillBalTable(ASQLMainClass):
         cur_inn_col_list = await gen_controller.request_cur_inn_col_list()
         cur_inn_col_list.remove('position_id')
 
-        # create working dictionary {inn_col: 0}
+        # creates working dictionary {inn_col: 0}
         cols_inn_val_dict = {inn: 0 for inn in cur_inn_col_list}
         cols_inn_val_dict.update({'bal_on_date': self.left_date.strftime('%Y-%m-%d %H:%M:%S')})
 
@@ -60,17 +60,13 @@ class GenASQLFulFillBalTable(ASQLMainClass):
                 # if transaction date is proper - put data to main_dict
                 current_cust_sum = cols_inn_val_dict.get(f"inn_{cust_inn}", 0)
                 cols_inn_val_dict.update({f"inn_{cust_inn}": current_cust_sum + transactions_sum})
-
-
-
+        # save last bal in file
         try:
             with open("customer_cur_bal_file.json", "w") as file:
                 json.dump(cols_inn_val_dict, file)
         except Exception as e:
             print(f"cant_write file")
         return cols_inn_val_dict
-
-
 
 
 if __name__ == '__main__':

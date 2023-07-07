@@ -26,6 +26,18 @@ class ConnASQLDataGet4Bal(ConnASQLMainClass):
             self.logger.warning(f"{__class__.__name__} cant create new connection error: {e}")
             return False
 
+    async def get_col_data_from_table(self, **kwargs) -> pd.DataFrame:
+        """ get data"""
+        table_name = kwargs.get('table_name', None)
+        col_list = kwargs.get('col_list', None)
+        _conn = await asyncpg.connect(**self.__config_dict)
+        col_line = ",".join(col_list)
+        req_line = f"SELECT {col_line} FROM {table_name}"
+        table_data = await _conn.fetch(req_line)
+        await _conn.close()
+        pd_data = pd.DataFrame.from_records(table_data, columns=col_list)
+        return pd_data
+
     async def get_col_data_from_table_inn(self, **kwargs) -> dict:
         table_name: str = None
         col_list: list = None
@@ -52,6 +64,35 @@ class ConnASQLDataGet4Bal(ConnASQLMainClass):
             ConnASQLSaveExcell().save_pd_excell_file(data_pd=pd_data, file_name=table_name)
         return result_dict
 
+    async def get_col_data_from_table_id(self, **kwargs) -> dict:
+        table_name: str = None
+        col_list: list = None
+        from_date: str = None
+        to_date: str = None
+        to_file: bool = False
+        """returns dict {href: id}"""
+        table_name = kwargs.get('table_name', None)
+        col_list = kwargs.get('col_list', None)
+        to_file = kwargs.get('to_file', False)
+        _conn = await asyncpg.connect(**self.__config_dict)
+        col_line = ",".join(col_list)
+        req_line = f"SELECT {col_line} FROM {table_name}"
+        table_data = await _conn.fetch(req_line)
+        await _conn.close()
+        result_dict = dict()
+        for customer_meta, customer_inn in table_data:
+            customer_href = json.loads(customer_meta)
+            customer_id = customer_href["href"].split("/")[-1]
+            result_dict.update({customer_href["href"]: customer_id})
+
+        if to_file:
+            pd_data = pd.DataFrame.from_records(table_data, columns=col_list)
+            from AcyncSQL.ConnASQL.ConnASQLSaveExcell import ConnASQLSaveExcell
+            ConnASQLSaveExcell().save_pd_excell_file(data_pd=pd_data, file_name=table_name)
+        return result_dict
+
+
+
     async def get_col_data_from_table_date_filtered_bal(self, **kwargs) -> list:
         table_name: str = None
         col_list: list = None
@@ -75,12 +116,29 @@ class ConnASQLDataGet4Bal(ConnASQLMainClass):
         for agent_meta, doc_sum, doc_date in table_data:
             customer_meta = json.loads(agent_meta)
             result_list.append((doc_date, customer_meta["meta"]["href"], factor * doc_sum / 100))
-
+        excell_conn = None
         if to_file:
             pd_data = pd.DataFrame.from_records(table_data, columns=col_list)
             from AcyncSQL.ConnASQL.ConnASQLSaveExcell import ConnASQLSaveExcell
             excell_conn = ConnASQLSaveExcell().save_pd_excell_file(data_pd=pd_data, file_name=table_name)
         return result_list
+
+    async def get_last_row_in_table_pd(self, **kwargs) -> dict:
+        table_name = kwargs.get('table_name', None)
+        """returns last row in table"""
+        req_line = f"SELECT position_id FROM {table_name} ORDER BY position_id DESC LIMIT 1;"
+        _conn = await asyncpg.connect(**self.__config_dict)
+        table_data = await _conn.fetch(req_line)
+        await _conn.close()
+        pd_data = pd.DataFrame.from_records(table_data)
+        condition = pd_data[0][0]
+        req_line = f"SELECT * FROM {table_name} WHERE position_id = {condition} LIMIT 1;"
+        _conn = await asyncpg.connect(**self.__config_dict)
+        # await _conn.set_type_codec('json', encoder=json.dumps, decoder=json.loads, schema='pg_catalog')
+        asyncpg_record = await _conn.fetch(req_line)
+        await _conn.close()
+        res_dict = [dict(row) for row in asyncpg_record]
+        return res_dict[0]
 
 
 if __name__ == '__main__':
@@ -104,9 +162,21 @@ if __name__ == '__main__':
         'to_file': True,
     }
     task2 = connector.get_col_data_from_table_inn(**req_dict2)
+    task3 = connector.get_col_data_from_table_id(**req_dict2)
+    req_dict4 = {
+        'table_name': 'customers_daily_bal_table',
+    }
+    task4 = connector.get_last_row_in_table_pd(**req_dict4)
+
+    req_dict5 = {
+        'table_name': 'customers_bal_table',
+        'col_list': ['meta', 'balance'],
+    }
+    task5 = connector.get_col_data_from_table(**req_dict5)
+
     # print(f"number of transactions {len(transaction_list)}")
     # result_list = [(tr_date, href_dict.get(href, None), tr_sum) for tr_date, href, tr_sum in transaction_list]
-    data = loop.run_until_complete(task1)
+    data = loop.run_until_complete(task5)
     loop.close()
     print(data)
 
