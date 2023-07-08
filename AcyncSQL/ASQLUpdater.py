@@ -11,9 +11,42 @@ class ASQLUpdater(ASQLMainClass):
 
     left_date = datetime.datetime(2023, 7, 8, 0, 0, 1)
 
+    def non_async_daily_bal_updater(self):
+        controller = ASQLUpdater()
+        loop = asyncio.new_event_loop()
+        start_time = time.time()
+
+        res = loop.run_until_complete(controller.customer_daily_bal_table_updater())
+        del res["bal_on_date"]
+        res_bal_sum = 0
+        try:
+            for bal in res.values():
+                res_bal_sum += bal
+        except Exception as e:
+            error_str = f"cant count summary balance, error: {e}"
+            print(error_str)
+            self.logger.error(error_str)
+        print(f"table 'customer_daily_bal' updated summary balance = {res_bal_sum}")
+
+        loop.close()
+        print(f"tasks finnished in {round(time.time() - start_time, 2)}sec")
+
     async def customer_daily_bal_table_updater(self):
         """ update customer_daily_bal_table previous date in 00:00:01 next date"""
         cur_bal_dict = await self.get_cur_inn_bal_dict()
+
+        # put in table
+        from AcyncSQL.ConnASQL.ConnASQLDataPut import ConnASQLDataPut
+        gen_connector = ConnASQLDataPut()
+        day_today = datetime.datetime.now().date()
+        cur_bal_dict.update({'bal_on_date': day_today.strftime('%Y-%m-%d %H:%M:%S')})
+        req_dict = {
+            'table_name': 'customers_daily_bal_table',
+            'col_list': list(cur_bal_dict.keys()),  # form columns from work dict
+            'val_list': list(cur_bal_dict.values()),  # form values from work dict
+        }
+        await gen_connector.put_data_to_table_with_date(**req_dict)
+
         return cur_bal_dict
 
     async def get_cur_inn_bal_dict(self) -> dict:
@@ -37,10 +70,10 @@ class ASQLUpdater(ASQLMainClass):
         }
         cust_table_pd = await bal_connector.get_col_data_from_table(**req_dict2)
         href_inn_list = cust_table_pd.values.tolist()
-        href_inn_dict = dict({str(cust_id): inn_str for cust_id, inn_str in href_inn_list})
+        href_inn_dict = dict({str(cust_id): inn_str for cust_id, inn_str in href_inn_list if inn_str})
 
         # make dict {col_inn: bal}
-        col_inn_bal_dict = {f"inn_{href_inn_dict.get(cust_id, 'unknown')}": bal for cust_id, bal in href_bal_dict.items() if cust_id}
+        col_inn_bal_dict = {f"inn_{href_inn_dict.get(cust_id, None)}": bal for cust_id, bal in href_bal_dict.items() if cust_id and href_inn_dict.get(cust_id, None)}
         return col_inn_bal_dict
 
 
@@ -71,7 +104,7 @@ class ASQLUpdater(ASQLMainClass):
         href_inn_dict = dict({str(cust_id): inn_str for cust_id, inn_str in href_inn_list})
 
         # make dict {col_inn: bal}
-        col_inn_bal_dict = {f"inn_{href_inn_dict.get(cust_id, 'unknown')}": bal for cust_id, bal in href_bal_dict.items() if cust_id}
+        col_inn_bal_dict = {f"inn_{href_inn_dict.get(cust_id, 'None')}": bal for cust_id, bal in href_bal_dict.items() if cust_id and href_inn_dict.get(cust_id, 'None')}
 
         # main loop
         correction_dict = dict({'corr_date': '2023-07-07 23:59:59'})
@@ -108,4 +141,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    # main()
+    controller = ASQLUpdater()
+    controller.non_async_daily_bal_updater()
