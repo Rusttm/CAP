@@ -7,6 +7,7 @@ import asyncpg
 import json
 import re
 
+
 class ConnASQLDataUpd(ConnASQLMainClass):
     _conn = None
     __config_dict = dict()
@@ -26,6 +27,17 @@ class ConnASQLDataUpd(ConnASQLMainClass):
             print(f"connection cannot be established, error {e}")
             self.logger.warning(f"{__class__.__name__} cant create new connection error: {e}")
             return False
+
+    async def check_record_json(self, **kwargs):
+        """ is string presence in table if not -> insert it"""
+        req_data = {
+            "table_name": kwargs.get("table_name", None),
+            "col_name": kwargs.get("col_name", None),
+            "col_val": kwargs.get("col_val", None),
+        }
+        from AcyncSQL.ConnASQL.ConnASQLDataGet import ConnASQLDataGet
+        pd_data = await ConnASQLDataGet().get_row_from_table_pd_json(**req_data)
+        return pd_data
 
     async def upd_data_in_table(self, **kwargs) -> dict:
         table_name = kwargs.get('table_name', None)
@@ -65,7 +77,6 @@ class ConnASQLDataUpd(ConnASQLMainClass):
         return result_str
 
 
-
 if __name__ == '__main__':
     connector = ConnASQLDataUpd()
     loop = asyncio.new_event_loop()
@@ -76,16 +87,16 @@ if __name__ == '__main__':
                                 "unique_val": {"meta":
                                                    {"href":
                                                         "https://online.moysklad.ru/api/remap/1.2/entity/counterparty/02a517d3-a78b-11ed-0a80-10870008fd53",
-                                                        "metadataHref": "https://online.moysklad.ru/api/remap/1.2/entity/counterparty/metadata",
-                                                        "type": "counterparty", "mediaType": "application/json",
-                                                        "uuidHref": "https://online.moysklad.ru/app/#company/edit?id=02a517d3-a78b-11ed-0a80-10870008fd53"},
-                                                        "id": "02a517d3-a78b-11ed-0a80-10870008fd53",
-                                                        "name": "ООО АСК",
-                                                        "externalCode": "GrQQb4tzggfccJy3866zF2",
-                                                        "email": "info@ask66.ru",
-                                                        "phone": "+7 (343) 289-21-82",
-                                                        "inn": "6678000288",
-                                                        "companyType": "legal"}},
+                                                    "metadataHref": "https://online.moysklad.ru/api/remap/1.2/entity/counterparty/metadata",
+                                                    "type": "counterparty", "mediaType": "application/json",
+                                                    "uuidHref": "https://online.moysklad.ru/app/#company/edit?id=02a517d3-a78b-11ed-0a80-10870008fd53"},
+                                               "id": "02a517d3-a78b-11ed-0a80-10870008fd53",
+                                               "name": "ООО АСК",
+                                               "externalCode": "GrQQb4tzggfccJy3866zF2",
+                                               "email": "info@ask66.ru",
+                                               "phone": "+7 (343) 289-21-82",
+                                               "inn": "6678000288",
+                                               "companyType": "legal"}},
                 "col_list": ["balance", "profit"],
                 "val_list": [0.0, 0.0]}
     task1 = connector.upd_data_in_table(**req_dict)
