@@ -4,7 +4,7 @@ import time
 import json
 import  datetime
 
-class ASQLUpdater(ASQLMainClass):
+class ASQLUpdaterAir(ASQLMainClass):
     daily_bal_table_name = 'customers_daily_bal_table'
     def __init__(self):
         super().__init__()
@@ -126,7 +126,7 @@ class ASQLUpdater(ASQLMainClass):
 
 
 def main():
-    controller = ASQLUpdater()
+    controller = ASQLUpdaterAir()
     loop = asyncio.new_event_loop()
     start_time = time.time()
 
@@ -142,5 +142,5 @@ def main():
 
 if __name__ == '__main__':
     # main()
-    controller = ASQLUpdater()
+    controller = ASQLUpdaterAir()
     controller.non_async_daily_bal_updater()
