@@ -32,7 +32,7 @@ class ASQLUpdater(ASQLMainClass):
 
         return res_str
 
-    def non_async_daily_updater(self) -> str:
+    def non_async_daily_tables_updater(self) -> str:
         from API_MS.MSMain import MSMain
         ms_connector = MSMain()
         from AcyncSQL.ConnASQL.ConnASQLRowCount import ConnASQLRowCount
@@ -94,4 +94,4 @@ class ASQLUpdater(ASQLMainClass):
 
 if __name__ == '__main__':
     controller = ASQLUpdater()
-    controller.non_async_daily_updater()
+    controller.non_async_daily_tables_updater()

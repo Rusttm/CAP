@@ -34,9 +34,9 @@ CURRENT_DIR = os.getcwd()
 cap_dir = os.path.join(CURRENT_DIR, "CAP")
 sys.path.append(cap_dir)
 
-VERSION = 6
+VERSION = 1
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
-DAG_ID = f"db_updater_v{VERSION}"
+DAG_ID = f"db_hourly_updater_v{VERSION}"
 
 
 def telegram_on_fail(context):
@@ -94,7 +94,7 @@ default_args = {
 with DAG(default_args=default_args,
          dag_id=DAG_ID,
          tags=["example"],
-         start_date=datetime(2023, 7, 2, 22, 59),  # only UTC time
+         start_date=datetime(2023, 7, 8, 9, 59),  # only UTC time
          max_active_runs=1,
          concurrency=4,
          schedule_interval=timedelta(minutes=60),
