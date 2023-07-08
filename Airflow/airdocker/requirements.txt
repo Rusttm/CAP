@@ -11,4 +11,5 @@ openpyxl
 psycopg2-binary
 tqdm
 psutil
+asyncpg
 #logging

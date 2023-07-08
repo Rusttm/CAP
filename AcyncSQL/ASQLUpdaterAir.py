@@ -12,7 +12,7 @@ class ASQLUpdaterAir(ASQLMainClass):
     left_date = datetime.datetime(2023, 7, 8, 0, 0, 1)
 
     def non_async_daily_bal_updater(self):
-        controller = ASQLUpdater()
+        controller = ASQLUpdaterAir()
         loop = asyncio.new_event_loop()
         start_time = time.time()
 
@@ -26,10 +26,15 @@ class ASQLUpdaterAir(ASQLMainClass):
             error_str = f"cant count summary balance, error: {e}"
             print(error_str)
             self.logger.error(error_str)
-        print(f"table 'customer_daily_bal' updated summary balance = {res_bal_sum}")
+
 
         loop.close()
-        print(f"tasks finnished in {round(time.time() - start_time, 2)}sec")
+        res_str = f"table 'customer_daily_bal' updated summary balance = {res_bal_sum} \n"
+        res_str += f" task finnished in {round(time.time() - start_time, 2)}sec"
+
+        return res_str
+
+
 
     async def customer_daily_bal_table_updater(self):
         """ update customer_daily_bal_table previous date in 00:00:01 next date"""

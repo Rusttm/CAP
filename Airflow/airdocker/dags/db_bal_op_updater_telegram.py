@@ -34,7 +34,7 @@ CURRENT_DIR = os.getcwd()
 cap_dir = os.path.join(CURRENT_DIR, "CAP")
 sys.path.append(cap_dir)
 
-VERSION = 0
+VERSION = 1
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
 DAG_ID = f"db_bal_updater_v{VERSION}"
 
@@ -85,7 +85,7 @@ def get_token() -> tuple:
 
 default_args = {
     'owner': 'rusttm',
-    'retry': 5,
+    'retry': 2,
     'retry_delay': timedelta(minutes=5),
     'catchup': False,
     'on_failure_callback': telegram_on_fail
@@ -97,7 +97,7 @@ with DAG(default_args=default_args,
          start_date=datetime(2023, 7, 7, 20, 59),  # only UTC time
          max_active_runs=1,
          concurrency=4,
-         schedule_interval=timedelta(minutes=60),
+         schedule_interval=timedelta(days=1),
          # or '@hourly'  # or '* */1 * * *' from https://crontab.guru/#0_1_*_*_*
          dagrun_timeout=timedelta(seconds=60)
          ) as dag:
