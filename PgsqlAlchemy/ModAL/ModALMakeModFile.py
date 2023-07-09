@@ -12,7 +12,7 @@ class ModALMakeModFile(ModALMainClass, ModALGetModFromJson):
         header = f"# !!!used SQLAlchemy 2.0.18\n" \
                  f"from sqlalchemy import create_engine\n" \
                  f"from sqlalchemy import Column, Integer, String, JSON, DateTime, Double, BigInteger\n" \
-                 f"from sqlalchemy.dialects.postgresql import JSONB\n" \
+                 f"from sqlalchemy.dialects.postgresql import JSONB, insert\n" \
                  f"from sqlalchemy.orm import DeclarativeBase\n\n" \
                  f"from PgsqlAlchemy.ConnAL.ConnALMainClass import ConnALMainClass\n" \
                  f"__url = ConnALMainClass().get_url()\n" \
