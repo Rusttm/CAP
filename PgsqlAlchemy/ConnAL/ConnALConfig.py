@@ -1,7 +1,7 @@
-from SQLAlchemy.SQLAlchemMainClass import SQLAlchemMainClass
+from PgsqlAlchemy.PgsqlAlchemyMainClass import PgsqlAlchemyMainClass
 
 
-class ConnALConfig(SQLAlchemMainClass):
+class ConnALConfig(PgsqlAlchemyMainClass):
     """ configfile connector"""
     conf = None
     method = 'file'
@@ -15,7 +15,7 @@ class ConnALConfig(SQLAlchemMainClass):
 
     def get_config(self, url='url', port='port', user='user', user_pass='user_pass', db_name='db_name'):
         """ return information from config file"""
-        from SQLAlchemy.ConnAlchem.ConnALConfigFile import ConnALConfigFile
+        from PgsqlAlchemy.ConnAL.ConnALConfigFile import ConnALConfigFile
         if self.method == "file":
             self.conf = ConnALConfigFile().get_config_data()
         return {'url': self.conf[url],

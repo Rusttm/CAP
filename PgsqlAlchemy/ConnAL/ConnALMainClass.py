@@ -1,8 +1,8 @@
 # from https://pythonru.com/biblioteki/ustanovka-i-podklyuchenie-sqlalchemy-k-baze-dannyh
-from SQLAlchemy.SQLAlchemMainClass import SQLAlchemMainClass
+from PgsqlAlchemy.PgsqlAlchemyMainClass import PgsqlAlchemyMainClass
 
 
-class ConnALMainClass(SQLAlchemMainClass):
+class ConnALMainClass(PgsqlAlchemyMainClass):
     """ main class only create url string"""
     # __url_no_db = None
     __url = None
@@ -10,7 +10,7 @@ class ConnALMainClass(SQLAlchemMainClass):
         super().__init__()
 
     def get_url(self):
-        from SQLAlchemy.ConnAlchem.ConnALConfig import ConnALConfig
+        from PgsqlAlchemy.ConnAL.ConnALConfig import ConnALConfig
         try:
             conf = dict(ConnALConfig().get_config())
             host = conf.get('url', '')

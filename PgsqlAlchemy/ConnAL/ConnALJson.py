@@ -3,9 +3,9 @@ import json
 import os
 
 
-class ConnAlJson(ConnPgsqlMainClass):
-    """ convert fields from json file to dict"""
-    dir_name = "config"
+class ConnALJson(ConnPgsqlMainClass):
+    """ convert models from json file to models directory"""
+    dir_name = os.path.join("config", "models")
 
     def __init__(self):
         super().__init__()
@@ -45,13 +45,37 @@ class ConnAlJson(ConnPgsqlMainClass):
             self.logger.debug(f"File not found error json file: {e}")
             return None
 
+    def save_model_dict_2json(self, file_name: str = None, data_dict: dict = None):
+        if file_name:
+            try:
+                file_name_type = file_name.split(".")[-1]
+                if file_name_type != "json":
+                    file_name += ".json"
+                up_up_dir = os.path.dirname(os.path.dirname(__file__))
+                json_file = os.path.join(up_up_dir, self.dir_name, file_name)
+                import json
+                with open(json_file, 'w') as fp:
+                    json.dump(data_dict, fp)
+                return True
+            except Exception as e:
+                error_str = f"cant write file to {file_name}, error {e}"
+                print(error_str)
+                self.logger.error(error_str)
+                return False
+        else:
+            error_str = f"{__class__.__name__} please, set file name"
+            self.logger.error(error_str)
+            return False
 
 if __name__ == '__main__':
-    connector = ConnAlJson()
-    # ans = connector.get_fields_from_json("product_fields.json")
+    connector = ConnALJson()
+    ans = connector.get_data_from_json("product_fields.json")
+    print(ans)
     # ans = connector.send_set_request("CREATE TABLE testtable (i integer);")
     # print(ans)
-    ans = connector.get_json_files_list()
-    print(ans)
-    ans = connector.get_all_dicts_in_dir()
-    print(ans)
+    # ans = connector.get_json_files_list()
+    # print(ans)
+    # ans = connector.get_all_dicts_in_dir()
+    # for mod in ans:
+    #     table = connector.get_data_from_json(file_name=mod, dir_name="config/models")
+    #     print(table.get("data", None))

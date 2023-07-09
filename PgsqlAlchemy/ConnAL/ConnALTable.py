@@ -1,4 +1,4 @@
-from SQLAlchemy.ConnAlchem.ConnALMainClass import ConnALMainClass
+from PgsqlAlchemy.ConnAL.ConnALMainClass import ConnALMainClass
 import sqlalchemy
 
 

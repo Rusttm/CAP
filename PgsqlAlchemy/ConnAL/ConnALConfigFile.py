@@ -1,4 +1,4 @@
-from SQLAlchemy.ConnAlchem.ConnALConfig import ConnALConfig
+from PgsqlAlchemy.ConnAL.ConnALConfig import ConnALConfig
 
 import os
 import configparser

@@ -1,4 +1,4 @@
-from PgsqlAlchemy.ModAlchem.ModALMainClass import ModALMainClass
+from PgsqlAlchemy.ModAL.ModALMainClass import ModALMainClass
 
 class ModALTest(ModALMainClass):
     pass

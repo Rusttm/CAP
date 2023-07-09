@@ -1,7 +1,7 @@
-from SQLAlchemy.SQLAlchemMainClass import SQLAlchemMainClass
+from PgsqlAlchemy.PgsqlAlchemyMainClass import PgsqlAlchemyMainClass
 
 
-class ModALMainClass(SQLAlchemMainClass):
+class ModALMainClass(PgsqlAlchemyMainClass):
     
     def __init__(self):
         super().__init__()
