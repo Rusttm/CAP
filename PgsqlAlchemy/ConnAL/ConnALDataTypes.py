@@ -1,4 +1,4 @@
-from SQLAlchemy.ConnAlchem.ConnALMainClass import ConnALMainClass
+from PgsqlAlchemy.ConnAL.ConnALMainClass import ConnALMainClass
 
 
 class ConnALDataTypes(ConnALMainClass):
@@ -6,8 +6,8 @@ class ConnALDataTypes(ConnALMainClass):
 
     def __init__(self):
         super().__init__()
-        from SQLAlchemy.ConnAlchem.ConnAlJson import ConnAlJson
-        self.__types_pgsql = ConnAlJson().get_data_from_json(file_name='alchemy_pgsql_mapper')
+        from PgsqlAlchemy.ConnAL.ConnALJson import ConnALJson
+        self.__types_pgsql = ConnALJson().get_data_from_json(file_name='alchemy_pgsql_mapper')
 
 
     def types_mapper(self, type_ms):
