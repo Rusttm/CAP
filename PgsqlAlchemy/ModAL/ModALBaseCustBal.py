@@ -210,7 +210,9 @@ def multiply_insertions():
     # upd_on_conflict = ins.on_conflict_do_update(constraint='customers_bal_model_counterparty_key', set_={col: getattr(ins.excluded, col) for col in new_pos1})
     # upd_on_conflict = ins.on_conflict_do_update(constraint='customers_bal_model_counterparty_key', set_=dict(**new_pos1))
     # upd_on_conflict = ins.on_conflict_do_update(constraint='customers_bal_model_counterparty_key', set_=dict(balance=ins.excluded.balance))
-    upd_on_conflict = ins.on_conflict_do_update(index_elements=['counterparty'], set_=dict(balance=15))
+    upd_on_conflict = ins.on_conflict_do_update(index_elements=['counterparty'],
+                                                set_=dict(balance=15),
+                                                where=(ModALBaseCustBal.counterparty == ins.excluded.counterparty))
 
 
     conn = engine.connect()
