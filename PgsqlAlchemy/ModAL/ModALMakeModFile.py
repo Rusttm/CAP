@@ -7,18 +7,18 @@ class ModALMakeModFile(ModALMainClass, ModALGetModFromJson):
         super().__init__()
 
     def make_model_py_file(self, model_dict: dict = None):
-        str_list = []
         model_dict = self.prepare_model_in_json(file_name='customers_bal_model')
         fields_dict = model_dict.get("data", None)
         header = f"# !!!used SQLAlchemy 2.0.18\n" \
                  f"from sqlalchemy import create_engine\n" \
                  f"from sqlalchemy import Column, Integer, String, JSON, DateTime, Double, BigInteger\n" \
+                 f"from sqlalchemy.dialects.postgresql import JSONB\n" \
                  f"from sqlalchemy.orm import DeclarativeBase\n\n" \
                  f"from sqlalchemy.orm import sessionmaker\n" \
                  f"from sqlalchemy.orm import mapped_column\n\n" \
                  f"from PgsqlAlchemy.ConnAL.ConnALMainClass import ConnALMainClass\n" \
                  f"__url = ConnALMainClass().get_url()\n" \
-                 f"engine = create_engine(__url)\n" \
+                 f"engine = create_engine(__url)\n\n" \
                  f"class Base(DeclarativeBase):\n\tpass\n\n" \
                  f"class {model_dict.get('table')}(Base):\n" \
                  f"\t__tablename__ = '{model_dict.get('table')}'\n"
@@ -33,10 +33,13 @@ class ModALMakeModFile(ModALMainClass, ModALGetModFromJson):
                 ext_str = ext_str + ", ".join(ext_list)
 
             temp_str = f"\t{col_name} = Column({col_dict.get('pg_type', None)}" \
-                       f"{ext_str})\n"
+                       f"{ext_str}" \
+                       f", comment='{col_dict.get('descr', '')}')\n"
             body = body + temp_str
 
-        footer = f"\nBase.metadata.create_all(engine)\n"
+        footer = f"\nBase.metadata.create_all(engine)\n\n" \
+                 f"# Base.metadata.drop_all(engine)"
+
         with open(f"customers_bal_model.py", "w") as file1:
             # Writing data to a file
             file1.write(header + body + footer)
