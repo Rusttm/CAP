@@ -14,6 +14,7 @@ class ConnAADataGet(ConnAAMainClass):
         super().__init__()
         self.__url = self.get_url()
 
+
     def create_engine(self):
         try:
             self._engine = sqlalchemy.create_engine(self.__url, echo=True, pool_size=6, max_overflow=10)
