@@ -138,8 +138,9 @@ class ASQLUpdater(ASQLMainClass):
                 'col_name': unique_col_name,
                 'col_val': unique_col_val
             }
-            # check_status = await upd_connector.check_record_json(**check_req_dict)
-            # print(f"\n in table row: {check_status=} \n requested row: {row_dict=}")
+            check_status = await upd_connector.check_record_json(**check_req_dict)
+            if len(check_status) == 0:
+                print(f"\n in table, row not presence: {val_list=}")
 
             # run update request
             req_dict = {

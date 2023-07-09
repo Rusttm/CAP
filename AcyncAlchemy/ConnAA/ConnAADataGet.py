@@ -6,6 +6,7 @@ import asyncio
 import asyncpg
 
 class ConnAADataGet(ConnAAMainClass):
+    """ gets data from table by table_name"""
     _engine = None
     __url = None
 

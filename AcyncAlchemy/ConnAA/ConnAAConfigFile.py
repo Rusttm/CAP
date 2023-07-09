@@ -7,7 +7,7 @@ import configparser
 class ConnAAConfigFile(ConnAAConfig):
     """ configfile connector"""
     dir_name = "config"
-    file_name = "sqlconfig.ini"
+    file_name = "asqlconfig.ini"
 
 
     def get_config_data(self, sector='POSTGRESQL'):
