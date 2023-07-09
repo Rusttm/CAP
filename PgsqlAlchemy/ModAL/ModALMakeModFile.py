@@ -14,8 +14,6 @@ class ModALMakeModFile(ModALMainClass, ModALGetModFromJson):
                  f"from sqlalchemy import Column, Integer, String, JSON, DateTime, Double, BigInteger\n" \
                  f"from sqlalchemy.dialects.postgresql import JSONB\n" \
                  f"from sqlalchemy.orm import DeclarativeBase\n\n" \
-                 f"from sqlalchemy.orm import sessionmaker\n" \
-                 f"from sqlalchemy.orm import mapped_column\n\n" \
                  f"from PgsqlAlchemy.ConnAL.ConnALMainClass import ConnALMainClass\n" \
                  f"__url = ConnALMainClass().get_url()\n" \
                  f"engine = create_engine(__url)\n\n" \
