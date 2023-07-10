@@ -188,10 +188,10 @@ def multiply_insertions():
     # version1 doesnt allow insert equal rows
     # from https://docs.sqlalchemy.org/en/20/dialects/postgresql.html#postgresql-insert-on-conflict
     # from https://stackoverflow.com/questions/73761641/in-sql-alchemy-how-to-use-on-conflict-do-update-when-one-use-a-dictionary-for
-    # multy_ins = insert(ModALBaseCustBal).values([new_pos1, new_pos2])
-    # conn = engine.connect()
-    # conn.execute(multy_ins)
-    # print(ins.returning(ModALBaseCustBal.balance))
+    multy_ins = insert(ModALBaseCustBal).values([new_pos1, new_pos2])
+    conn = engine.connect()
+    conn.execute(multy_ins)
+    print(multy_ins.returning(ModALBaseCustBal.balance))
 
     # version2 also doesnt insert duplicates
     # DBSession = scoped_session(sessionmaker(bind=engine))
@@ -206,9 +206,9 @@ def multiply_insertions():
     # print(res)
 
     # version 4 also
-    ins = insert(ModALBaseCustBal).values([new_pos1, new_pos2])
+    # ins = insert(ModALBaseCustBal).values([new_pos1, new_pos2])
     # upd_on_conflict = ins.on_conflict_do_update(constraint='unique_key', set_={col: getattr(ins.excluded, col) for col in new_pos1.keys()})
-    ins = ins.on_conflict_do_update(constraint='table_pk', set_={col: getattr(ins.excluded, col) for col in new_pos1})
+    # ins = ins.on_conflict_do_update(constraint='table_pk', set_={col: getattr(ins.excluded, col) for col in new_pos1})
     # upd_on_conflict = ins.on_conflict_do_update(constraint='customers_bal_model_counterparty_key', set_=dict(**new_pos1))
     # upd_on_conflict = ins.on_conflict_do_update(constraint='customers_bal_model_counterparty_key', set_=dict(balance=ins.excluded.balance))
     # upd_on_conflict = ins.on_conflict_do_update(index_elements=['counterparty'],
@@ -218,10 +218,10 @@ def multiply_insertions():
     #                                             set_={'balance': ins.excluded.balance})
 
 
-    conn = engine.connect()
-    conn.execute(ins)
-    print(ins.returning(ModALBaseCustBal.balance))
-    conn.close()
+    # conn = engine.connect()
+    # conn.execute(upd_on_conflict)
+    # print(upd_on_conflict.returning(ModALBaseCustBal.balance))
+    # conn.close()
 
 
 # check constraint
