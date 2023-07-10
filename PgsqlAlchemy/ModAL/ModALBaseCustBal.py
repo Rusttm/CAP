@@ -1,5 +1,5 @@
 # !!!used SQLAlchemy 2.0.18
-from sqlalchemy import create_engine, UniqueConstraint, inspect
+from sqlalchemy import create_engine, UniqueConstraint, inspect, PrimaryKeyConstraint
 from sqlalchemy import Column, Integer, String, JSON, DateTime, Double, BigInteger
 from sqlalchemy.dialects.postgresql import JSONB, insert
 from sqlalchemy.orm import DeclarativeBase
@@ -19,7 +19,8 @@ class Base(DeclarativeBase):
 
 class ModALBaseCustBal(Base):
     __tablename__ = 'customers_bal_model'
-    __table_args__ = (UniqueConstraint("counterparty", "position_id", name="unique_key"),)
+    __table_args__ = (UniqueConstraint("counterparty", name="unique_key"),
+                      PrimaryKeyConstraint("position_id", name="table_pk"))
     position_id = Column(BigInteger, primary_key=True, autoincrement=True, unique=True, nullable=False,
                          comment='Обязательное поле для всех таблиц, автоповышение')
     averageReceipt = Column(Double, comment='Средний чек Обязательное при ответе')
@@ -205,19 +206,21 @@ def multiply_insertions():
     # print(res)
 
     # version 4 also
-    ins = insert(ModALBaseCustBal).values(new_pos1)
+    ins = insert(ModALBaseCustBal).values([new_pos1, new_pos2])
     # upd_on_conflict = ins.on_conflict_do_update(constraint='unique_key', set_={col: getattr(ins.excluded, col) for col in new_pos1.keys()})
-    # upd_on_conflict = ins.on_conflict_do_update(constraint='customers_bal_model_counterparty_key', set_={col: getattr(ins.excluded, col) for col in new_pos1})
+    ins = ins.on_conflict_do_update(constraint='table_pk', set_={col: getattr(ins.excluded, col) for col in new_pos1})
     # upd_on_conflict = ins.on_conflict_do_update(constraint='customers_bal_model_counterparty_key', set_=dict(**new_pos1))
     # upd_on_conflict = ins.on_conflict_do_update(constraint='customers_bal_model_counterparty_key', set_=dict(balance=ins.excluded.balance))
-    upd_on_conflict = ins.on_conflict_do_update(index_elements=['counterparty'],
-                                                set_=dict(balance=15),
-                                                where=(ModALBaseCustBal.counterparty == ins.excluded.counterparty))
+    # upd_on_conflict = ins.on_conflict_do_update(index_elements=['counterparty'],
+    #                                             set_=dict(balance=15),
+    #                                             where=(ModALBaseCustBal.counterparty == ins.excluded.counterparty))
+    # upd_on_conflict = ins.on_conflict_do_update(constraint='unique_key',
+    #                                             set_={'balance': ins.excluded.balance})
 
 
     conn = engine.connect()
-    conn.execute(upd_on_conflict)
-    print(upd_on_conflict.returning(ModALBaseCustBal.balance))
+    conn.execute(ins)
+    print(ins.returning(ModALBaseCustBal.balance))
     conn.close()
 
 
@@ -230,4 +233,4 @@ if __name__ == '__main__':
     # create_new_table()
     # insert_new_row()
     multiply_insertions()
-# delete_table()
+    # delete_table()
