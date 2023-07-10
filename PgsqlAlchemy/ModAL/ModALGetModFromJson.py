@@ -24,25 +24,24 @@ class ModALGetModFromJson(ConnALJson):
         # get mapper dict
         model_dict = self.get_data_from_json(file_name=file_name, dir_name=self._models_dir)
         data_dict = model_dict.get("data", None)
-        temp_data_dict = data_dict.copy()
 
         if not data_dict.get("position_id", None):
-            pos_id_dict={"position_id": {"type": "Int",
-                                        "pg_type": "Integer",
-                                        "is_id": "True",
-                                        "filter": "= != < > <= >=",
-                                        "descr": "Обязательное поле для всех таблиц, автоповышение",
-                                        "ext_prop": {"primary_key": "True",
-                                                     "autoincrement": "True",
-                                                     "unique": "True",
-                                                     "nullable": "False"}
-                                        }
-                         }
+            pos_id_dict = {"position_id": {"type": "Int",
+                                           "pg_type": "Integer",
+                                           "is_id": "True",
+                                           "filter": "= != < > <= >=",
+                                           "descr": "Обязательное поле для всех таблиц, автоповышение",
+                                           "ext_prop": {"primary_key": "True",
+                                                        "autoincrement": "True",
+                                                        "unique": "True",
+                                                        "nullable": "False"}
+                                           }
+                           }
             pos_id_dict.update(data_dict)
             data_dict = pos_id_dict
 
         for key, val_dict in data_dict.items():
-            if key == "pg_type":
+            if key == "position_id":
                 continue
             ms_type = val_dict.get("type", None)
             cur_pg_type = val_dict.get("pg_type", None)
@@ -50,7 +49,7 @@ class ModALGetModFromJson(ConnALJson):
                 data_dict[key]["pg_type"] = self.map_pg_type(ms_type=ms_type)
             else:
                 pg_type = cur_pg_type
-                # data_dict[key]["pg_type"] = self.map_pg_type(ms_type=ms_type)
+                data_dict[key]["pg_type"] = self.map_pg_type(ms_type=ms_type)
 
 
 
@@ -72,10 +71,10 @@ class ModALGetModFromJson(ConnALJson):
 
 if __name__ == '__main__':
     connector = ModALGetModFromJson()
-    res = connector.prepare_model_in_json(file_name='customers_bal_model')
+    res = connector.prepare_model_in_json(file_name='pgsql_service_model')
     print(res)
-    ans = connector.get_all_models_dict_list()
-    print(f"result operation : {ans}")
+    # ans = connector.get_all_models_dict_list()
+    # print(f'result operation : {ans}')
 
     # ans = connector.correct_model_in_json(file_name='customers_bal_model')
     # print(f"result operation : {ans}")

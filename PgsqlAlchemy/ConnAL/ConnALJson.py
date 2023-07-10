@@ -1,9 +1,9 @@
-from Pgsql.ConnPgsql.ConnPgsqlMainClass import ConnPgsqlMainClass
+from PgsqlAlchemy.ConnAL.ConnALMainClass import ConnALMainClass
 import json
 import os
 
 
-class ConnALJson(ConnPgsqlMainClass):
+class ConnALJson(ConnALMainClass):
     """ convert models from json file to models directory"""
     dir_name = "config"
 
@@ -12,7 +12,7 @@ class ConnALJson(ConnPgsqlMainClass):
         self.dir_name = "config"
 
     def get_json_files_list(self, dir_name: str = None):
-        """ gets files .json in ../data"""
+        """ gets files .json in self.dir_name"""
         if dir_name is not None:
             self.dir_name = dir_name
         up_up_dir = os.path.dirname(os.path.dirname(__file__))
@@ -31,7 +31,7 @@ class ConnALJson(ConnPgsqlMainClass):
         return result
 
     def get_data_from_json(self, file_name=None, dir_name=None):
-        """ takes data from json files in dir ../data"""
+        """ takes data from json file """
         if dir_name is not None:
             self.dir_name = dir_name
         if file_name:
@@ -64,6 +64,7 @@ class ConnALJson(ConnPgsqlMainClass):
                 import json
                 with open(json_file, 'w') as fp:
                     json.dump(data_dict, fp, ensure_ascii=False)
+                    # json.dump(data_dict, fp)
                 return True
             except Exception as e:
                 error_str = f"cant write file to {file_name}, error {e}"
