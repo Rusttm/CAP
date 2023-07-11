@@ -31,8 +31,8 @@ class ModALFillCustBal(ModALFillerMainClass, ModALBaseCustBal, ContMSMain):
         table_data_function = self.model_config.get("ms_func", None)
 
         # make connector to service event table
-        from PgsqlAlchemy.ModALFillers.ModALFillEvent import ModALFillEvent
-        service_event = ModALFillEvent()
+        from PgsqlAlchemy.ConnAL.ConnALEvent import ConnALEvent
+        service_event = ConnALEvent()
         # run function
         from PgsqlAlchemy.ContMS.ContMSMain import ContMSMain
         ms_controller = ContMSMain()

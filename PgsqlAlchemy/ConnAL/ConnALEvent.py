@@ -15,7 +15,7 @@ __url = ConnALMainClass().get_url()
 engine = create_engine(__url)
 
 
-class ModALFillEvent(ModALFillerMainClass):
+class ConnALEvent(ConnALMainClass):
 
     def __init__(self):
         super().__init__()
@@ -95,6 +95,6 @@ class ModALFillEvent(ModALFillerMainClass):
 
 
 if __name__ == '__main__':
-    controller = ModALFillEvent()
+    controller = ConnALEvent()
     print(controller.get_last_update_date_from_service("customers_bal_table"))
     # controller.put_event_2service_table_updates(table_name='unknown_table')
