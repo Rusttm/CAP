@@ -24,7 +24,7 @@ class ConnALDataGet(ConnALMainClass):
         if table_name:
             df = pd.read_sql(f'select * from {table_name}', con=self._engine)
             if to_file:
-                from SQLAlchemy.ConnAlchem.ConnALSaveExcell import ConnALSaveExcell
+                from PgsqlAlchemy.ConnAL.ConnALSaveExcell import ConnALSaveExcell
                 excell_conn = ConnALSaveExcell().save_pd_excell_file(data_pd=df, file_name=table_name)
                 print(excell_conn)
             return df

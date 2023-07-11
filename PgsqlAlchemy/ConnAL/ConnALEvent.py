@@ -1,11 +1,11 @@
 from PgsqlAlchemy.ModALFillers.ModALFillerMainClass import ModALFillerMainClass
 import datetime
 from PgsqlAlchemy.ModALFillers.ModALFillerMainClass import ModALFillerMainClass
-from PgsqlAlchemy.ModAL.ModALBaseCustBal import ModALBaseCustBal
+from PgsqlAlchemy.ModAL.ModALBaseService import ModALBaseService
 from PgsqlAlchemy.ConnAL.ConnALMainClass import ConnALMainClass
 from PgsqlAlchemy.ContMS.ContMSMain import ContMSMain
 
-from sqlalchemy import create_engine, select, text, func
+from sqlalchemy import create_engine, select, text, func, delete
 from sqlalchemy.dialects.postgresql import JSONB, insert
 from sqlalchemy.orm import scoped_session, sessionmaker
 import datetime
@@ -15,33 +15,59 @@ __url = ConnALMainClass().get_url()
 engine = create_engine(__url)
 
 
-class ConnALEvent(ConnALMainClass):
+class ConnALEvent(ConnALMainClass, ModALBaseService):
 
     def __init__(self):
         super().__init__()
 
-    def put_event_2service_table_updates(self, table_name=None,
-                                         description=None,
-                                         from_date=None,
-                                         to_date=None):
+    def put_event_2service_table_updates(self, **kwargs):
+        table_name: str = None
+        description: str = None
+        event_from: str = None
+        from_date: datetime = None,
+        to_date: datetime = None
         """ put in service table information about updates of tables"""
-        now = datetime.datetime.now()
-        date_string = now.strftime("%Y-%m-%d %H:%M:%S")
-        if not from_date:
-            from_date = "2023-05-01 00:00:00"
-        if not to_date:
-            to_date = date_string
+        now_string = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         event_dict = {"event_name": "table_updated",
-                      "event_descr": f"new updates in table {table_name}: {description}",
-                      "event_to": "telegram",
-                      "event_from": "updater",
-                      "event_level": 10,
-                      "event_active": False,
-                      "event_table": table_name,
-                      "event_time": date_string,
-                      "event_period_start": from_date,
-                      "event_period_end": to_date}
-        # self.put_event(event_dict)
+                      "event_descr": f"new updates in table {kwargs.get('table_name', 'unknown')}: {kwargs.get('description', 'no descr')}",
+                      # "event_to": "telegram",
+                      "event_from": kwargs.get("event_from", "updater"),
+                      # "event_level": 10,
+                      # "event_active": False,
+                      "event_table": kwargs.get("table_name", "unknown"),
+                      "event_time": now_string,
+                      "event_period_start": kwargs.get("from_date", now_string),
+                      "event_period_end": kwargs.get("to_date", now_string)
+                      }
+
+        # new_event_row = ModALBaseService.py(**event_dict)
+
+        try:
+            # version1 works
+            # DBSession = scoped_session(sessionmaker(bind=engine))
+            # DBSession.bulk_insert_mappings(ModALBaseService, [event_dict])
+            # DBSession.commit()
+
+            # version2 doesnt insert but increase autoincrement
+            # ins = insert(ModALBaseService).values(event_dict)
+            # with engine.connect() as conn:
+            #     conn.execute(ins)
+            #     print(ins.returning(ModALBaseService.event_descr))
+
+            # version3 works
+            session = sessionmaker(bind=engine)()
+            new_model_obj = ModALBaseService(**event_dict)
+            res = session.merge(new_model_obj)
+            session.commit()
+            self.logger.debug(f"{__class__.__name__} event table updated: {event_dict.get('event_descr')}")
+
+            return True
+
+        except Exception as e:
+            error_str = f"service table was not updated with table {table_name}, error: {e}"
+            print(error_str)
+            self.logger.error(error_str)
+            return False
 
     def get_last_update_date_from_service(self, event_table: str = None) -> datetime:
         """ return minimal date of update table"""
@@ -93,8 +119,49 @@ class ConnALEvent(ConnALMainClass):
             self.logger.info(f"{__class__.__name__} please try request 'pgsql_table_list'")
         return None
 
+    def clear_old_records_from_event_table(self, older_than_days: int = None):
+        right_time = datetime.datetime.now() - datetime.timedelta(days=older_than_days)
+        try:
+            # version 1 doesnt works
+            # deletion = delete(ModALBaseService).where(ModALBaseService.event_time < right_time)
+            # with engine.connect() as conn:
+            #     conn.execute(deletion)
+            #     print(deletion.returning(ModALBaseService.event_descr))
+
+            # version 2 cascade deletion works
+            # Session = sessionmaker(autocommit=False, bind=engine)
+            # sess = Session()
+            # rows_deleted = sess.query(ModALBaseService).filter(ModALBaseService.event_time < right_time).delete()
+            # sess.commit()
+
+            # version 3 works
+            Session = scoped_session(sessionmaker())
+            Session.configure(bind=engine)
+            session = Session()
+            rows_deleted = session.query(ModALBaseService).filter(ModALBaseService.event_time < right_time).delete()
+            session.commit()
+            print(f"deleted {rows_deleted} rows")
+
+        except Exception as e:
+            err_str = f"{__class__.__name__} cant clear old records, error: {e}"
+            print(err_str)
+            self.logger.error(err_str)
+
+
+
 
 if __name__ == '__main__':
     controller = ConnALEvent()
-    print(controller.get_last_update_date_from_service("customers_bal_table"))
-    # controller.put_event_2service_table_updates(table_name='unknown_table')
+    controller.logger.debug("test debug")
+    # print(controller.get_last_update_date_from_service("customers_bal_table"))
+
+    # kwargs = {
+    #     "table_name": "unknown_table",
+    #     "description": "test_event",
+    #     "event_from": "tester"
+    # }
+    # req = controller.put_event_2service_table_updates(**kwargs)
+    # print(req)
+
+    print(controller.clear_old_records_from_event_table(older_than_days=7))
+
