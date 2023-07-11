@@ -59,6 +59,7 @@ class ConnALEvent(ConnALMainClass, ModALBaseService):
             new_model_obj = ModALBaseService(**event_dict)
             res = session.merge(new_model_obj)
             session.commit()
+            print(res.event_descr)
             self.logger.debug(f"{__class__.__name__} event table updated: {event_dict.get('event_descr')}")
 
             return True
@@ -155,13 +156,13 @@ if __name__ == '__main__':
     controller.logger.debug("test debug")
     # print(controller.get_last_update_date_from_service("customers_bal_table"))
 
-    # kwargs = {
-    #     "table_name": "unknown_table",
-    #     "description": "test_event",
-    #     "event_from": "tester"
-    # }
-    # req = controller.put_event_2service_table_updates(**kwargs)
-    # print(req)
+    kwargs = {
+        "table_name": "unknown_table",
+        "description": "test_event",
+        "event_from": "tester"
+    }
+    req = controller.put_event_2service_table_updates(**kwargs)
+    print(req)
 
-    print(controller.clear_old_records_from_event_table(older_than_days=7))
+    # print(controller.clear_old_records_from_event_table(older_than_days=7))
 

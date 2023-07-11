@@ -51,6 +51,6 @@ def delete_table():
 
 
 if __name__ == '__main__':
-    # create_new_table()
+    create_new_table()
     # delete_table()
-    pass
+
