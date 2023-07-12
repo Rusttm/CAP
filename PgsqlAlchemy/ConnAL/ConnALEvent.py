@@ -119,7 +119,7 @@ class ConnALEvent(ConnALMainClass, ModALBaseService):
             self.logger.info(f"{__class__.__name__} please try request 'pgsql_table_list'")
         return None
 
-    def clear_old_records_from_event_table(self, older_than_days: int = None):
+    def clear_old_records_from_event_table(self, older_than_days: int = None, table_name: str = None):
         right_time = datetime.datetime.now() - datetime.timedelta(days=older_than_days)
         try:
             # version 1 doesnt works
@@ -138,7 +138,11 @@ class ConnALEvent(ConnALMainClass, ModALBaseService):
             Session = scoped_session(sessionmaker())
             Session.configure(bind=engine)
             session = Session()
-            rows_deleted = session.query(ModALBaseService).filter(ModALBaseService.event_time < right_time).delete()
+            if table_name:
+                rows_deleted = session.query(ModALBaseService).filter(ModALBaseService.event_time < right_time).filter( ModALBaseService.event_table == table_name).delete()
+            else:
+                rows_deleted = session.query(ModALBaseService).filter(
+                    ModALBaseService.event_time < right_time).delete()
             session.commit()
             print(f"deleted {rows_deleted} rows")
 

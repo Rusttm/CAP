@@ -10,6 +10,11 @@ class ModALUpdater(ModALUpdaterMainClass):
         res = ModALUpdCustBal().update_cust_bal()
         return res
 
+    def clear_old_events(self) -> str:
+        from PgsqlAlchemy.ConnAL.ConnALEvent import ConnALEvent
+        ConnALEvent().clear_old_records_from_event_table(older_than_days=7, table_name="customers_bal_model")
+        return f"service event table cleared"
+
 
 if __name__ == '__main__':
     updater = ModALUpdater()
@@ -19,5 +24,7 @@ if __name__ == '__main__':
     # print(connector.get_data_for_insertion("customers_bal_model"))
     start = time.time()
     res = updater.update_customers_balance()
+    print(f"function result: {res}")
+    res = updater.clear_old_events()
     print(f"function result: {res}")
     print(f"function time = {round(time.time() - start, 2)}sec")
