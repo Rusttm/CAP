@@ -58,11 +58,9 @@ class ModALUpdTable(ModALUpdaterMainClass, ContMSMain):
             list_of_dicts = []
         res_dict = dict({"inserted": 0, "updated": 0, "rows_requested": len(list_of_dicts), "rows_table": 0})
 
-
-
         ans_dict = dict()
         start_time = time.time()
-        print(f"updating {model_class_table}\n")
+        print(f"updating {model_class_table}")
         for i in tqdm(range(len(list_of_dicts))):
             ans_dict = self.insert_or_update_row_2table(list_of_dicts[i], model_class, model_unique_col)
             res_dict["inserted"] = res_dict.get("inserted", 0) + ans_dict.get("inserted", 0)
