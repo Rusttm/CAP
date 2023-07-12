@@ -5,7 +5,7 @@ class PgsqlAlchemyTablesUpdater(PgsqlAlchemyMainClass):
         super().__init__()
 
     def update_tables_from_ms(self):
-        from PgsqlAlchemy.ModALFillers.ModALFillCustBal import ModALFillCustBal
+        from PgsqlAlchemy.ModALUpdaters.ModALFillCustBal import ModALFillCustBal
         cust_bal_updater = ModALFillCustBal()
         cust_bal_updater.update_cust_bal()
 

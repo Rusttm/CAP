@@ -30,7 +30,7 @@ class ConnALJson(ConnALMainClass):
             result.append(file_name)
         return result
 
-    def get_data_from_json(self, file_name=None, dir_name=None):
+    def get_data_from_json(self, file_name=None, dir_name=None) -> dict:
         """ takes data from json file """
         if dir_name is not None:
             self.dir_name = dir_name

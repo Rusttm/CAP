@@ -1,6 +1,5 @@
-from PgsqlAlchemy.ModALFillers.ModALFillerMainClass import ModALFillerMainClass
+from PgsqlAlchemy.ModALUpdaters.ModALUpdaterMainClass import ModALUpdaterMainClass
 import datetime
-from PgsqlAlchemy.ModALFillers.ModALFillerMainClass import ModALFillerMainClass
 from PgsqlAlchemy.ModAL.ModALBaseService import ModALBaseService
 from PgsqlAlchemy.ConnAL.ConnALMainClass import ConnALMainClass
 from PgsqlAlchemy.ContMS.ContMSMain import ContMSMain
@@ -59,14 +58,14 @@ class ConnALEvent(ConnALMainClass, ModALBaseService):
             new_model_obj = ModALBaseService(**event_dict)
             res = session.merge(new_model_obj)
             session.commit()
-            print(res.event_descr)
+            # print(res.event_descr)
             self.logger.debug(f"{__class__.__name__} event table updated: {event_dict.get('event_descr')}")
 
             return True
 
         except Exception as e:
             error_str = f"service table was not updated with table {table_name}, error: {e}"
-            print(error_str)
+            # print(error_str)
             self.logger.error(error_str)
             return False
 
