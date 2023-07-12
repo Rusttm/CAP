@@ -26,9 +26,15 @@ class ConnMSFilter(ConnMSMainClass):
         if filter_field_name:
             if from_date or to_date:
                 if from_date:
-                    param = f"filter={filter_field_name}>={from_date}"
+                    if filter_field_name == "momentFrom_momentTo":
+                        param = f"{filter_field_name}From>={from_date}"
+                    else:
+                        param = f"filter={filter_field_name}>={from_date}"
                 if to_date:
-                    param += f"&filter={filter_field_name}<={to_date}"
+                    if filter_field_name == "momentFrom_momentTo":
+                        param += f"&{filter_field_name}To>={from_date}"
+                    else:
+                        param += f"&filter={filter_field_name}<={to_date}"
             else:
                 self.logger.warning(f"{__class__.__name__} request not specified to_date parameter")
         super().set_api_param_line(param)

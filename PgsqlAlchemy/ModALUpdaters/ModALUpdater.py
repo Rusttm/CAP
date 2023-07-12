@@ -6,7 +6,7 @@ class ModALUpdater(ModALUpdaterMainClass):
     def __init__(self):
         super().__init__()
 
-    def daily_updater(self):
+    def daily_updater(self, period: str = None):
         """ daily updater"""
         ans_list = list()
         # load updater
@@ -21,7 +21,7 @@ class ModALUpdater(ModALUpdaterMainClass):
             model_dict = json_loader.get_data_from_json(file_name=model, dir_name=self.models_dir)
             updated_key = model_dict.get("updated", None)
             # if daily key -> run updater
-            if updated_key == "daily":
+            if updated_key == period:
                 # load from json keys
                 model_class_table = model_dict.get("table", None)
                 model_class_name = model_dict.get("model_class", None)
@@ -59,6 +59,6 @@ if __name__ == '__main__':
     # print(f"function result: {res}")
     # res = updater.clear_old_events()
     # print(f"function result: {res}")
-    res = updater.daily_updater()
+    res = updater.daily_updater(period="hourly")
     print(f"function result: {res}")
     print(f"function time = {round(time.time() - start, 2)}sec")

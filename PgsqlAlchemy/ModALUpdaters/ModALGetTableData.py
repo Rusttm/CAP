@@ -36,7 +36,9 @@ class ModALGetTableData(ModALUpdaterMainClass, ContMSGetFilteredData):
             # self.logger.error(f"{__class__.__name__} cant get last data update, error: {e}")
             from_date = datetime.datetime(2018, 1, 1, 0, 0, 0).strftime("%Y-%m-%d %H:%M:%S")
         to_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        print(f"requested customers balances: {from_date=} / {to_date=}")
+        debug_str = f"requested {table_name}: {from_date=} / {to_date=}"
+        self.logger.debug(debug_str)
+
         req_dict = {"from_date": from_date,
                     "to_date": to_date,
                     "filter_field_name": filter_field_name,

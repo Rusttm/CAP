@@ -3,11 +3,15 @@ from PgsqlAlchemy.ModAL.ModALGetModFromJson import ModALGetModFromJson
 
 
 class ModALMakeModFile(ModALMainClass, ModALGetModFromJson):
+    models_dir = "config/models"
     def __init__(self):
         super().__init__()
 
     def make_model_py_file_from_json(self, file_name: str = None):
-        model_dict = self.prepare_model_in_json(file_name=file_name)
+        from PgsqlAlchemy.ConnAL.ConnALJson import ConnALJson
+        json_reader = ConnALJson()
+        model_dict = json_reader.get_data_from_json(file_name=file_name, dir_name=self.models_dir)
+        # model_dict = self.prepare_model_in_json(file_name=file_name)
         fields_dict = model_dict.get("data", None)
         header = f"# !!!used SQLAlchemy 2.0.18\n" \
                  f"from sqlalchemy import create_engine, inspect\n" \
@@ -23,7 +27,7 @@ class ModALMakeModFile(ModALMainClass, ModALGetModFromJson):
                  f"class Base(DeclarativeBase):\n\tpass\n\n" \
                  f"class {model_dict.get('model_class')}(Base):\n" \
                  f"\t__tablename__ = '{model_dict.get('table')}'\n" \
-                 f"\t__table_args__ = (UniqueConstraint('id', name='unique_key_id'),)\n"
+                 f"\t# __table_args__ = (UniqueConstraint('id', name='unique_key_id'),)\n"
 
         body = ""
         for col_name, col_dict in fields_dict.items():
@@ -58,5 +62,5 @@ if __name__ == '__main__':
     # res = connector.get_json_files_list(dir_name="config/models")
     # print(res)
 
-    res = connector.make_model_py_file_from_json(file_name='customers_model')
+    res = connector.make_model_py_file_from_json(file_name='invout_model')
     print(res)
