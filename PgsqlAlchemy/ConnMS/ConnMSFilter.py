@@ -23,13 +23,14 @@ class ConnMSFilter(ConnMSMainClass):
         date format '2022-12-08' or '2019-07-10 12:00:00'"""
         super().set_config(url_conf_key=url_table_name, token_conf_key=self.request_token)
         param = ""
-        if from_date or to_date:
-            if from_date:
-                param = f"filter={filter_field_name}>={from_date}"
-            if to_date:
-                param += f"&filter={filter_field_name}<={to_date}"
-        else:
-            self.logger.warning(f"{__class__.__name__} request not specified to_date parameter")
+        if filter_field_name:
+            if from_date or to_date:
+                if from_date:
+                    param = f"filter={filter_field_name}>={from_date}"
+                if to_date:
+                    param += f"&filter={filter_field_name}<={to_date}"
+            else:
+                self.logger.warning(f"{__class__.__name__} request not specified to_date parameter")
         super().set_api_param_line(param)
         data_dict = self.get_api_data()
         return data_dict.get("rows", None)

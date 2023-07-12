@@ -21,7 +21,7 @@ class ModALMakeModFile(ModALMainClass, ModALGetModFromJson):
                  f"__url = ConnALMainClass().get_url()\n" \
                  f"engine = create_engine(__url)\n\n" \
                  f"class Base(DeclarativeBase):\n\tpass\n\n" \
-                 f"class ModALBase_{model_dict.get('table')}_(Base):\n" \
+                 f"class {model_dict.get('model_class')}(Base):\n" \
                  f"\t__tablename__ = '{model_dict.get('table')}'\n" \
                  f"\t__table_args__ = (UniqueConstraint('id', name='unique_key_id'),)\n"
 
@@ -47,7 +47,7 @@ class ModALMakeModFile(ModALMainClass, ModALGetModFromJson):
                  f"\tcreate_new_table()\n" \
                  f"\t# delete_table()\n"
 
-        with open(f"ModALBase_{model_dict.get('table', 'name')}.py", "w") as file1:
+        with open(f"{model_dict.get('model_class', 'name')}.py", "w") as file1:
             # Writing data to a file
             file1.write(header + body + footer)
         return True
@@ -58,5 +58,5 @@ if __name__ == '__main__':
     # res = connector.get_json_files_list(dir_name="config/models")
     # print(res)
 
-    res = connector.make_model_py_file_from_json(file_name='pgsql_service_model')
+    res = connector.make_model_py_file_from_json(file_name='customers_model')
     print(res)

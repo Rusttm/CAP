@@ -2,7 +2,6 @@ import psycopg2.errors
 
 from PgsqlAlchemy.ModALUpdaters.ModALUpdaterMainClass import ModALUpdaterMainClass
 
-from PgsqlAlchemy.ModAL.ModALBaseCustBal import ModALBaseCustBal
 from PgsqlAlchemy.ConnAL.ConnALMainClass import ConnALMainClass
 from PgsqlAlchemy.ContMS.ContMSMain import ContMSMain
 
@@ -13,34 +12,48 @@ import datetime
 import pandas as pd
 import time
 from tqdm import tqdm
+import importlib
 
 __url = ConnALMainClass().get_url()
 engine = create_engine(__url)
 
-class ModALUpdCustBal(ModALUpdaterMainClass, ContMSMain, ModALBaseCustBal):
-    model_name = "customers_bal_model"
-    table_name = model_name
+class ModALUpdTable(ModALUpdaterMainClass, ContMSMain):
+    # model_name = "customers_bal_model"
+    # table_name = model_name
     model_config = None
+    models_module = "PgsqlAlchemy.ModAL"
 
     def __init__(self):
         super().__init__()
         self.logger = ModALUpdaterMainClass().logger
         self.logger.debug(f"{__class__.__name__} initialized")
 
-    def update_cust_bal(self) -> dict:
-        res_dict = dict({"table": self.table_name})
+    def update_model_table(self, model_class_name: str = None,
+                           model_unique_col: str = None,
+                           model_class_table: str = None) -> dict:
+        res_dict = dict({"table": model_class_table})
         from PgsqlAlchemy.ModALUpdaters.ModALGetTableData import ModALGetTableData
-        data_to_update = ModALGetTableData().get_data_for_update_insertion(table_name=self.table_name)
-        ans_dict = self.put_data_2table(list_of_dicts=data_to_update)
+        data_to_update = ModALGetTableData().get_data_for_update_insertion(table_name=model_class_table)
+
+        # make model class from string model_class
+        module_str = f"{self.models_module}.{model_class_name}"
+        module = importlib.import_module(module_str)
+        model_class = getattr(module, model_class_name)
+        # model_unique_col = "counterparty"
+        ans_dict = self.put_data_2table(list_of_dicts=data_to_update,
+                                        model_class=model_class,
+                                        model_unique_col=model_unique_col,
+                                        model_class_table = model_class_table)
         res_dict.update(ans_dict)
         return res_dict
 
-    def put_data_2table(self, list_of_dicts: list = None) -> dict:
+    def put_data_2table(self, list_of_dicts: list = None,
+                        model_class: object = None,
+                        model_unique_col: str = None,
+                        model_class_table: str = None) -> dict:
         res_dict = dict({"inserted": 0, "updated": 0, "rows_requested": len(list_of_dicts), "rows_table": 0})
         ans_dict = dict()
-        import PgsqlAlchemy
-        model_class = PgsqlAlchemy.ModAL.ModALBaseCustBal.ModALBaseCustBal
-        model_unique_col = "counterparty"
+
         for i in tqdm(range(len(list_of_dicts))):
             ans_dict = self.insert_or_update_row_2table(list_of_dicts[i], model_class, model_unique_col)
             res_dict["inserted"] = res_dict.get("inserted", 0) + ans_dict.get("inserted", 0)
@@ -49,13 +62,14 @@ class ModALUpdCustBal(ModALUpdaterMainClass, ContMSMain, ModALBaseCustBal):
         # get number of rows in table
         ans_dict = self.request_rows_num_in_table(model_class=model_class)
         res_dict["rows_table"] = ans_dict.get("table_rows", 0)
-        self.logger.debug(f"{__class__.__name__} balance table inserted/updated {len(list_of_dicts)}rows")
+        debug_str = f"{__class__.__name__} model {model_class} table inserted/updated {len(list_of_dicts)}rows by {model_unique_col}"
+        self.logger.debug(debug_str)
 
         # update service table events
         from PgsqlAlchemy.ConnAL.ConnALEvent import ConnALEvent
         eventer = ConnALEvent()
         event_dict = {
-            "table_name": self.table_name,
+            "table_name": model_class_table,
             "description": f"inserted or updated {len(list_of_dicts)}rows in balance table",
             "event_from": "updater ModALFillCustBal",
         }
@@ -113,12 +127,12 @@ class ModALUpdCustBal(ModALUpdaterMainClass, ContMSMain, ModALBaseCustBal):
         return dict({"table_rows": rows_in_table})
 
 if __name__ == '__main__':
-    connector = ModALUpdCustBal()
+    connector = ModALUpdTable()
     # connector.logger.info("testing ModALFillCustBal")
     # print(f"logger file name: {connector.logger_name}")
     # print(connector.get_last_update_date_from_service("customers_bal_table"))
     # print(connector.get_data_for_insertion("customers_bal_model"))
-    start = time.time()
-    print(connector.update_cust_bal())
-    print(f"function time = {round(time.time() - start, 2)}sec")
+    # start = time.time()
+    # print(connector.update_cust_bal())
+    # print(f"function time = {round(time.time() - start, 2)}sec")
 

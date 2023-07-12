@@ -47,6 +47,11 @@ class ConnALJson(ConnALMainClass):
         except FileNotFoundError as e:
             self.logger.debug(f"File not found error json file: {e}")
             return None
+        except json.decoder.JSONDecodeError as e:
+            err_str = f"{__class__.__name__} cant load data from json file {file_name}, error: {e}"
+            print(err_str)
+            self.logger.debug(err_str)
+            return None
 
     def save_model_dict_2json(self,
                               file_name: str = None,

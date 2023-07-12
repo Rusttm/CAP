@@ -41,8 +41,9 @@ class ModALGetTableData(ModALUpdaterMainClass, ContMSGetFilteredData):
                     "to_date": to_date,
                     "filter_field_name": filter_field_name,
                     "url_table_name": url_table_name}
-        from PgsqlAlchemy.ContMS.ContMSGetFilteredData import ContMSGetFilteredData
-        req_data = ContMSGetFilteredData().get_ms_request_with_date_filter(**req_dict)
+        from PgsqlAlchemy.ConnMS.ConnMSFilter import ConnMSFilter
+
+        req_data = ConnMSFilter().get_ms_request_with_date_filter(**req_dict)
         return req_data
 
 if __name__ == '__main__':

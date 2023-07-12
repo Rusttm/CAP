@@ -49,7 +49,8 @@ class ModALGetModFromJson(ConnALJson):
                 data_dict[key]["pg_type"] = self.map_pg_type(ms_type=ms_type)
             else:
                 pg_type = cur_pg_type
-                data_dict[key]["pg_type"] = self.map_pg_type(ms_type=ms_type)
+                 # if you want to rewrite models pg_type
+                # data_dict[key]["pg_type"] = self.map_pg_type(ms_type=ms_type)
 
 
 
@@ -71,7 +72,7 @@ class ModALGetModFromJson(ConnALJson):
 
 if __name__ == '__main__':
     connector = ModALGetModFromJson()
-    res = connector.prepare_model_in_json(file_name='pgsql_service_model')
+    res = connector.prepare_model_in_json(file_name='customers_model')
     print(res)
     # ans = connector.get_all_models_dict_list()
     # print(f'result operation : {ans}')
