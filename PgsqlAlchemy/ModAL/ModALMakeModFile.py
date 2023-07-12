@@ -62,5 +62,5 @@ if __name__ == '__main__':
     # res = connector.get_json_files_list(dir_name="config/models")
     # print(res)
 
-    res = connector.make_model_py_file_from_json(file_name='invout_model')
+    res = connector.make_model_py_file_from_json(file_name='payouts_model')
     print(res)

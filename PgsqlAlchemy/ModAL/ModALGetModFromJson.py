@@ -72,7 +72,7 @@ class ModALGetModFromJson(ConnALJson):
 
 if __name__ == '__main__':
     connector = ModALGetModFromJson()
-    res = connector.prepare_model_in_json(file_name='invout_model')
+    res = connector.prepare_model_in_json(file_name='payouts_model')
     print(res)
     # ans = connector.get_all_models_dict_list()
     # print(f'result operation : {ans}')
