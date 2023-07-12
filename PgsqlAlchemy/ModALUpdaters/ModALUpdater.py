@@ -6,7 +6,7 @@ class ModALUpdater(ModALUpdaterMainClass):
     def __init__(self):
         super().__init__()
 
-    def daily_updater(self, period: str = None):
+    def db_updater(self, period: str = None):
         """ daily updater"""
         ans_list = list()
         # load updater
@@ -59,6 +59,11 @@ if __name__ == '__main__':
     # print(f"function result: {res}")
     # res = updater.clear_old_events()
     # print(f"function result: {res}")
-    res = updater.daily_updater(period="hourly")
-    print(f"function result: {res}")
+    time1 = time.time()
+    res = updater.db_updater(period="hourly")
+    print(f"hourly updates ({round(time.time() - start, 2)}sec) result: {res}")
+
+    res = updater.db_updater(period="daily")
+    print(f"daily updates ({round(time.time() - time1, 2)}sec) result: {res}")
+
     print(f"function time = {round(time.time() - start, 2)}sec")

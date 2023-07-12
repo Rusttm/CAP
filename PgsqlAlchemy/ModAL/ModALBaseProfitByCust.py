@@ -16,7 +16,7 @@ class Base(DeclarativeBase):
 
 class ModALBaseProfitByCust(Base):
 	__tablename__ = 'profit_bycust_model'
-	__table_args__ = (UniqueConstraint('id', name='unique_key_id'),)
+	# __table_args__ = (UniqueConstraint('id', name='unique_key_id'),)
 	position_id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False, comment='Обязательное поле для всех таблиц, автоповышение')
 	counterparty = Column(JSONB, unique=True, nullable=False, comment='Краткое представление Покупателя в отчете. Подробнее тут Обязательное при ответе')
 	margin = Column(Double, comment='Рентабельность Обязательное при ответе')

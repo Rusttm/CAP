@@ -51,9 +51,18 @@ class ModALUpdTable(ModALUpdaterMainClass, ContMSMain):
                         model_class: object = None,
                         model_unique_col: str = None,
                         model_class_table: str = None) -> dict:
+        if not list_of_dicts:
+            err_str = f"{__class__.__name__} cant get information for update {model_class_table} from MoiSklad"
+            print(err_str)
+            self.logger.error(err_str)
+            list_of_dicts = []
         res_dict = dict({"inserted": 0, "updated": 0, "rows_requested": len(list_of_dicts), "rows_table": 0})
-        ans_dict = dict()
 
+
+
+        ans_dict = dict()
+        start_time = time.time()
+        print(f"updating {model_class_table}\n")
         for i in tqdm(range(len(list_of_dicts))):
             ans_dict = self.insert_or_update_row_2table(list_of_dicts[i], model_class, model_unique_col)
             res_dict["inserted"] = res_dict.get("inserted", 0) + ans_dict.get("inserted", 0)
@@ -63,6 +72,9 @@ class ModALUpdTable(ModALUpdaterMainClass, ContMSMain):
         ans_dict = self.request_rows_num_in_table(model_class=model_class)
         res_dict["rows_table"] = ans_dict.get("table_rows", 0)
         debug_str = f"{__class__.__name__} model {model_class} table inserted/updated {len(list_of_dicts)}rows by {model_unique_col}"
+        self.logger.debug(debug_str)
+        debug_str = f"{__class__.__name__} table {model_class_table} updated in {round(time.time() - start_time, 2)}sec\n"
+        print(debug_str)
         self.logger.debug(debug_str)
 
         # update service table events
