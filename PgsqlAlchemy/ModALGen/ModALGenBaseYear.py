@@ -32,6 +32,7 @@ class ModALGenBaseYear(ModALGenMainClass):
 
         body = f"\tposition_id = Column(Integer, primary_key=True, autoincrement=True, " \
                f"unique=True, nullable=False, comment='Обязательное поле для всех таблиц, автоповышение')\n" \
+               f"\tupdate = Column(DateTime, nullable=False, comment='Дата расчета (конец дня)')\n" \
 
         for col_name in col_names_list:
             body += f"\t{col_name} = Column(Double, nullable=False, default=0)\n"
@@ -76,6 +77,6 @@ class ModALGenBaseYear(ModALGenMainClass):
 if __name__ == '__main__':
     generator = ModALGenBaseYear()
     print(generator.make_list_of_days(table_year=datetime.datetime.now().year))
-    print(generator.create_new_model_file(table_year=datetime.datetime.now().year))
+    print(generator.create_new_model_file(table_year=datetime.datetime(2013, 1, 1).year))
 
 

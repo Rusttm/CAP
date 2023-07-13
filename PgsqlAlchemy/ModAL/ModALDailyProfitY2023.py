@@ -13,6 +13,7 @@ class Base(DeclarativeBase):
 class ModALDailyProfitY2023(Base):
 	__tablename__ = 'daily_profit_2023'
 	position_id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False, comment='Обязательное поле для всех таблиц, автоповышение')
+	update = Column(DateTime, nullable=False, comment='Дата расчета (конец дня)')
 	day_2023_01_01 = Column(Double, nullable=False, default=0)
 	day_2023_01_02 = Column(Double, nullable=False, default=0)
 	day_2023_01_03 = Column(Double, nullable=False, default=0)
