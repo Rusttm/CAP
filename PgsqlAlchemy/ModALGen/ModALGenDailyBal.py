@@ -22,11 +22,11 @@ class ModALGenDailyBal(ModALGenMainClass, ModALBaseDailyBal):
         column_name = "inn_132102258526"
         column_descr = "ИП Денискина"
         # version1
-        # new_col = Column(column_name, Double, default=0, nullable=False, comment=column_descr)
-        # metadata_obj = MetaData()
-        # table_metadata = Table(table_name, metadata_obj, new_col)  # Table object
-        # metadata_obj.create_all(engine)
-        # print(table_metadata)
+        new_col = Column(column_name, Double, default=0, nullable=False, comment=column_descr, server_default=text(0))
+        metadata_obj = MetaData()
+        table_metadata = Table(table_name, metadata_obj, new_col)  # Table object
+        metadata_obj.create_all(engine)
+        print(table_metadata)
 
         # version 2 create only new table
         # metadata_obj = MetaData()
@@ -71,13 +71,16 @@ class ModALGenDailyBal(ModALGenMainClass, ModALBaseDailyBal):
         # alembic.Operations().add_column(table_name=table_name, column=Column("test_col", Integer))
 
         # version 7
+        # from https://alembic.sqlalchemy.org/en/latest/ops.html#alembic.operations.Operations.add_column
         # Create migration context
-        mc = MigrationContext.configure(engine.connect())
-        # Creation operations object
-        ops = Operations(mc)
-        # ops.add_column("test_table", Column(name="name", type_=String()))
-        ops.add_column("test_table", Column(name="name", type_=String()))
-
+        # connection = engine.connect()
+        # mc = MigrationContext.configure(engine.connect())
+        # # Creation operations object
+        # ops = Operations(mc)
+        # # ops.add_column("test_table", Column(name="name", type_=String()))
+        # ops.add_column(table_name, Column(name="name", type_=String()))
+        # connection.execute()
+        # connection.close()
         return True
 
 
@@ -100,5 +103,5 @@ class ModALGenDailyBal(ModALGenMainClass, ModALBaseDailyBal):
 if __name__ == '__main__':
     generator = ModALGenDailyBal()
     print(generator.get_columns_list('daily_bal_model'))
-    print(generator.make_new_col_in_daily_bal())
+    # print(generator.make_new_col_in_daily_bal())
     print(generator.get_columns_list('daily_bal_model'))
