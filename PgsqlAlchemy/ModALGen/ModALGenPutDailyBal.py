@@ -2,6 +2,7 @@ from PgsqlAlchemy.ModALGen.ModALGenMainClass import ModALGenMainClass
 import datetime
 
 class ModALGenPutDailyBal(ModALGenMainClass):
+    """ fulfill report table daily_balance"""
     def __init__(self):
         super().__init__()
 

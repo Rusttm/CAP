@@ -20,11 +20,20 @@ class ConnALTable(ConnALMainClass):
             return False
 
     def get_all_tables_list(self):
+        self.create_engine()
         inspector = sqlalchemy.inspect(self._engine)
         return inspector.get_table_names()
+
+    def check_table_exist(self, table_name: str = None):
+        self.create_engine()
+        # res = self._engine.dialect.has_table(self._engine.connect(), table_name=table_name, schema='dbo')
+        res = self._engine.dialect.has_table(connection=self._engine.connect(), table_name=table_name)
+
+        return res
 
 
 if __name__ == '__main__':
     connector = ConnALTable()
-    print(connector.create_engine())
-    print(connector.get_all_tables_list())
+    # print(connector.create_engine())
+    # print(connector.get_all_tables_list())
+    print(connector.check_table_exist("invin_model"))

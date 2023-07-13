@@ -27,14 +27,14 @@ class ConnMSFilter(ConnMSMainClass):
             if from_date or to_date:
                 if from_date:
                     if filter_field_name == "momentFrom_momentTo":
-                        param = f"{filter_field_name}From>={from_date}"
+                        param = f"momentFrom={from_date}"
                     elif filter_field_name == "on_moment":
                         param = ""
                     else:
                         param = f"filter={filter_field_name}>={from_date}"
                 if to_date:
                     if filter_field_name == "momentFrom_momentTo":
-                        param += f"&{filter_field_name}To>={from_date}"
+                        param += f"&momentTo={to_date}"
                     elif filter_field_name == "on_moment":
                         param += f"{filter_field_name}={from_date}"
                     else:
