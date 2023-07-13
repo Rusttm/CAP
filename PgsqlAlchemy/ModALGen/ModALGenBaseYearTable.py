@@ -3,11 +3,13 @@ from PgsqlAlchemy.ModALGen.ModALGenMainClass import ModALGenMainClass
 import datetime
 import os
 import importlib
+import json
 
 
 class ModALGenBaseYearTable(ModALGenMainClass):
     """ create new base model for current year"""
     models_dir = "ModAL"
+    json_models_dir = "config/models"
     models_module = "PgsqlAlchemy.ModAL"
 
     def __init__(self):
@@ -16,23 +18,28 @@ class ModALGenBaseYearTable(ModALGenMainClass):
     def create_new_profit_year(self, table_year: datetime = None) -> bool:
         if not table_year:
             table_year = datetime.datetime.now().year
-        table_name = "daily_profit"
+        table_name = "daily_profit_model"
         model_name = f"ModALBaseDailyProfitY{table_year}"
-        result = self.create_new_yearly_model_file(table_year, table_name, model_name)
+        result = self.create_new_yearly_model_py_file(table_year, table_name, model_name)
         return result
 
     def create_new_bal_year(self, table_year: datetime = None) -> bool:
         if not table_year:
             table_year = datetime.datetime.now().year
-        table_name = "daily_bal"
+        table_name = "daily_bal_model"
         model_name = f"ModALBaseDailyBalY{table_year}"
-        result = self.create_new_yearly_model_file(table_year, table_name, model_name)
+        result = self.create_new_yearly_model_py_file(table_year, table_name, model_name)
         return result
 
-    def create_new_yearly_model_file(self, table_year: datetime = None,
-                                     table_name: str = None,
-                                     model_name: str = None) -> bool:
+    def create_new_yearly_model_py_file(self, table_year: datetime = None,
+                                        table_name: str = None,
+                                        model_name: str = None) -> bool:
         col_names_list = self.make_list_of_days(table_year=table_year)
+        req_dict = {'table_name': table_name,
+                    'table_year': table_year,
+                    'model_name': model_name,
+                    'col_names_list': col_names_list}
+        self.create_new_yearly_model_json_file(**req_dict)
         header = f"# !!!used SQLAlchemy 2.0.18\n" \
                  f"from sqlalchemy import create_engine, inspect\n" \
                  f"from sqlalchemy import Column, Integer, Double, DateTime\n" \
@@ -76,6 +83,34 @@ class ModALGenBaseYearTable(ModALGenMainClass):
 
         return True
 
+    def create_new_yearly_model_json_file(self, **kwargs)-> bool:
+
+        table_year = kwargs.get("table_year")
+        table_name = kwargs.get("table_name")
+        model_name = kwargs.get("model_name")
+        col_names_list = kwargs.get("col_names_list")
+        json_class_dict = dict()
+        json_class_dict["table"] = f'{table_name}_{table_year}'
+        json_class_dict["model_class"] = model_name
+        json_class_dict.update(dict({"req_func": "get_profit_by_cust_list",
+                                     "date_field": "update",
+                                     "config_url": "url_profit_by_cust_list",
+                                     "unique_col": "counterparty",
+                                     "updated": ""}))
+        for col_name in col_names_list:
+            json_class_dict.update((dict({col_name: {"type": "Float",
+                                                     "pg_type": "Double",
+                                                     "descr": f"прибыль за {col_name.split('_')[1:]}",}})))
+
+        # save to python file
+        up_up_dir = os.path.dirname(os.path.dirname(__file__))
+        json_file_path = os.path.join(up_up_dir, self.json_models_dir, f"{table_name}_{table_year}.json")
+        with open(json_file_path, "w") as jf:
+            # Writing data to a file
+            json.dump(json_class_dict, jf, ensure_ascii=False)
+
+        return True
+
     def make_list_of_days(self, table_year: datetime = None):
         result_list = list()
         start_year_date = datetime.datetime(table_year, 1, 1, 0, 0, 1)
@@ -92,4 +127,5 @@ class ModALGenBaseYearTable(ModALGenMainClass):
 if __name__ == '__main__':
     generator = ModALGenBaseYearTable()
     print(generator.make_list_of_days(table_year=datetime.datetime.now().year))
-    print(generator.create_new_bal_year(table_year=datetime.datetime(2013, 1, 1).year))
+    print(generator.create_new_profit_year(table_year=datetime.datetime(2013, 1, 1).year))
+    # print(generator.create_new_yearly_model_json_file(table_year=datetime.datetime(2013, 1, 1).year))
