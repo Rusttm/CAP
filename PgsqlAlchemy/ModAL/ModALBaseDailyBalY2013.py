@@ -1,6 +1,7 @@
 # !!!used SQLAlchemy 2.0.18
 from sqlalchemy import create_engine, inspect
 from sqlalchemy import Column, Integer, Double, DateTime
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import DeclarativeBase
 
 from PgsqlAlchemy.ConnAL.ConnALMainClass import ConnALMainClass
@@ -10,9 +11,10 @@ engine = create_engine(__url)
 class Base(DeclarativeBase):
 	pass
 
-class ModALDailyProfitY2013(Base):
-	__tablename__ = 'daily_profit_2013'
+class ModALBaseDailyBalY2013(Base):
+	__tablename__ = 'daily_bal_2013'
 	position_id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False, comment='Обязательное поле для всех таблиц, автоповышение')
+	counterparty = Column(JSONB, unique=True, nullable=False, comment='Контрагент. Подробнее тут Обязательное при ответе')
 	update = Column(DateTime, nullable=False, comment='Дата расчета (конец дня)')
 	day_2013_01_01 = Column(Double, nullable=False, default=0)
 	day_2013_01_02 = Column(Double, nullable=False, default=0)
