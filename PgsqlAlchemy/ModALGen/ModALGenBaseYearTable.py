@@ -42,7 +42,7 @@ class ModALGenBaseYearTable(ModALGenMainClass):
         self.create_new_yearly_model_json_file(**req_dict)
         header = f"# !!!used SQLAlchemy 2.0.18\n" \
                  f"from sqlalchemy import create_engine, inspect\n" \
-                 f"from sqlalchemy import Column, Integer, Double, DateTime\n" \
+                 f"from sqlalchemy import Column, Integer, Double, DateTime, String\n" \
                  f"from sqlalchemy.dialects.postgresql import JSONB\n" \
                  f"from sqlalchemy.orm import DeclarativeBase\n\n" \
                  f"from PgsqlAlchemy.ConnAL.ConnALMainClass import ConnALMainClass\n" \
@@ -56,9 +56,10 @@ class ModALGenBaseYearTable(ModALGenMainClass):
                f"unique=True, nullable=False, comment='Обязательное поле для всех таблиц, автоповышение')\n" \
                f"\tcounterparty = Column(JSONB, unique=True, " \
                f"nullable=False, comment='Контрагент. Подробнее тут Обязательное при ответе')\n" \
+               f"\tname = Column(String)\n" \
                f"\tupdate = Column(DateTime, nullable=False, comment='Дата расчета (конец дня)')\n"
         for col_name in col_names_list:
-            body += f"\t{col_name} = Column(Double, nullable=False, default=0)\n"
+            body += f"\t{col_name} = Column(Double, nullable=False, default=0, comment='прибыль на дату')\n"
 
         footer = f"\ndef create_new_table():\n" \
                  f"\tBase.metadata.create_all(engine)\n\n" \
@@ -93,15 +94,51 @@ class ModALGenBaseYearTable(ModALGenMainClass):
         json_class_dict["table"] = f'{table_name}_{table_year}'
         json_class_dict["model_class"] = model_name
         json_class_dict.update(dict({"req_func": "get_profit_by_cust_list",
-                                     "date_field": "update",
+                                     "date_field": "momentFrom_momentTo",
                                      "config_url": "url_profit_by_cust_list",
                                      "unique_col": "counterparty",
                                      "updated": ""}))
+
+        data_dict = dict()
+        data_dict.update(dict({
+            "position_id": {"type": "Int",
+                            "pg_type": "Integer",
+                            "is_id": "True",
+                            "filter": "= != < > <= >=",
+                            "descr": "Обязательное поле для всех таблиц, автоповышение",
+                            "ext_prop": {
+                                "primary_key": "True",
+                                "autoincrement": "True",
+                                "unique": "True",
+                                "nullable": "False"}}}))
+
+        data_dict.update(dict({
+            "counterparty": {"type": "Object",
+                            "pg_type": "JSONB",
+                            "is_id": "True",
+                            "filter": "= != < > <= >=",
+                            "descr": "meta клиента",
+                            "ext_prop": {
+                                "unique": "True",
+                                "nullable": "False"}}}))
+
+        data_dict.update(dict({
+            "name": {"type": "String",
+                             "pg_type": "String",
+                             "filter": "= != < > <= >=",
+                             "descr": "название клиента"}}))
+
+        data_dict.update(dict({
+            "update": {"type": "DateTime",
+                            "pg_type": "DateTime",
+                            "filter": "= != < > <= >=",
+                            "descr": "дата расчета приыли"}}))
+
         for col_name in col_names_list:
-            json_class_dict.update((dict({col_name: {"type": "Float",
+            data_dict.update((dict({col_name: {"type": "Float",
                                                      "pg_type": "Double",
                                                      "descr": f"прибыль за {col_name.split('_')[1:]}",}})))
-
+        json_class_dict["data"] = data_dict
         # save to python file
         up_up_dir = os.path.dirname(os.path.dirname(__file__))
         json_file_path = os.path.join(up_up_dir, self.json_models_dir, f"{table_name}_{table_year}.json")

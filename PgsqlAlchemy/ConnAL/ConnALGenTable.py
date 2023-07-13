@@ -5,6 +5,7 @@ from sqlalchemy.orm import sessionmaker
 
 
 class ConnALGenTable(ConnALMainClass):
+    """ connector for generation daily report tables"""
     _engine = None
     __url = None
 
@@ -46,7 +47,10 @@ class ConnALGenTable(ConnALMainClass):
             for client_dict in data_list:
                 counterparty_dict = client_dict.get("counterparty", None)
                 profit = client_dict.get("profit", None)/100
-                row_dict = dict({"counterparty": counterparty_dict, "update": today, col_name: profit})
+                row_dict = dict({"counterparty": counterparty_dict,
+                                 "update": today,
+                                 col_name: profit,
+                                 "name": counterparty_dict.get("name", "unknown_name")})
                 new_model_obj = model_class(**row_dict)
                 Session = sessionmaker(bind=self._engine)
                 session = Session()

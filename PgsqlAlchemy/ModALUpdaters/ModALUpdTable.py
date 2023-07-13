@@ -43,7 +43,7 @@ class ModALUpdTable(ModALUpdaterMainClass, ContMSMain):
         ans_dict = self.put_data_2table(list_of_dicts=data_to_update,
                                         model_class=model_class,
                                         model_unique_col=model_unique_col,
-                                        model_class_table = model_class_table)
+                                        model_class_table=model_class_table)
         res_dict.update(ans_dict)
         return res_dict
 
@@ -81,7 +81,7 @@ class ModALUpdTable(ModALUpdaterMainClass, ContMSMain):
         event_dict = {
             "table_name": model_class_table,
             "description": f"inserted or updated {len(list_of_dicts)}rows in balance table",
-            "event_from": "updater ModALFillCustBal",
+            "event_from": f"updater {__class__.__name__}",
         }
         eventer.put_event_2service_table_updates(**event_dict)
 

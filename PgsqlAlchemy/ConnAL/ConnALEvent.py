@@ -27,7 +27,7 @@ class ConnALEvent(ConnALMainClass, ModALBaseService):
         to_date: datetime = None
         """ put in service table information about updates of tables"""
         now_string = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        event_dict = {"event_name": "table_updated",
+        event_dict = {"event_name": kwargs.get("event_name", "table_updated"),
                       "event_descr": f"new updates in table {kwargs.get('table_name', 'unknown')}: {kwargs.get('description', 'no descr')}",
                       # "event_to": "telegram",
                       "event_from": kwargs.get("event_from", "updater"),
@@ -64,7 +64,7 @@ class ConnALEvent(ConnALMainClass, ModALBaseService):
             return True
 
         except Exception as e:
-            error_str = f"service table was not updated with table {table_name}, error: {e}"
+            error_str = f"{__class__.__name__}service table was not updated with {kwargs.get('table_name', 'unknown')} table, error: {e}"
             # print(error_str)
             self.logger.error(error_str)
             return False
