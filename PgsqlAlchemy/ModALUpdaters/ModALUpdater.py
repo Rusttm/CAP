@@ -63,18 +63,6 @@ class ModALUpdater(ModALUpdaterMainClass):
 
 
 
-    # def update_customers_balance(self):
-    #     table_name = "customers_bal_model"
-    #     from PgsqlAlchemy.ModALUpdaters.ModALUpdCustBal import ModALUpdCustBal
-    #     res = ModALUpdCustBal().update_cust_bal()
-    #     from PgsqlAlchemy.ConnAL.ConnALEvent import ConnALEvent
-    #     ConnALEvent().clear_old_records_from_event_table(older_than_days=7, table_name=table_name)
-    #     return res
-    #
-    # def clear_old_events(self) -> str:
-    #     from PgsqlAlchemy.ConnAL.ConnALEvent import ConnALEvent
-    #     ConnALEvent().clear_old_records_from_event_table(older_than_days=7, table_name="customers_bal_model")
-    #     return f"service event table cleared"
 
 
 if __name__ == '__main__':
