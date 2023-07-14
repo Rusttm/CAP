@@ -83,4 +83,7 @@ if __name__ == '__main__':
     res = updater.db_updater(period="daily")
     print(f"daily updates ({round(time.time() - time1, 2)}sec) result: {res}")
 
+    res = updater.db_updater(period="ondemand")
+    print(f"ondemand updates ({round(time.time() - time1, 2)}sec) result: {res}")
+
     print(f"function time = {round(time.time() - start, 2)}sec")
