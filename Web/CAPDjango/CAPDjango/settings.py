@@ -37,7 +37,7 @@ cap_db_config = config['POSTGRESQL']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '128.0.129.250', '192.168.1.103']
+ALLOWED_HOSTS = ['localhost', '192.168.1.103', '127.0.0.1']
 
 
 # Application definition
