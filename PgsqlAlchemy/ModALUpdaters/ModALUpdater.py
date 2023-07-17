@@ -1,9 +1,10 @@
 from PgsqlAlchemy.ModALUpdaters.ModALUpdaterMainClass import ModALUpdaterMainClass
 import time
 import importlib
+import os
 
 class ModALUpdater(ModALUpdaterMainClass):
-    models_dir = "config/models"
+    models_dir = os.path.join("config", "models")
     gen_module = "PgsqlAlchemy.ModALGen"
     def __init__(self):
         super().__init__()

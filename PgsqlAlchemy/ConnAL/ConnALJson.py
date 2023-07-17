@@ -41,7 +41,7 @@ class ConnALJson(ConnALMainClass):
         try:
             up_up_dir = os.path.dirname(os.path.dirname(__file__))
             json_file = os.path.join(up_up_dir, self.dir_name, file_name)
-            with open(json_file, 'r') as jf:
+            with open(json_file, 'r', encoding="utf8") as jf:
                 data = json.load(jf)
             return dict(data)
         except FileNotFoundError as e:
