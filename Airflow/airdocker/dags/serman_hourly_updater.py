@@ -16,7 +16,8 @@
 # specific language governing permissions and limitations
 # under the License.
 """
-Example use of Telegram operator.
+Example use of venv.
+from https://github.com/astronomer/astro-provider-venv
 """
 from __future__ import annotations
 
@@ -26,6 +27,8 @@ from airflow import DAG
 from airflow.providers.telegram.operators.telegram import TelegramOperator
 from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python_operator import PythonOperator
+from airflow.operators.python import ExternalPythonOperator
+from airflow.decorators import task
 
 import sys
 
@@ -34,7 +37,7 @@ CURRENT_DIR = os.getcwd()
 cap_dir = os.path.join(CURRENT_DIR, "CAP")
 sys.path.append(cap_dir)
 
-VERSION = 2
+VERSION = 7
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
 DAG_ID = f"serman_db_hourly_updater_v{VERSION}"
 
@@ -57,6 +60,18 @@ def telegram_on_fail(context):
     )
     return failed_alert.execute(context=context)
 
+def func():
+    import sqlalchemy
+    print(f"python version: {sys.version}")
+    print(f"sqlalchemy version {sqlalchemy.__version__}")
+    item = 0
+    if item == 0:
+        print("We got nothin'.")
+    elif item == 1:
+        print("We got 1!")
+    else:
+        raise ValueError("Something went horribly wrong!")
+    
 
 # def python_update_operator(**kwargs):
 #     from PgsqlAlchemy.ModALUpdaters.ModALUpdater import ModALUpdater
@@ -66,6 +81,18 @@ def telegram_on_fail(context):
 #     ti = kwargs['ti']
 #     ti.xcom_push(key='updater_result', value=res_line)
 #     return res_line
+
+
+@task.external_python(python=os.environ["ALCHEMY_PYENV"], task_id="new_ext_python")
+def python_update_operator():
+    sys.path.append("/opt/airflow/CAP")
+    from PgsqlAlchemy.ModALUpdaters.ModALUpdater import ModALUpdater
+    runner = ModALUpdater()
+    res_line = runner.hourly_updater()
+    print(f"serman_db daily updater, result: {res_line}")
+    # ti = kwargs['ti']
+    # ti.xcom_push(key='updater_result', value=res_line)
+    return res_line
 
 
 def get_token() -> tuple:
@@ -118,9 +145,17 @@ with DAG(default_args=default_args,
     #     dag=dag
     # )
 
-    bash_updater = BashOperator(
-        task_id="bash_task_updater",
-        bash_command="/bin/bash /opt/airflow/CAP/PgsqlAlchemy/updaters_win.sh hourly",
-        dag=dag)
+    venv_task = ExternalPythonOperator(
+        task_id="p310",
+        python=os.environ["ALCHEMY_PYENV"],
+        python_callable=func
+    )
 
-    bash_updater >> send_message_telegram_task
+    external_python_task = python_update_operator()
+
+    # bash_updater = BashOperator(
+    #     task_id="bash_task_updater",
+    #     bash_command="/bin/bash /opt/airflow/CAP/PgsqlAlchemy/updaters_win.sh hourly",
+    #     dag=dag)
+
+    # venv_task >> send_message_telegram_task
