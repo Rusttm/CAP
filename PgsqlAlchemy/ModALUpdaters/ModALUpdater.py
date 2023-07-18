@@ -1,3 +1,4 @@
+#!python
 import sys
 import os
 
@@ -8,7 +9,6 @@ sys.path.append(cap_dir_path)
 from PgsqlAlchemy.ModALUpdaters.ModALUpdaterMainClass import ModALUpdaterMainClass
 import time
 import importlib
-import os
 
 class ModALUpdater(ModALUpdaterMainClass):
     models_dir = os.path.join("config", "models")
@@ -70,28 +70,50 @@ class ModALUpdater(ModALUpdaterMainClass):
         return self.db_updater(period="ondemand")
 
 
+def main():
+    allowed_arguments = ["daily", "hourly", "ondemand"]
+    results_list = []
+    start = time.time()
+    updater = ModALUpdater()
+    # total arguments
+    n = len(sys.argv)
+    if n<=1:
+        print(f"please send update period like {allowed_arguments}")
+    else:
+        for command_argument in sys.argv[1:]:
+            if command_argument in allowed_arguments:
+                res=updater.db_updater(period=command_argument)
+                results_list.append(res)
+            else:
+                print(f"argument: {command_argument} is not update period")
+    print(f"update time: {round(time.time() - start, 2)}sec\n")
+    print(f"update result: {results_list}\n")
+    return results_list
+
 
 
 
 if __name__ == '__main__':
-    updater = ModALUpdater()
+    main()
+
+    # updater = ModALUpdater()
     # connector.logger.info("testing ModALFillCustBal")
     # print(f"logger file name: {connector.logger_name}")
     # print(connector.get_last_update_date_from_service("customers_bal_table"))
     # print(connector.get_data_for_insertion("customers_bal_model"))
-    start = time.time()
+    # start = time.time()
     # res = updater.update_customers_balance()
     # print(f"function result: {res}")
     # res = updater.clear_old_events()
     # print(f"function result: {res}")
-    time1 = time.time()
-    res = updater.db_updater(period="hourly")
-    print(f"hourly updates ({round(time.time() - start, 2)}sec) result: {res}")
+    # time1 = time.time()
+    # res = updater.db_updater(period="hourly")
+    # print(f"hourly updates ({round(time.time() - start, 2)}sec) result: {res}")
 
-    res = updater.db_updater(period="daily")
-    print(f"daily updates ({round(time.time() - time1, 2)}sec) result: {res}")
+    # res = updater.db_updater(period="daily")
+    # print(f"daily updates ({round(time.time() - time1, 2)}sec) result: {res}")
 
-    res = updater.db_updater(period="ondemand")
-    print(f"ondemand updates ({round(time.time() - time1, 2)}sec) result: {res}")
+    # res = updater.db_updater(period="ondemand")
+    # print(f"ondemand updates ({round(time.time() - time1, 2)}sec) result: {res}")
 
-    print(f"function time = {round(time.time() - start, 2)}sec")
+    # print(f"function time = {round(time.time() - start, 2)}sec")

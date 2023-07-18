@@ -11,7 +11,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 # import datetime
 # import pandas as pd
 import time
-# from tqdm import tqdm
+from tqdm import tqdm
 import importlib
 
 __url = ConnALMainClass().get_url()
@@ -61,8 +61,8 @@ class ModALUpdTable(ModALUpdaterMainClass, ContMSMain):
         ans_dict = dict()
         start_time = time.time()
         print(f"updating {model_class_table}")
-        # for i in tqdm(range(len(list_of_dicts))):
-        for i in range(len(list_of_dicts)):
+        for i in tqdm(range(len(list_of_dicts))):
+        # for i in range(len(list_of_dicts)):
             ans_dict = self.insert_or_update_row_2table(list_of_dicts[i], model_class, model_unique_col)
             res_dict["inserted"] = res_dict.get("inserted", 0) + ans_dict.get("inserted", 0)
             res_dict["updated"] = res_dict.get("updated", 0) + ans_dict.get("updated", 0)
@@ -115,7 +115,7 @@ class ModALUpdTable(ModALUpdaterMainClass, ContMSMain):
 
 
         except Exception as e:
-            err_str = f"{__class__.__name__} balance table insertion interrupt, error {e}"
+            err_str = f"{__class__.__name__} profit table insertion interrupt, error {e}"
             print(err_str)
             self.logger.error(err_str)
 

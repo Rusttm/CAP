@@ -1,9 +1,12 @@
 #!/bin/bash
-
+# cap_path="C:\\Users\\User\\Desktop\\CAP\\CAP\\PgsqlAlchemy\\ModALUpdaters\\ModALUpdater.py"
+cap_path="./ModALUpdaters/ModALUpdater.py"
 echo "hi everybody"
-
-# set -e
-# alchemy_env/Scripts/activate.ps1
-C:/Users/User/Desktop/CAP/CAP/PgsqlAlchemy/alchemy_env/Scripts/python C:\Users\User\Desktop\CAP\CAP\PgsqlAlchemy\ModALUpdaters\ModALUpdater.py
-
-# python manage.py runserver 127.0.0.1:8083
+echo "$1"
+echo "$cap_path"
+if [ -f "$cap_path" ]; then
+    echo "File exists, start updates"
+    ./alchemy_env/Scripts/python.exe ./ModALUpdaters/ModALUpdater.py $1
+else
+    echo "File $cap_path does not exist"
+fi
