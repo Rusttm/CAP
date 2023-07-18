@@ -1,3 +1,10 @@
+import sys
+import os
+
+cap_dir_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+
+sys.path.append(cap_dir_path)
+
 from PgsqlAlchemy.ModALUpdaters.ModALUpdaterMainClass import ModALUpdaterMainClass
 import time
 import importlib

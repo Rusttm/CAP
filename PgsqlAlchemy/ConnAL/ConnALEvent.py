@@ -23,7 +23,7 @@ class ConnALEvent(ConnALMainClass, ModALBaseService):
         table_name: str = None
         description: str = None
         event_from: str = None
-        from_date: datetime = None,
+        from_date: datetime = None
         to_date: datetime = None
         """ put in service table information about updates of tables"""
         now_string = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")

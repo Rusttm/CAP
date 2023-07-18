@@ -34,9 +34,9 @@ class ModALGetTableData(ModALUpdaterMainClass, ContMSGetFilteredData):
             from_date = service_event.get_last_update_date_from_service(event_table=table_name)
         except Exception as e:
             # self.logger.error(f"{__class__.__name__} cant get last data update, error: {e}")
-            from_date = datetime.datetime(2018, 1, 1, 0, 0, 0).strftime("%Y-%m-%d %H:%M:%S")
+            from_date = datetime.datetime(2020, 1, 1, 0, 0, 0).strftime("%Y-%m-%d %H:%M:%S")
         to_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        debug_str = f"requested {table_name}: {from_date=} / {to_date=}"
+        debug_str = f"requested {table_name}: {from_date} / {to_date}"
         self.logger.debug(debug_str)
 
         req_dict = {"from_date": from_date,

@@ -1,10 +1,10 @@
 # !!!used SQLAlchemy 2.0.18
 from sqlalchemy import create_engine, inspect
-from sqlalchemy import UniqueConstraint, PrimaryKeyConstraint
+# from sqlalchemy import UniqueConstraint, PrimaryKeyConstraint
 from sqlalchemy import Column, Integer, String, JSON, DateTime
-from sqlalchemy import Double, BigInteger, Uuid, Boolean
-from sqlalchemy.dialects.postgresql import JSONB, ARRAY, insert
-from sqlalchemy.ext.mutable import MutableList
+from sqlalchemy import BigInteger, Boolean
+from sqlalchemy.dialects.postgresql import JSONB
+# from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy.orm import DeclarativeBase
 
 from PgsqlAlchemy.ConnAL.ConnALMainClass import ConnALMainClass
