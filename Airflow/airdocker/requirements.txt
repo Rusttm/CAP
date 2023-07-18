@@ -13,4 +13,4 @@ tqdm
 psutil
 asyncpg
 #logging
-SQLAlchemy==2.0.18
+

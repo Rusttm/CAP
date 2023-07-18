@@ -34,7 +34,7 @@ CURRENT_DIR = os.getcwd()
 cap_dir = os.path.join(CURRENT_DIR, "CAP")
 sys.path.append(cap_dir)
 
-VERSION = 0
+VERSION = 2
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
 DAG_ID = f"serman_db_hourly_updater_v{VERSION}"
 
@@ -58,14 +58,14 @@ def telegram_on_fail(context):
     return failed_alert.execute(context=context)
 
 
-def python_update_operator(**kwargs):
-    from PgsqlAlchemy.ModALUpdaters.ModALUpdater import ModALUpdater
-    runner = ModALUpdater()
-    res_line = runner.hourly_updater()
-    print(f"serman_db daily updater, result: {res_line}")
-    ti = kwargs['ti']
-    ti.xcom_push(key='updater_result', value=res_line)
-    return res_line
+# def python_update_operator(**kwargs):
+#     from PgsqlAlchemy.ModALUpdaters.ModALUpdater import ModALUpdater
+#     runner = ModALUpdater()
+#     res_line = runner.hourly_updater()
+#     print(f"serman_db daily updater, result: {res_line}")
+#     ti = kwargs['ti']
+#     ti.xcom_push(key='updater_result', value=res_line)
+#     return res_line
 
 
 def get_token() -> tuple:
@@ -94,7 +94,7 @@ default_args = {
 with DAG(default_args=default_args,
          dag_id=DAG_ID,
          tags=["example"],
-         start_date=datetime(2023, 7, 15, 10, 59),  # only UTC time
+         start_date=datetime(2023, 7, 18, 10, 59),  # only UTC time
          max_active_runs=1,
          concurrency=4,
          schedule_interval=timedelta(minutes=60),
@@ -107,19 +107,20 @@ with DAG(default_args=default_args,
         telegram_conn_id="telegram_default",
         token=get_token()[0],
         chat_id=get_token()[1],
-        text=f"at: {datetime.now().strftime('%y:%m:%d %H:%M:%S')}\n" + "{{ti.xcom_pull(task_ids='python_update_operator', key='updater_result')}}",
+        # text=f"at: {datetime.now().strftime('%y:%m:%d %H:%M:%S')}\n" + "{{ti.xcom_pull(task_ids='python_update_operator', key='updater_result')}}",
+        text=f"at: {datetime.now().strftime('%y:%m:%d %H:%M:%S')}\n",
         dag=dag
     )
 
-    python_updater = PythonOperator(
-        task_id=f'python_update_operator',
-        python_callable=python_update_operator,
-        dag=dag
-    )
+    # python_updater = PythonOperator(
+    #     task_id=f'python_update_operator',
+    #     python_callable=python_update_operator,
+    #     dag=dag
+    # )
 
-    # bash_updater = BashOperator(
-    #     task_id="bash_task_updater",
-    #     bash_command="./upd_air_test.sh",
-    #     dag=dag)
+    bash_updater = BashOperator(
+        task_id="bash_task_updater",
+        bash_command="/bin/bash /opt/airflow/CAP/PgsqlAlchemy/updaters_win.sh hourly",
+        dag=dag)
 
-    python_updater >> send_message_telegram_task
+    bash_updater >> send_message_telegram_task
