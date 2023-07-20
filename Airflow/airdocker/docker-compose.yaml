@@ -102,10 +102,10 @@ services:
     environment:
 #      POSTGRES_USER: airflow
 #      POSTGRES_PASSWORD: airflow
-#      POSTGRES_DB: airflow
+      POSTGRES_DB: airflow
       POSTGRES_USER: ${AIR_USER}
       POSTGRES_PASSWORD: ${AIR_PASSWORD}
-      POSTGRES_DB: ${AIR_DB}
+#      POSTGRES_DB: ${AIR_DB}
     volumes:
       - postgres-db-volume:/var/lib/postgresql/data
     healthcheck:

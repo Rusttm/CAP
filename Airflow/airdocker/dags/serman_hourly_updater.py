@@ -60,6 +60,21 @@ def telegram_on_fail(context):
     )
     return failed_alert.execute(context=context)
 
+
+@task.venv("alchemy_env")
+def func_decorator():
+    import sqlalchemy
+    print(f"python version: {sys.version}")
+    print(f"sqlalchemy version {sqlalchemy.__version__}")
+    item = 0
+    if item == 0:
+        print("We got nothin'.")
+    elif item == 1:
+        print("We got 1!")
+    else:
+        raise ValueError("Something went horribly wrong!")
+
+
 def func():
     import sqlalchemy
     print(f"python version: {sys.version}")
@@ -71,7 +86,7 @@ def func():
         print("We got 1!")
     else:
         raise ValueError("Something went horribly wrong!")
-    
+
 
 # def python_update_operator(**kwargs):
 #     from PgsqlAlchemy.ModALUpdaters.ModALUpdater import ModALUpdater
@@ -128,7 +143,6 @@ with DAG(default_args=default_args,
          # or '@hourly'  # or '* */1 * * *' from https://crontab.guru/#0_1_*_*_*
          dagrun_timeout=timedelta(seconds=60)
          ) as dag:
-
     send_message_telegram_task = TelegramOperator(
         task_id=f"send_tg_db_updater_v{VERSION}",
         telegram_conn_id="telegram_default",

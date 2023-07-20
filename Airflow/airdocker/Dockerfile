@@ -12,5 +12,3 @@ COPY venv_requirements.txt /home/cap_enviroments/.venv/sqlalchemy/requirements.t
 RUN /usr/local/bin/python -m venv --system-site-packages /home/cap_enviroments/.venv/sqlalchemy
 ENV ALCHEMY_PYENV /home/cap_enviroments/.venv/sqlalchemy/bin/python
 RUN --mount=type=cache,target=/home/cap_enviroments/.cache/pip /home/cap_enviroments/.venv/sqlalchemy/bin/pip --cache-dir=/home/cap_enviroments/.cache/pip install -r /home/cap_enviroments/.venv/sqlalchemy/requirements.txt
-
-
