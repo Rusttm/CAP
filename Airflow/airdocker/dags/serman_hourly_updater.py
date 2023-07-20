@@ -37,7 +37,7 @@ CURRENT_DIR = os.getcwd()
 cap_dir = os.path.join(CURRENT_DIR, "CAP")
 sys.path.append(cap_dir)
 
-VERSION = 7
+VERSION = 8
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
 DAG_ID = f"serman_db_hourly_updater_v{VERSION}"
 
@@ -61,7 +61,7 @@ def telegram_on_fail(context):
     return failed_alert.execute(context=context)
 
 
-@task.venv("alchemy_env")
+@task.venv("ALCHEMY_PYENV")
 def func_decorator():
     import sqlalchemy
     print(f"python version: {sys.version}")
@@ -166,6 +166,7 @@ with DAG(default_args=default_args,
     )
 
     external_python_task = python_update_operator()
+    venv_python_task = func_decorator()
 
     # bash_updater = BashOperator(
     #     task_id="bash_task_updater",
