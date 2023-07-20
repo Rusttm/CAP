@@ -27,7 +27,7 @@ from airflow import DAG
 from airflow.providers.telegram.operators.telegram import TelegramOperator
 from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python_operator import PythonOperator
-from airflow.operators.python import ExternalPythonOperator
+from airflow.operators.python import ExternalPythonOperator, PythonVirtualenvOperator
 from airflow.decorators import task
 
 import sys
@@ -37,9 +37,9 @@ CURRENT_DIR = os.getcwd()
 cap_dir = os.path.join(CURRENT_DIR, "CAP")
 sys.path.append(cap_dir)
 
-VERSION = 8
+VERSION = 7
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
-DAG_ID = f"serman_db_hourly_updater_v{VERSION}"
+DAG_ID = f"venv_example_v{VERSION}"
 
 
 def telegram_on_fail(context):
@@ -61,18 +61,19 @@ def telegram_on_fail(context):
     return failed_alert.execute(context=context)
 
 
-@task.venv("ALCHEMY_PYENV")
-def func_decorator():
-    import sqlalchemy
-    print(f"python version: {sys.version}")
-    print(f"sqlalchemy version {sqlalchemy.__version__}")
-    item = 0
-    if item == 0:
-        print("We got nothin'.")
-    elif item == 1:
-        print("We got 1!")
-    else:
-        raise ValueError("Something went horribly wrong!")
+# @task.venv("ALCHEMY_PYENV")
+# def func_decorator():
+# """ this decorator doesnt works"""
+#     import sqlalchemy
+#     print(f"python version: {sys.version}")
+#     print(f"sqlalchemy version {sqlalchemy.__version__}")
+#     item = 0
+#     if item == 0:
+#         print("We got nothin'.")
+#     elif item == 1:
+#         print("We got 1!")
+#     else:
+#         raise ValueError("Something went horribly wrong!")
 
 
 def func():
@@ -98,17 +99,27 @@ def func():
 #     return res_line
 
 
-@task.external_python(python=os.environ["ALCHEMY_PYENV"], task_id="new_ext_python")
-def python_update_operator():
-    sys.path.append("/opt/airflow/CAP")
-    from PgsqlAlchemy.ModALUpdaters.ModALUpdater import ModALUpdater
-    runner = ModALUpdater()
-    res_line = runner.hourly_updater()
-    print(f"serman_db daily updater, result: {res_line}")
-    # ti = kwargs['ti']
-    # ti.xcom_push(key='updater_result', value=res_line)
-    return res_line
+# @task.external_python(python=os.environ["ALCHEMY_PYENV"], task_id="new_ext_python")
+# def python_update_operator():
+#     sys.path.append("/opt/airflow/CAP")
+#     from PgsqlAlchemy.ModALUpdaters.ModALUpdater import ModALUpdater
+#     runner = ModALUpdater()
+#     import sqlalchemy
+#     print(f"sqlalchemy version {sqlalchemy.__version__}")
+#     res_line = "test update" #runner.hourly_updater()
+#     print(f"serman_db daily updater, result: {res_line}")
+#     # ti = kwargs['ti']
+#     # ti.xcom_push(key='updater_result', value=res_line)
+#     return res_line
 
+@task.external_python(python="/opt/venvs/alchemy/bin/python", task_id="ext_venv_python")
+def python_alchemy_version_operator():
+    sys.path.append("/opt/airflow/CAP")
+    from PgsqlAlchemy.ModALUpdaters.ModALTestVersion import ModALTestVersion
+    runner = ModALTestVersion()
+    sqlalchemy_version = runner.get_version()
+    print(f"sqlalchemy version: {sqlalchemy_version}")
+    return sqlalchemy_version
 
 def get_token() -> tuple:
     import configparser
@@ -136,7 +147,7 @@ default_args = {
 with DAG(default_args=default_args,
          dag_id=DAG_ID,
          tags=["example"],
-         start_date=datetime(2023, 7, 18, 10, 59),  # only UTC time
+         start_date=datetime(2023, 7, 20, 13, 59),  # only UTC time
          max_active_runs=1,
          concurrency=4,
          schedule_interval=timedelta(minutes=60),
@@ -165,12 +176,26 @@ with DAG(default_args=default_args,
         python_callable=func
     )
 
-    external_python_task = python_update_operator()
-    venv_python_task = func_decorator()
+    # venv_task_2 = PythonVirtualenvOperator(
+    #     task_id="p310_v2",
+    #     requirements="SQLAlchemy==2.0.18",
+    #     python_callable=func
+    # )
 
-    # bash_updater = BashOperator(
-    #     task_id="bash_task_updater",
-    #     bash_command="/bin/bash /opt/airflow/CAP/PgsqlAlchemy/updaters_win.sh hourly",
-    #     dag=dag)
+    external_python_task = python_alchemy_version_operator()
+    # external_python_task = python_update_operator()
+    # venv_python_task = func_decorator()
 
-    # venv_task >> send_message_telegram_task
+    my_command = "/opt/airflow/CAP/PgsqlAlchemy/updaters_ub.sh"
+    if os.path.exists(my_command):
+        my_command = """source /opt/venvs/alchemy/bin/activate && 
+        exec python /opt/airflow/CAP/PgsqlAlchemy/ModALUpdaters/ModALTestVersion.py"""
+        bash_updater = BashOperator(
+            task_id="bash_task_updater",
+            bash_command=my_command + " ",
+            # env=dict(PATH="/opt/airflow/CAP/PgsqlAlchemy/alch_env/bin/python"),
+            dag=dag)
+    else:
+        raise Exception("Cannot locate {}".format(my_command))
+
+    external_python_task >> send_message_telegram_task
