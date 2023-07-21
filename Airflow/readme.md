@@ -9,7 +9,9 @@ from https://airflow.apache.org/docs/apache-airflow/stable/installation/installi
 2. $ pip install "apache-airflow==2.6.2" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.6.2/constraints-3.7.txt"
 3. $ export AIRFLOW_HOME=/Users/johnlennon/RusttmGDrive/Python/CAP/Airflow/airhome
    3.1 $ export AIRFLOW_HOME=/home/rusttm/PycharmProjects/CAP/Airflow/airhome
-
+   3.2 if you want to change sqlite to postgresql read https://betterdatascience.com/apache-airflow-parallelism/ and change in airflow.cfg
+      3.2.1 sql_alchemy_conn = postgresql+psycopg2://<user>:<user_pass>@<host>/<db>
+      3.2.2. executor = LocalExecutor
 4. $ airflow db init 
 5. $ airflow webserver -p 8081
 6. $ airflow users create  --username root --firstname firstname --lastname lastname --role Admin --email rustammazhatov@gmail.com
