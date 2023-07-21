@@ -21,7 +21,7 @@ from https://github.com/astronomer/astro-provider-venv
 """
 from __future__ import annotations
 
-
+import os
 from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.providers.telegram.operators.telegram import TelegramOperator
@@ -30,14 +30,14 @@ from airflow.operators.python_operator import PythonOperator
 from airflow.operators.python import ExternalPythonOperator, PythonVirtualenvOperator
 from airflow.decorators import task
 
-import os
 import sys
+
 cap_dir_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
 sys.path.append(cap_dir_path)
 
-VERSION = 3
+VERSION = 1
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
-DAG_ID = f"updater_daily_v{VERSION}"
+DAG_ID = f"updater_hourly_v{VERSION}"
 
 
 def telegram_on_fail(context):
@@ -59,7 +59,7 @@ def telegram_on_fail(context):
     return failed_alert.execute(context=context)
 
 
-def func(**context):
+def upd_func(**context):
     """ external operator doesn't support contex without airflow in venv"""
     import os
     import sqlalchemy
@@ -68,7 +68,7 @@ def func(**context):
     sys.path.append(CAP_PATH)
     from PgsqlAlchemy.ModALUpdaters.ModALUpdater import ModALUpdater
     updater = ModALUpdater()
-    res_upd = updater.daily_updater()
+    res_upd = updater.hourly_updater()
     print(f"function context task instance {context.get('ti', None)}")
     print(f"function context {context}")
     return res_upd
@@ -105,10 +105,10 @@ default_args = {
 with DAG(default_args=default_args,
          dag_id=DAG_ID,
          tags=["example"],
-         start_date=datetime(2023, 7, 20, 20, 50),  # only UTC time
+         start_date=datetime(2023, 7, 20, 20, 59),  # only UTC time
          max_active_runs=1,
          concurrency=4,
-         schedule_interval=timedelta(days=1),
+         schedule_interval=timedelta(minutes=60),
          # or '@hourly'  # or '* */1 * * *' from https://crontab.guru/#0_1_*_*_*
          dagrun_timeout=timedelta(seconds=60)
          ) as dag:
@@ -117,7 +117,7 @@ with DAG(default_args=default_args,
         telegram_conn_id="telegram_default",
         token=get_token()[0],
         chat_id=get_token()[1],
-        text=f"daily updates at: {datetime.now().strftime('%y:%m:%d %H:%M:%S')}\n" + "{{ti.xcom_pull(task_ids=['external_upd_operator'])}}",
+        text=f"hourly updates at: {datetime.now().strftime('%y:%m:%d %H:%M:%S')}\n" + "{{ti.xcom_pull(task_ids=['external_upd_operator'])}}",
         # text=f"at: {datetime.now().strftime('%y:%m:%d %H:%M:%S')}\n",
         dag=dag
     )
@@ -125,7 +125,7 @@ with DAG(default_args=default_args,
     venv_task = ExternalPythonOperator(
         task_id="external_upd_operator",
         python=f"{cap_dir_path}/PgsqlAlchemy/alch_env/bin/python",
-        python_callable=func,
+        python_callable=upd_func,
         provide_context=True,
         do_xcom_push=True,
         dag=dag
