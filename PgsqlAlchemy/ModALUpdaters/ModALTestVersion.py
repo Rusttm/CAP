@@ -1,6 +1,7 @@
 #!python
 
 class ModALTestVersion():
+    """ module for testing version of sqlalchemy"""
     def __init__(self):
         super().__init__()
 

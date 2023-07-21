@@ -13,12 +13,19 @@ import importlib
 class ModALUpdater(ModALUpdaterMainClass):
     models_dir = os.path.join("config", "models")
     gen_module = "PgsqlAlchemy.ModALGen"
+    allowed_arguments = ["daily", "hourly", "ondemand"]
     def __init__(self):
         super().__init__()
 
     def db_updater(self, period: str = None):
-        """ daily updater"""
+        """ full daily hourly and ondemand updater"""
         ans_list = list()
+        # check period
+        if period not in self.allowed_arguments:
+            err_str = f"{__class__.__name__} not allowed argument {period} in updater, allowed only: {self.allowed_arguments}"
+            self.logger.debug(err_str)
+            return ans_list
+
         # load updater
         from PgsqlAlchemy.ModALUpdaters.ModALUpdTable import ModALUpdTable
         updater_module = ModALUpdTable()
@@ -30,10 +37,13 @@ class ModALUpdater(ModALUpdaterMainClass):
         for model in all_models:
             model_dict = json_loader.get_data_from_json(file_name=model, dir_name=self.models_dir)
             updated_key = model_dict.get("updated", None)
+            if updated_key != period:
+                # skip table if period not equal table period
+                continue
             if updated_key in ["ondemand"]:
                 updater_class_name = model_dict.get("updater_class", None)
                 updater_function_name = model_dict.get("updater_func", None)
-                # make and run updater function
+                # make and run updater function for ModALGen
                 module_str = f"{self.gen_module}.{updater_class_name}"
                 module = importlib.import_module(module_str)
                 updater_class = getattr(module, updater_class_name)
@@ -58,6 +68,7 @@ class ModALUpdater(ModALUpdaterMainClass):
                                                         model_unique_col=model_unique_col,
                                                         model_class_table=model_class_table)
                 ans_list.append(ans)
+
         return ans_list
 
     def daily_updater(self):
@@ -94,26 +105,26 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    # main()
 
-    # updater = ModALUpdater()
+    updater = ModALUpdater()
     # connector.logger.info("testing ModALFillCustBal")
     # print(f"logger file name: {connector.logger_name}")
     # print(connector.get_last_update_date_from_service("customers_bal_table"))
     # print(connector.get_data_for_insertion("customers_bal_model"))
-    # start = time.time()
+    start = time.time()
     # res = updater.update_customers_balance()
     # print(f"function result: {res}")
     # res = updater.clear_old_events()
     # print(f"function result: {res}")
-    # time1 = time.time()
+    time1 = time.time()
     # res = updater.db_updater(period="hourly")
     # print(f"hourly updates ({round(time.time() - start, 2)}sec) result: {res}")
 
     # res = updater.db_updater(period="daily")
     # print(f"daily updates ({round(time.time() - time1, 2)}sec) result: {res}")
 
-    # res = updater.db_updater(period="ondemand")
-    # print(f"ondemand updates ({round(time.time() - time1, 2)}sec) result: {res}")
+    res = updater.db_updater(period="ondemand")
+    print(f"ondemand updates ({round(time.time() - time1, 2)}sec) result: {res}")
 
-    # print(f"function time = {round(time.time() - start, 2)}sec")
+    print(f"function time = {round(time.time() - start, 2)}sec")

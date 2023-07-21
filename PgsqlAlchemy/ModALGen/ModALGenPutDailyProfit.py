@@ -31,6 +31,7 @@ class ModALGenPutDailyProfit(ModALGenMainClass, ConnALTable):
             "to_date": to_date
         }
         self.write_event_to_service_table(**event_dict)
+        return ans
 
     def write_event_to_service_table(self, **kwargs):
         table_name = kwargs.get("table_name", None)
@@ -110,7 +111,6 @@ class ModALGenPutDailyProfit(ModALGenMainClass, ConnALTable):
                 print(f"column {work_date.strftime('%Y_%m_%d')} has no data")
             time.sleep(1)
             work_date += datetime.timedelta(days=1)
-
         return results_list
     def get_model_class_and_create_if_not_exist(self, year: datetime = None) -> object:
         from PgsqlAlchemy.ModALGen.ModALGenBaseYearTable import ModALGenBaseYearTable
