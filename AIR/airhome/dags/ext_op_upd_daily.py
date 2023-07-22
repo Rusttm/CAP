@@ -86,12 +86,7 @@ def get_token() -> tuple:
         return (token, admin_id)
     except Exception as e:
         print(f"!!! cant get telegram data, error: {e}")
-        return (None, None)
-
-
-def telegram_send_func(**kwargs):
-
-    pass
+        return None, None
 
 
 default_args = {

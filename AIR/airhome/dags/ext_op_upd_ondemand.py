@@ -89,11 +89,6 @@ def get_token() -> tuple:
         return (None, None)
 
 
-def telegram_send_func(**kwargs):
-
-    pass
-
-
 default_args = {
     'owner': 'rusttm',
     'retry': 5,
