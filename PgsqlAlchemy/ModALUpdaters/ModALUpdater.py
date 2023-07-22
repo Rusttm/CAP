@@ -56,18 +56,18 @@ class ModALUpdater(ModALUpdaterMainClass):
                     "unique_col": model_dict.get("unique_col", None)
                 }
                 ans = updater_conn(**request_dict)
-                ans_list.append(ans)
+                ans_list.append(dict({model_dict.get("table", None): ans}))
 
             # if daily key -> run updater
             elif updated_key in ["daily", "hourly"]:
                 # load from json keys
-                model_class_table = model_dict.get("table", None)
+                model_class_table = model_dict.get("table", "unknown_table")
                 model_class_name = model_dict.get("model_class", None)
                 model_unique_col = model_dict.get("unique_col", None)
                 ans = updater_module.update_model_table(model_class_name=model_class_name,
                                                         model_unique_col=model_unique_col,
                                                         model_class_table=model_class_table)
-                ans_list.append(ans)
+                ans_list.append(dict({model_dict.get("table", "unknown_table"): ans}))
 
         return ans_list
 

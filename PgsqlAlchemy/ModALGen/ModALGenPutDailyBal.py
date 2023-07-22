@@ -5,7 +5,7 @@ import importlib
 import time
 
 class ModALGenPutDailyBal(ModALGenMainClass, ConnALTable):
-    """ fulfill report table daily_profit"""
+    """ fill today report table daily_bal"""
     table_base_name = "daily_bal_model"
     req_table = "url_customers_bal_list"
     filter_filed = "updated"
@@ -21,7 +21,7 @@ class ModALGenPutDailyBal(ModALGenMainClass, ConnALTable):
         ans = self.put_data_to_bal_table()
         event_dict = {
             "table_name": model_class_table,
-            "description": f"inserted or updated {len(ans)}rows in profit tables",
+            "description": f"inserted or updated {len(ans)}rows in {model_class_table} table",
             "event_from": f"updater {__class__.__name__}",
             "from_date": datetime.datetime.now(),
             "to_date": datetime.datetime.now()
