@@ -1,0 +1,16 @@
+apache-airflow-providers-telegram==4.1.1
+apache-airflow-providers-slack
+apache-airflow-providers-http
+
+
+# CAP modules
+configparser
+requests
+pandas
+openpyxl
+psycopg2-binary
+tqdm
+psutil
+asyncpg
+#logging
+

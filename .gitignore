@@ -183,4 +183,4 @@ cython_debug/
 .idea/CAP.iml
 Pgsql/config/config.zip
 CAPMain/postgressql.log.1
-Airflow/airdocker/logs/scheduler/latest
+AIR/airdocker/logs/scheduler/latest
