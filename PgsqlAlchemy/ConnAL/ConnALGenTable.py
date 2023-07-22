@@ -36,7 +36,8 @@ class ConnALGenTable(ConnALMainClass):
     def put_data_in_daily_table(self, table_name: str = None,
                                 col_name: str = None,
                                 data_list: list = None,
-                                model_class: object = None):
+                                model_class: object = None,
+                                data_field: str = None ):
         inserted_rows_num = 0
         updated_rows_num = 0
         today = datetime.datetime.now()
@@ -46,10 +47,10 @@ class ConnALGenTable(ConnALMainClass):
 
             for client_dict in data_list:
                 counterparty_dict = client_dict.get("counterparty", None)
-                profit = client_dict.get("profit", None)/100
+                profit_or_bal = client_dict.get(data_field, None)/100
                 row_dict = dict({"counterparty": counterparty_dict,
                                  "update": today,
-                                 col_name: profit,
+                                 col_name:  profit_or_bal,
                                  "name": counterparty_dict.get("name", "unknown_name")})
                 new_model_obj = model_class(**row_dict)
                 Session = sessionmaker(bind=self._engine)

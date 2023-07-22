@@ -101,7 +101,8 @@ class ModALGenPutDailyProfit(ModALGenMainClass, ConnALTable):
             req_dict2 = {"table_name": table_name,
                          "col_name": f"day_{work_date.strftime('%Y_%m_%d')}",
                          "data_list": data_list,
-                         "model_class": model_class}
+                         "model_class": model_class,
+                         "data_field": "profit"}
             if data_list:
                 ans = table_filler.put_data_in_daily_table(**req_dict2)
                 date_str = work_date.strftime('%Y_%m_%d')
