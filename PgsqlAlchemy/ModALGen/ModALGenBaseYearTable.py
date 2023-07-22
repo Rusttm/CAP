@@ -164,5 +164,5 @@ class ModALGenBaseYearTable(ModALGenMainClass):
 if __name__ == '__main__':
     generator = ModALGenBaseYearTable()
     print(generator.make_list_of_days(table_year=datetime.datetime.now().year))
-    print(generator.create_new_profit_year(table_year=datetime.datetime(2013, 1, 1).year))
+    print(generator.create_new_bal_year(table_year=datetime.datetime(2013, 1, 1).year))
     # print(generator.create_new_yearly_model_json_file(table_year=datetime.datetime(2013, 1, 1).year))
