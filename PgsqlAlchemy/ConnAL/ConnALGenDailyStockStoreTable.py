@@ -40,27 +40,28 @@ class ConnALGenDailyStockStoreTable(ConnALMainClass):
         service_list = kwargs.get("service_list", None)
         model_class = kwargs.get("model_class", None)
         unique_col_name = kwargs.get("unique_col", None)
-        # prepare prod dict {meta: price}
+        # prepare prod dict {prod_meta: price}
         prod_price_dict = dict({str(prod.get("meta", None)): prod.get("price", None)/100 for prod in service_list})
 
         # prepare data for insertion: format table from products by store on store
-        stores_names_dict = dict()
-        stores_sum_dict = dict()
+        stores_names_dict = dict()  # {store_meta: store_name}
+        stores_sum_dict = dict()  # {store_meta: store_sum}
         for prod in data_list:
+            # get prod_meta
             prod_meta = prod.get("meta", None)
             for store in prod.get("stockByStore", None):
                 store_meta = store.get("meta", None)
                 store_name = store.get("name", None)
                 store_stock = store.get("stock", None)
+                # sum of prod=prod_num * prod_price
                 store_prod_sum = prod_price_dict.get(str(prod_meta), 0) * store_stock
+                # update {store_meta: store_name}
                 stores_names_dict.update({str(store_meta): store_name})
+                # finally fill the table prod by prod
                 stores_sum_dict[str(store_meta)] = stores_sum_dict.get(str(store_meta), 0) + store_prod_sum
-
-
         inserted_rows_num = 0
         updated_rows_num = 0
         today = datetime.datetime.now()
-        # unique_col_name = "counterparty"
         try:
             self.create_engine()
 
