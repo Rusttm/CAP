@@ -13,7 +13,7 @@ import importlib
 class ModALUpdater(ModALUpdaterMainClass):
     models_dir = os.path.join("config", "models")
     gen_module = "PgsqlAlchemy.ModALGen"
-    allowed_arguments = ["daily", "hourly", "ondemand"]
+    allowed_arguments = ["daily", "hourly", "ondemand", "test"]
     def __init__(self):
         super().__init__()
 
@@ -40,7 +40,7 @@ class ModALUpdater(ModALUpdaterMainClass):
             if updated_key != period:
                 # skip table if period not equal table period
                 continue
-            if updated_key in ["ondemand"]:
+            if updated_key in ["ondemand", "test"]:
                 updater_class_name = model_dict.get("updater_class", None)
                 updater_function_name = model_dict.get("updater_func", None)
                 # make and run updater function for ModALGen
@@ -53,7 +53,12 @@ class ModALUpdater(ModALUpdaterMainClass):
                     "model_class_table": model_dict.get("table", None),
                     "updater_class_name": updater_class_name,
                     "updater_function_name": updater_function_name,
-                    "unique_col": model_dict.get("unique_col", None)
+                    "unique_col": model_dict.get("unique_col", None),
+                    "date_field": model_dict.get("date_field", None),
+                    "config_url": model_dict.get("config_url", None),
+                    "model_tables": model_dict.get("model_tables", None),
+                    "service_url": model_dict.get("service_url", None),
+
                 }
                 ans = updater_conn(**request_dict)
                 ans_list.append(dict({model_dict.get("table", None): ans}))
@@ -124,7 +129,7 @@ if __name__ == '__main__':
     # res = updater.db_updater(period="daily")
     # print(f"daily updates ({round(time.time() - time1, 2)}sec) result: {res}")
 
-    res = updater.db_updater(period="ondemand")
+    res = updater.db_updater(period="test")
     print(f"ondemand updates ({round(time.time() - time1, 2)}sec) result: {res}")
 
     print(f"function time = {round(time.time() - start, 2)}sec")

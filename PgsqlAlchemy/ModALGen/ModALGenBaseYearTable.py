@@ -20,7 +20,8 @@ class ModALGenBaseYearTable(ModALGenMainClass):
             table_year = datetime.datetime.now().year
         table_name = "daily_profit_model"
         model_name = f"ModALBaseDailyProfitY{table_year}"
-        result = self.create_new_yearly_model_py_file(table_year, table_name, model_name)
+        unique_col = "counterparty"
+        result = self.create_new_yearly_model_py_file(table_year, table_name, model_name, unique_col)
         return result
 
     def create_new_bal_year(self, table_year: datetime = None) -> bool:
@@ -28,17 +29,24 @@ class ModALGenBaseYearTable(ModALGenMainClass):
             table_year = datetime.datetime.now().year
         table_name = "daily_bal_model"
         model_name = f"ModALBaseDailyBalY{table_year}"
-        result = self.create_new_yearly_model_py_file(table_year, table_name, model_name)
+        unique_col = "counterparty"
+        result = self.create_new_yearly_model_py_file(table_year, table_name, model_name, unique_col)
         return result
+
+
 
     def create_new_yearly_model_py_file(self, table_year: datetime = None,
                                         table_name: str = None,
-                                        model_name: str = None) -> bool:
+                                        model_name: str = None,
+                                        unique_col: str = None) -> bool:
+        if not table_year:
+            table_year = datetime.datetime.now().year
         col_names_list = self.make_list_of_days(table_year=table_year)
         req_dict = {'table_name': table_name,
                     'table_year': table_year,
                     'model_name': model_name,
-                    'col_names_list': col_names_list}
+                    'col_names_list': col_names_list,
+                    "unique_col": unique_col}
         self.create_new_yearly_model_json_file(**req_dict)
         header = f"# !!!used SQLAlchemy 2.0.18\n" \
                  f"from sqlalchemy import create_engine, inspect\n" \
@@ -54,7 +62,7 @@ class ModALGenBaseYearTable(ModALGenMainClass):
 
         body = f"\tposition_id = Column(Integer, primary_key=True, autoincrement=True, " \
                f"unique=True, nullable=False, comment='Обязательное поле для всех таблиц, автоповышение')\n" \
-               f"\tcounterparty = Column(JSONB, unique=True, " \
+               f"\t{unique_col} = Column(JSONB, unique=True, " \
                f"nullable=False, comment='Контрагент. Подробнее тут Обязательное при ответе')\n" \
                f"\tname = Column(String)\n" \
                f"\tupdate = Column(DateTime, nullable=False, comment='Дата расчета (конец дня)')\n"
