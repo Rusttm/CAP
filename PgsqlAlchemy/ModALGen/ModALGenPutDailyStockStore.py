@@ -26,8 +26,8 @@ class ModALGenPutDailyStockStore(ModALGenMainClass, ConnALTable):
         self.model_base_class_name = kwargs.get("model_tables", None)
         self.unique_col = kwargs.get("unique_col", None)
         self.service_url = kwargs.get("service_url", None)
-        from_date = self.request_last_update_date_from_event_table(table_name=self.table_base_name)
-        # from_date = datetime.datetime(2020, 1, 1)
+        # from_date = self.request_last_update_date_from_event_table(table_name=self.table_base_name)
+        from_date = datetime.datetime(2022, 11, 7)
         yesterday_end = self.request_yesterday_end()
         # this module update only full dates, not end day
         to_date = kwargs.get("to_date", yesterday_end)
