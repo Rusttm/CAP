@@ -1,7 +1,7 @@
 from PgsqlAlchemy.PgsqlAlchemyMainClass import PgsqlAlchemyMainClass
 import requests
 import re
-
+import time
 
 class ConnMSMainClass(PgsqlAlchemyMainClass):
     """ superclass for all MoiSklad connectors """
@@ -105,7 +105,20 @@ class ConnMSMainClass(PgsqlAlchemyMainClass):
         self.__to_file = to_file
         offset = 1000
         # starts first request
-        data = dict(self.get_single_req_data())
+        requested_data = self.get_single_req_data()
+        if not requested_data:
+            err_str = f"{__class__.__name__} cant request data from {self.__api_url}, another try ..."
+            print(err_str)
+            self.logger.error(err_str)
+            # another try
+            time.sleep(3)
+            requested_data = self.get_single_req_data()
+            if not requested_data:
+                raise ConnectionError(f"{__class__.__name__} can establish connection for request: {self.__api_url} ")
+            else:
+                data = dict(requested_data)
+        else:
+            data = dict(requested_data)
         delta = 0
         try:
             # check full length of data by data['meta']['size']

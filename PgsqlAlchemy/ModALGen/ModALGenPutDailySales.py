@@ -27,14 +27,14 @@ class ModALGenPutDailySales(ModALGenMainClass, ConnALTable):
         self.unique_col = kwargs.get("unique_col", None)
         self.service_url = kwargs.get("service_url", None)
         from_date = self.request_last_update_date_from_event_table(table_name=self.table_base_name)
-        # from_date = datetime.datetime(2020, 3, 17)
+        # from_date = datetime.datetime(2022, 1, 27)
         yesterday_end = self.request_yesterday_end()
         # this module update only full dates, not end day
         to_date = kwargs.get("to_date", yesterday_end)
         ans = self.put_data_to_daily_stock_store_table(from_date=from_date, to_date=to_date)
         event_dict = {
             "table_name": self.table_base_name,
-            "description": f"inserted or updated {len(ans)}rows in profit tables",
+            "description": f"inserted or updated {len(ans)}rows in {self.table_base_name} tables",
             "event_from": f"updater {__class__.__name__}",
             "from_date": from_date,
             "to_date": to_date
