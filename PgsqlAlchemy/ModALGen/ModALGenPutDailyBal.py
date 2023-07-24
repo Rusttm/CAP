@@ -4,6 +4,7 @@ import datetime
 import importlib
 import time
 
+
 class ModALGenPutDailyBal(ModALGenMainClass, ConnALTable):
     """ fill today report table daily_bal"""
     table_base_name = "daily_bal_model"
@@ -101,8 +102,6 @@ class ModALGenPutDailyBal(ModALGenMainClass, ConnALTable):
         module = importlib.import_module(module_str)
         model_class = getattr(module, model_class_name)
         return model_class
-
-
 
 
 if __name__ == '__main__':
