@@ -30,7 +30,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/home/rusttm/PycharmProjects/CAP/Airflow/air_ubuntu_env"
+set -gx VIRTUAL_ENV "/home/rusttm/PycharmProjects/CAP/AIR/air_ubuntu_env"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH

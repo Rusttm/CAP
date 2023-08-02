@@ -7,17 +7,22 @@ working directory /Users/johnlennon/RusttmGDrive/Python/CAP/Airflow/airhome*
 from https://airflow.apache.org/docs/apache-airflow/stable/installation/installing-from-pypi.html:
 1. $ pip freeze | xargs pip uninstall -y
 2. $ pip install "apache-airflow==2.6.2" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.6.2/constraints-3.7.txt"
-3. $ export AIRFLOW_HOME=/Users/johnlennon/RusttmGDrive/Python/CAP/AIR/airhome
+   2.1 $ pip install "apache-airflow[celery]==2.5.3" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.5.3/constraints-3.10.txt"
+   2.2 $ pip install "apache-airflow==2.6.3" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.6.3/constraints-3.10.txt"
+3. $ pip3 freeze > requirements.txt
+4. $ source air_ubuntu_env/bin/activate
+5. $ pip install -r air_requirements.txt
+6. $ export AIRFLOW_HOME=/Users/johnlennon/RusttmGDrive/Python/CAP/AIR/airhome
    3.1 $ export AIRFLOW_HOME=/home/rusttm/PycharmProjects/CAP/AIR/airhome
    3.2 if you want to change sqlite to postgresql read https://betterdatascience.com/apache-airflow-parallelism/ and change in airflow.cfg
       3.2.1 sql_alchemy_conn = postgresql+psycopg2://<user>:<user_pass>@<host>/<db>
       3.2.2. executor = LocalExecutor
-4. $ airflow db init 
-5. $ airflow webserver -p 8081
-6. $ airflow users create  --username root --firstname firstname --lastname lastname --role Admin --email rustammazhatov@gmail.com
+7. $ airflow db init 
+8. $ airflow webserver -p 8081
+9. $ airflow users create  --username root --firstname firstname --lastname lastname --role Admin --email rustammazhatov@gmail.com
 in new terminal
-7. $ export AIRFLOW_HOME=/Users/johnlennon/RusttmGDrive/Python/CAP/AIR/airhome
-8. $ airflow scheduler
+10. $ export AIRFLOW_HOME=/Users/johnlennon/RusttmGDrive/Python/CAP/AIR/airhome
+11. $ airflow scheduler
 
 # $ pip install airflow['all']
 # $ pip install -r air_requirements.txt

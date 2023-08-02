@@ -20,7 +20,10 @@ Example use of venv.
 from https://github.com/astronomer/astro-provider-venv
 """
 from __future__ import annotations
-
+try:
+    from pendulum import DateTime as Pendulum
+except ImportError:
+    from pendulum import Pendulum
 
 from datetime import datetime, timedelta
 from airflow import DAG
