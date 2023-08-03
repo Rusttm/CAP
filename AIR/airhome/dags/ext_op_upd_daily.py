@@ -108,7 +108,7 @@ with DAG(default_args=default_args,
          concurrency=4,
          schedule_interval=timedelta(days=1),
          # or '@hourly'  # or '* */1 * * *' from https://crontab.guru/#0_1_*_*_*
-         dagrun_timeout=timedelta(seconds=60)
+         dagrun_timeout=timedelta(seconds=300)
          ) as dag:
     send_message_telegram_task = TelegramOperator(
         task_id=f"task_send_tg_v{VERSION}",
