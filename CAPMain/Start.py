@@ -32,10 +32,11 @@ class Main(CAPMainClass):
         self.updater_service = PgsqlMain()
 
     def main(self):
-        self.start_socket_service()
-        time.sleep(3)
-        self.start_telegrambot_service()
-        time.sleep(3)
+        print("CAPService was not run, due to reconstruction")
+        # self.start_socket_service()
+        # time.sleep(3)
+        # self.start_telegrambot_service()
+        # time.sleep(3)
         # self.start_api_db_updater()
 
 
