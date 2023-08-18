@@ -43,16 +43,16 @@ class Main(CAPMainClass):
 if __name__ == '__main__':
     main_class = Main()
     main_class.main()
-    while True:
-        now = time.ctime()
-        # memory_system = dict(psutil.virtual_memory()._asdict())
-        memory_used = round(psutil.virtual_memory().used/1073741824, 2)
-        memory_msg = f"memory usage: {psutil.virtual_memory().percent}% ({memory_used})Gb"
-        cpu_msg = f"cpu usage: {psutil.cpu_percent(interval=None)}%"
-        msg_line = f"CAP msg from admin\n at {now}:\n {memory_msg}\n {cpu_msg}"
-        main_class.socket_service.admin_client.send_socket_msg(to_user="telegram",
-                                                               msg_text=msg_line)
-        time.sleep(108000)
+    # while True:
+    #     now = time.ctime()
+    #     # memory_system = dict(psutil.virtual_memory()._asdict())
+    #     memory_used = round(psutil.virtual_memory().used/1073741824, 2)
+    #     memory_msg = f"memory usage: {psutil.virtual_memory().percent}% ({memory_used})Gb"
+    #     cpu_msg = f"cpu usage: {psutil.cpu_percent(interval=None)}%"
+    #     msg_line = f"CAP msg from admin\n at {now}:\n {memory_msg}\n {cpu_msg}"
+    #     main_class.socket_service.admin_client.send_socket_msg(to_user="telegram",
+    #                                                            msg_text=msg_line)
+    #     time.sleep(108000)
 
     # msapi1 = ContCAPMS.ContCAPMS()
     # msapi1.get_cont_id()
