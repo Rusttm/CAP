@@ -5,6 +5,7 @@ services:
     image: mariadb:10.3
     restart: always
     environment:
+      MYSQL_DATABASE: my_db
       MYSQL_ROOT_PASSWORD: my_pass
 
   phpmyadmin:
