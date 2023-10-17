@@ -19,7 +19,7 @@ class ConnALMainClass(PgsqlAlchemyMainClass):
             user = conf.get('user', '')
             password = conf.get('user_pass', '')
             self.logger.debug(f"{__class__.__name__} read data from config")
-            self.__url = f"postgresql://{user}:{password}@{host},{port}/{database}"
+            self.__url = f"postgresql://{user}:{password}@{host}:{port}/{database}"
             # self.__url_no_db = f"postgresql://{user}:{password}@{host},{port}/"
         except Exception as e:
             print(f"configuration data not loaded {e}")

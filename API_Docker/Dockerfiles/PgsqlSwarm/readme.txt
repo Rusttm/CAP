@@ -6,3 +6,4 @@ $ sudo ufw allow 7946
 $ sudo ufw allow 7946:7946/udp
 $ sudo ufw allow 4789
 
+$ docker stack deploy --compose-file docker-compose.yml postgres-swarm
