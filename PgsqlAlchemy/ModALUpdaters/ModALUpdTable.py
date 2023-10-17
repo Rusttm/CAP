@@ -85,6 +85,7 @@ class ModALUpdTable(ModALUpdaterMainClass, ContMSMain):
             "event_from": f"updater {__class__.__name__}",
         }
         eventer.put_event_2service_table_updates(**event_dict)
+        eventer.clear_old_records_from_event_table(table_name=model_class_table)
 
         return res_dict
 

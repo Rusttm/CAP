@@ -120,7 +120,10 @@ class ConnALEvent(ConnALMainClass, ModALBaseService):
         return None
 
     def clear_old_records_from_event_table(self, older_than_days: int = None, table_name: str = None):
+        if not older_than_days:
+            older_than_days = 7
         right_time = datetime.datetime.now() - datetime.timedelta(days=older_than_days)
+        str_time = right_time.strftime("%Y-%m-%d %H:%M:%S")
         try:
             # version 1 doesnt works
             # deletion = delete(ModALBaseService).where(ModALBaseService.event_time < right_time)
@@ -139,7 +142,7 @@ class ConnALEvent(ConnALMainClass, ModALBaseService):
             Session.configure(bind=engine)
             session = Session()
             if table_name:
-                rows_deleted = session.query(ModALBaseService).filter(ModALBaseService.event_time < right_time).filter( ModALBaseService.event_table == table_name).delete()
+                rows_deleted = session.query(ModALBaseService).filter( ModALBaseService.event_table == table_name).filter(func.date(ModALBaseService.event_time) <= str_time).delete()
             else:
                 rows_deleted = session.query(ModALBaseService).filter(
                     ModALBaseService.event_time < right_time).delete()
@@ -160,11 +163,13 @@ if __name__ == '__main__':
     # print(controller.get_last_update_date_from_service("customers_bal_table"))
 
     kwargs = {
-        "table_name": "unknown_table",
+        "table_name": "invin_model",
         "description": "test_event",
         "event_from": "tester"
     }
     req = controller.put_event_2service_table_updates(**kwargs)
+    print(req)
+    req = controller.clear_old_records_from_event_table(table_name="invout_model")
     print(req)
 
     # print(controller.clear_old_records_from_event_table(older_than_days=7))
