@@ -1,14 +1,14 @@
 version: "3.9"
 services:
   postgres:
-    image: postgres
+    image: postgres:15
     environment:
-      POSTGRES_DB: "capdb"
+      POSTGRES_DB: "serman_db"
       POSTGRES_USER: "capuser"
       POSTGRES_PASSWORD: "capuser_pass"
       PGDATA: "/usr/share/postgres/bases"
     ports:
-      - "5432:5432"
+      - "5434:5432"
     volumes:
-      - ../../data/postgres:/usr/share/postgres
+      - ../../data/postgres_cap:/usr/share/postgres
     restart: unless-stopped
