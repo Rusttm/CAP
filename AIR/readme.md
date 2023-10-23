@@ -59,3 +59,8 @@ in new terminal
 5. $ export AIRFLOW_HOME=/home/rusttm/PycharmProjects/CAP/Airflow/airhome2
 6. $ airflow scheduler
 
+start .sh scripts in Ubuntu
+1. $ cd ./PycharmProjects/CAP/AIR
+2. $ ./start_air_web_ub.sh
+3. $ ./start_air_shed_ub.sh
+
