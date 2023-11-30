@@ -74,7 +74,7 @@ class ConnMSMainClass(MSMainClass):
     def get_single_req_data(self):
         """ api connect and get data in one request
         return dictionary!"""
-        header_for_token_auth = {'Authorization': f'Bearer {self.__api_token}'}
+        header_for_token_auth = {'Authorization': f'Bearer {self.__api_token}', 'Accept-Encoding': 'gzip'}
         api_url = self.__api_url + self.__api_param_line
         try:
             # self.logger.info(f"{pathlib.PurePath(__file__).name} make request")
