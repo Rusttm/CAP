@@ -67,7 +67,9 @@ def func(**context):
     import os
     import sqlalchemy
     import sys
-    CAP_PATH = os.path.dirname(os.getcwd())
+    # CAP_PATH = os.path.dirname(os.getcwd())
+    CAP_PATH = os.getcwd()   # /home/rusttm
+    CAP_PATH = os.path.join(CAP_PATH, 'PycharmProjects', 'CAP')     # /home/rusttm/PycharmProjects/CAP
     sys.path.append(CAP_PATH)
     from PgsqlAlchemy.ModALUpdaters.ModALUpdater import ModALUpdater
     updater = ModALUpdater()
