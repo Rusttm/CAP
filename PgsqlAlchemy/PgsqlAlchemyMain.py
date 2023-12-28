@@ -1,5 +1,6 @@
 from PgsqlAlchemy.PgsqlAlchemyMainClass import PgsqlAlchemyMainClass
 
+
 class PgsqlAlchemyTablesUpdater(PgsqlAlchemyMainClass):
     def __init__(self):
         super().__init__()
