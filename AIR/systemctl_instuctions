@@ -1,0 +1,12 @@
+
+$ sudo chmod +x /home/rusttm/PycharmProjects/CAP/AIR/start_air_web_ub.sh
+$ sudo nano /lib/systemd/system/airflow.service
+$ sudo systemctl daemon-reload
+$ sudo systemctl enable airflow.service
+$ sudo systemctl start airflow.service
+
+$ sudo chmod +x /home/rusttm/PycharmProjects/CAP/AIR/start_air_shed_ub.sh
+$ sudo nano /lib/systemd/system/airflow_shed.service
+$ sudo systemctl daemon-reload
+$ sudo systemctl enable airflow_shed.service
+$ sudo systemctl start airflow_shed.service
