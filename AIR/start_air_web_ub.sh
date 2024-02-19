@@ -12,6 +12,7 @@ if [ -d "$air_module_path" ] && [ -d "$air_venv_path" ]; then
     set -e
     source ${air_venv_path}/bin/activate
     export AIRFLOW_HOME=$air_module_path
+    export PYTHONPATH=/home/rusttm/PycharmProjects/CAP/:$PYTHONPATH
     airflow webserver -p 8081
 
 else

@@ -133,3 +133,5 @@ if __name__ == '__main__':
     print(f"ondemand updates ({round(time.time() - time1, 2)}sec) result: {res}")
 
     print(f"function time = {round(time.time() - start, 2)}sec")
+
+    print(updater.ondemand_updater())

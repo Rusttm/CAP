@@ -37,7 +37,8 @@ import os
 import sys
 cap_dir_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
 sys.path.append(cap_dir_path)
-
+print(cap_dir_path)
+sys.path.insert(0, os.path.join(cap_dir_path, "PgsqlAlchemy"))
 VERSION = 3
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
 DAG_ID = f"updater_daily_v{VERSION}"
@@ -64,6 +65,7 @@ def telegram_on_fail(context):
 
 def func(**context):
     """ external operator doesn't support contex without airflow in venv"""
+    res_upd = dict()
     import os
     import sqlalchemy
     import sys
@@ -71,9 +73,11 @@ def func(**context):
     CAP_PATH = os.getcwd()   # /home/rusttm
     CAP_PATH = os.path.join(CAP_PATH, 'PycharmProjects', 'CAP')     # /home/rusttm/PycharmProjects/CAP
     sys.path.append(CAP_PATH)
+    sys.path.insert(0, os.path.dirname("/home/rusttm/PycharmProjects/CAP/PgsqlAlchemy"))
     from PgsqlAlchemy.ModALUpdaters.ModALUpdater import ModALUpdater
     updater = ModALUpdater()
     res_upd = updater.daily_updater()
+    # res_upd = module_alchemy_updater.daily_updater()
     print(f"function context task instance {context.get('ti', None)}")
     print(f"function context {context}")
     return res_upd

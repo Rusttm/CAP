@@ -70,6 +70,7 @@ def upd_func(**context):
     CAP_PATH = os.getcwd()   # /home/rusttm
     CAP_PATH = os.path.join(CAP_PATH, 'PycharmProjects', 'CAP')     # /home/rusttm/PycharmProjects/CAP
     sys.path.append(CAP_PATH)
+    sys.path.insert(0, os.path.dirname("/home/rusttm/PycharmProjects/CAP/PgsqlAlchemy"))
     from PgsqlAlchemy.ModALUpdaters.ModALUpdater import ModALUpdater
     updater = ModALUpdater()
     res_upd = updater.hourly_updater()
