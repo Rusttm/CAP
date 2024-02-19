@@ -39,7 +39,7 @@ cap_dir_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(o
 sys.path.append(cap_dir_path)
 print(cap_dir_path)
 sys.path.insert(0, os.path.join(cap_dir_path, "PgsqlAlchemy"))
-VERSION = 3
+VERSION = 4
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
 DAG_ID = f"updater_daily_v{VERSION}"
 
@@ -109,7 +109,7 @@ default_args = {
 with DAG(default_args=default_args,
          dag_id=DAG_ID,
          tags=["example"],
-         start_date=datetime(2023, 7, 20, 20, 50),  # only UTC time
+         start_date=datetime(2023, 12, 27, 20, 50),  # only UTC time
          max_active_runs=1,
          concurrency=4,
          schedule_interval=timedelta(days=1),

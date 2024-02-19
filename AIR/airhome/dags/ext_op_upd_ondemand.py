@@ -38,7 +38,7 @@ import sys
 cap_dir_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
 sys.path.append(cap_dir_path)
 
-VERSION = 1
+VERSION = 2
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
 DAG_ID = f"updater_ondemand_v{VERSION}"
 
@@ -106,7 +106,7 @@ default_args = {
 with DAG(default_args=default_args,
          dag_id=DAG_ID,
          tags=["example"],
-         start_date=datetime(2023, 7, 20, 20, 59),  # only UTC time
+         start_date=datetime(2023, 12, 27, 20, 59),  # only UTC time
          max_active_runs=1,
          concurrency=4,
          schedule_interval=timedelta(days=1),
