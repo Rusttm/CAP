@@ -39,7 +39,7 @@ cap_dir_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(o
 sys.path.append(cap_dir_path)
 print(cap_dir_path)
 sys.path.insert(0, os.path.join(cap_dir_path, "PgsqlAlchemy"))
-VERSION = 4
+VERSION = 5
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
 DAG_ID = f"updater_daily_v{VERSION}"
 

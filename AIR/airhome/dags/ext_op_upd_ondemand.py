@@ -38,7 +38,7 @@ import sys
 cap_dir_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
 sys.path.append(cap_dir_path)
 
-VERSION = 2
+VERSION = 3
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
 DAG_ID = f"updater_ondemand_v{VERSION}"
 
