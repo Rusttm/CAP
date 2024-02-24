@@ -1,15 +1,21 @@
 New test module for scheduling updates
 
 
-* Instalation with in venv 
+* Installation with in venv 
 working directory /Users/johnlennon/RusttmGDrive/Python/CAP/Airflow/airhome* 
 * venv air_env
 from https://airflow.apache.org/docs/apache-airflow/stable/installation/installing-from-pypi.html:
 1. $ pip freeze | xargs pip uninstall -y
-2. $ pip install "apache-airflow==2.6.2" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.6.2/constraints-3.7.txt"
-   2.1 $ pip install "apache-airflow[celery]==2.5.3" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.5.3/constraints-3.10.txt"
-   2.2 $ pip install "apache-airflow==2.6.3" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.6.3/constraints-3.10.txt"
-3. $ pip3 freeze > requirements.txt
+   2. $ pip install "apache-airflow==2.6.2" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.6.2/constraints-3.7.txt"
+      2.1 $ pip install "apache-airflow[celery]==2.5.3" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.5.3/constraints-3.10.txt"
+      2.2 $ pip install "apache-airflow==2.6.3" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.6.3/constraints-3.10.txt"
+      2.3 $ pip install "apache-airflow==2.8.1" apache-airflow-providers-google==10.1.0
+      2.4 AIRFLOW_VERSION=2.8.1 
+            PYTHON_VERSION="$(python --version | cut -d " " -f 2 | cut -d "." -f 1-2)"
+            CONSTRAINT_URL="https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_VERSION}.txt"
+            pip install "apache-airflow[async,postgres,google]==${AIRFLOW_VERSION}" --constraint "${CONSTRAINT_URL}"
+
+4. $ pip3 freeze > requirements.txt
 4. $ source air_ubuntu_env/bin/activate
 5. $ pip install -r air_requirements.txt
 6. $ export AIRFLOW_HOME=/Users/johnlennon/RusttmGDrive/Python/CAP/AIR/airhome
@@ -19,6 +25,7 @@ from https://airflow.apache.org/docs/apache-airflow/stable/installation/installi
       3.2.2. executor = LocalExecutor
 7. $ airflow db init 
 8. $ airflow webserver -p 8081
+9. pip install connexion[swagger-ui]
 9. $ airflow users create  --username root --firstname firstname --lastname lastname --role Admin --email rustammazhatov@gmail.com
 in new terminal
 10. $ export AIRFLOW_HOME=/Users/johnlennon/RusttmGDrive/Python/CAP/AIR/airhome

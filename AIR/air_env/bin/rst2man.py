@@ -1,4 +1,4 @@
-#!/home/rusttm/PycharmProjects/CAP/AIR/air_env/bin/python3
+#!/home/rusttm/PycharmProjects/CAP/AIR/air_env/bin/python3.10
 
 # Author:
 # Contact: grubert@users.sf.net

@@ -1,4 +1,4 @@
-#!/home/rusttm/PycharmProjects/CAP/AIR/air_env/bin/python3
+#!/home/rusttm/PycharmProjects/CAP/AIR/air_env/bin/python3.10
 
 # Copyright: This module has been placed in the public domain.
 

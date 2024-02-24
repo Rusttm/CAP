@@ -1,19 +1,4 @@
-# Python 3.10.10
-
-configparser==5.3.0
-# logging==0.4.9.6
-requests==2.29.0
-docker==6.1.1
-python-on-whales
-# psycopg2==2.9.6
-psycopg2-binary==2.9.6
-pandas~=2.0.1
-openpyxl
-# logging
-# aiogram~=3.0.0b7
-SQLAlchemy==2.0.18
-# SQLAlchemy_Utils==0.41.1
-psutil~=5.9.5
-# psycopg2~=2.9.6
-tqdm==4.65.0
-asyncpg==0.27.0
+# Python 3.10.12
+# cap_env
+# delete all pip freeze | xargs pip uninstall -y
+aioschedule==0.5.2

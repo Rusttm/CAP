@@ -94,7 +94,7 @@ class ConnALEvent(ConnALMainClass, ModALBaseService):
                 # variant0_2
                 df = pd.read_sql(s, con=conn)
                 if df.empty:
-                    result = datetime.datetime(2018, 1, 1, 0, 0, 0)
+                    result = datetime.datetime(2024, 1, 1, 0, 0, 0)
                 else:
                     result = min(df['max_1'].iloc[0], df['max_2'].iloc[0])
                 return result

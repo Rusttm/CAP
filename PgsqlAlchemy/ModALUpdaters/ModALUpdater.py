@@ -34,13 +34,19 @@ class ModALUpdater(ModALUpdaterMainClass):
         json_loader = ConnALJson()
         # load list of model names from directory
         all_models = json_loader.get_all_dicts_in_dir(dir_name=self.models_dir)
+        # from every json config reads type of refreshing table
         for model in all_models:
+            # get all data from file
             model_dict = json_loader.get_data_from_json(file_name=model, dir_name=self.models_dir)
+            # get update property: daily, hourly, ondemand
             updated_key = model_dict.get("updated", None)
+            # if it not equal requested - skips
             if updated_key != period:
                 # skip table if period not equal table period
                 continue
+            # other points: "ondemand", "test"
             if updated_key in ["ondemand", "test"]:
+                # for this updaterd read class + method and run it
                 updater_class_name = model_dict.get("updater_class", None)
                 updater_function_name = model_dict.get("updater_func", None)
                 # make and run updater function for ModALGen
@@ -49,6 +55,7 @@ class ModALUpdater(ModALUpdaterMainClass):
                 updater_class = getattr(module, updater_class_name)
                 updater_class_obj = updater_class()
                 updater_conn = getattr(updater_class_obj, updater_function_name)
+                # create dict with parameters
                 request_dict = {
                     "model_class_table": model_dict.get("table", None),
                     "updater_class_name": updater_class_name,
@@ -129,7 +136,8 @@ if __name__ == '__main__':
     # res = updater.db_updater(period="daily")
     # print(f"daily updates ({round(time.time() - time1, 2)}sec) result: {res}")
 
-    res = updater.db_updater(period="test")
+    # res = updater.db_updater(period="test")
+    res = updater.db_updater(period="ondemand")
     print(f"ondemand updates ({round(time.time() - time1, 2)}sec) result: {res}")
 
     print(f"function time = {round(time.time() - start, 2)}sec")

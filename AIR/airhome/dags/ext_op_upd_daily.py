@@ -24,7 +24,7 @@ try:
     from pendulum import DateTime as Pendulum
 except ImportError:
     from pendulum import Pendulum
-
+import pendulum
 
 from datetime import datetime, timedelta
 from airflow import DAG
