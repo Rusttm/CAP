@@ -6,6 +6,7 @@ import asyncio
 import aioschedule
 
 class Main(CAPMainClass):
+    """ main class starts as a service daemon"""
 
     def __init__(self):
         super().__init__()
@@ -57,11 +58,11 @@ class Main(CAPMainClass):
         await asyncio.sleep(2)
         print("You run asyncio CAP services")
         upd_msg = f"daily"
-        aioschedule.every().day.at("21:25").do(self.start_db_updater, upd_msg=upd_msg)
+        aioschedule.every().day.at("23:15").do(self.start_db_updater, upd_msg=upd_msg)
         upd_msg = f"ondemand"
-        aioschedule.every().day.at("21:25").do(self.start_db_updater, upd_msg=upd_msg)
+        aioschedule.every().day.at("23:15").do(self.start_db_updater, upd_msg=upd_msg)
         upd_msg = f"hourly"
-        aioschedule.every().hour.at(":26").do(self.start_db_updater, upd_msg=upd_msg)
+        aioschedule.every().hour.at(":15").do(self.start_db_updater, upd_msg=upd_msg)
         while True:
             await aioschedule.run_pending()
             time.sleep(1)
