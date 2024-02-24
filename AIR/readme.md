@@ -64,3 +64,6 @@ start .sh scripts in Ubuntu
 2. $ ./start_air_web_ub.sh
 3. $ ./start_air_shed_ub.sh
 
+Issues
+1. Airflow DAGs on Ubuntu machine cant find modules. 
+Resolved: added at upd_func sys.path.insert(0, os.path.dirname("/home/rusttm/PycharmProjects/CAP/PgsqlAlchemy"))
