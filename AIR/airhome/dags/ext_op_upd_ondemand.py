@@ -106,7 +106,7 @@ default_args = {
 with DAG(default_args=default_args,
          dag_id=DAG_ID,
          tags=["example"],
-         start_date=datetime(2023, 12, 27, 20, 59),  # only UTC time
+         start_date=datetime(2024, 2, 23, 20, 59),  # only UTC time
          max_active_runs=1,
          concurrency=4,
          schedule_interval=timedelta(days=1),
