@@ -4,6 +4,10 @@ import time
 from CAPMain.CAPMainClass import CAPMainClass
 import asyncio
 import aioschedule
+# import sys
+# import os
+# sys.path.insert(0, os.path.dirname("/home/rusttm/PycharmProjects/CAP/CAPMain"))
+# sys.path.insert(0, os.path.dirname("/home/rusttm/PycharmProjects/CAP/"))
 
 class Main(CAPMainClass):
     """ main class starts as a service daemon"""
@@ -58,11 +62,11 @@ class Main(CAPMainClass):
         await asyncio.sleep(2)
         print("You run asyncio CAP services")
         upd_msg = f"daily"
-        aioschedule.every().day.at("23:15").do(self.start_db_updater, upd_msg=upd_msg)
+        aioschedule.every().day.at("23:59").do(self.start_db_updater, upd_msg=upd_msg)
         upd_msg = f"ondemand"
-        aioschedule.every().day.at("23:15").do(self.start_db_updater, upd_msg=upd_msg)
+        aioschedule.every().day.at("23:59").do(self.start_db_updater, upd_msg=upd_msg)
         upd_msg = f"hourly"
-        aioschedule.every().hour.at(":15").do(self.start_db_updater, upd_msg=upd_msg)
+        aioschedule.every().hour.at(":59").do(self.start_db_updater, upd_msg=upd_msg)
         while True:
             await aioschedule.run_pending()
             time.sleep(1)

@@ -5,7 +5,7 @@ After=multi-user.target
 [Service]
 Type=simple
 Restart=always
-ExecStart=/home/rusttm/cap_env/bin/python /home/rusttm/PycharmProjects/CAP/CAPMain/Start.py
+ExecStart=/home/rusttm/PycharmProjects/CAP/CAPMain/cap_ubuntu.sh
 
 [Install]
 WantedBy=multi-user.target
