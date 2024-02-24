@@ -25,6 +25,7 @@ try:
 except ImportError:
     from pendulum import Pendulum
 
+
 from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.providers.telegram.operators.telegram import TelegramOperator

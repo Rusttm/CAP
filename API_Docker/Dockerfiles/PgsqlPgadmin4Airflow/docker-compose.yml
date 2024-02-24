@@ -1,0 +1,26 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:16-bullseye
+    environment:
+      POSTGRES_DB: "airflow_db"
+      POSTGRES_USER: "airflow_user"
+      POSTGRES_PASSWORD: "airflow_user"
+      PGDATA: "/usr/share/postgres/bases"
+    ports:
+      - "5435:5432"
+    volumes:
+      - ../../data/postgres_airflow:/usr/share/postgres
+    restart: unless-stopped
+
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4:8
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "5055:80"
+
+
