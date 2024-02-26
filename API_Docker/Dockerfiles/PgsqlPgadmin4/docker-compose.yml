@@ -1,26 +1,28 @@
 version: "3.9"
 services:
   postgres:
-    image: postgres
+    env_file: .env
+    image: "${pgsl_version}"
     environment:
-      POSTGRES_DB: "capdb"
-      POSTGRES_USER: "capuser"
-      POSTGRES_PASSWORD: "capuser_pass"
+      POSTGRES_DB: "${db_name}"
+      POSTGRES_USER: "${user_name}"
+      POSTGRES_PASSWORD: "${user_pass}"
       PGDATA: "/usr/share/postgres/bases"
     ports:
       - "5432:5432"
     volumes:
-      - ../../data/postgres:/usr/share/postgres
+      - ${data_path}:/usr/share/postgres
     restart: unless-stopped
 
   pgadmin:
+    env_file: .env
     container_name: pgadmin4_container
     image: dpage/pgadmin4
     restart: always
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: root
+      PGADMIN_DEFAULT_EMAIL: "${admin_email}"
+      PGADMIN_DEFAULT_PASSWORD: "${admin_pass}"
     ports:
-      - "5050:80"
+      - "${admin_port}:80"
 
 
