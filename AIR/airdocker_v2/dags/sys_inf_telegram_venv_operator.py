@@ -24,8 +24,11 @@ import os
 from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.providers.telegram.operators.telegram import TelegramOperator
-import psutil
-import time
+from airflow.operators.python_operator import PythonVirtualenvOperator
+from airflow.decorators import dag, task
+from airflow.models.taskinstance import TaskInstance
+
+
 # from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python_operator import PythonOperator
 
@@ -39,7 +42,7 @@ sys.path.append(cap_dir)
 
 # DAG configuration
 VERSION = 1
-START_DATE = datetime(2023, 7, 5, 19, 30),  # only UTC time
+START_DATE = datetime(2024, 3, 8, 19, 30),  # only UTC time
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
 DAG_ID = f"telegram_sys_info_v{VERSION}"
 
@@ -64,7 +67,7 @@ def telegram_on_fail(context):
 
 
 def telegram_sys_info(context):
-    ti = context['ti']
+    ti = context['task_instance']
     sys_info_text = f"{ti.xcom_pull(task_ids='python_sys_info', key='sys_info_result')}"
     send_sys_info = TelegramOperator(
         task_id=f"task_telegram_sys_info_v{VERSION}",
@@ -78,13 +81,15 @@ def telegram_sys_info(context):
 
 
 def python_sys_info_operator(**kwargs):
+# def python_sys_info_operator(task_instance: TaskInstance):
+    import time
+    import psutil
     now = time.ctime()
     memory_used = round(psutil.virtual_memory().used / 1073741824, 2)
     memory_msg = f"memory usage: {psutil.virtual_memory().percent}% ({memory_used})Gb"
     cpu_msg = f"cpu usage: {psutil.cpu_percent(interval=None)}%"
     info_text = f"MSI server system info\n at {now}:\n {memory_msg}\n {cpu_msg}"
-    ti = kwargs['ti']
-    ti.xcom_push(key='sys_info_result', value=info_text)
+    kwargs['task_instance'].xcom_push(key='sys_info_result', value=info_text)
     return info_text
 
 
@@ -109,6 +114,7 @@ default_args = {
     'retry': 5,
     'retry_delay': timedelta(minutes=5),
     'catchup': False,
+    'provide_context': True,
     'on_failure_callback': telegram_on_fail,
     'on_success_callback': telegram_sys_info
 }
@@ -120,7 +126,7 @@ with DAG(default_args=default_args,
          concurrency=4,
          schedule_interval=timedelta(minutes=60),
          # or '@hourly'  # or '* */1 * * *' from https://crontab.guru/#0_1_*_*_*
-         dagrun_timeout=timedelta(seconds=60)
+         dagrun_timeout=timedelta(seconds=160)
          ) as dag:
 
     python_sys_info = PythonOperator(
@@ -128,19 +134,18 @@ with DAG(default_args=default_args,
         python_callable=python_sys_info_operator,
         dag=dag
     )
-    # send_message_telegram_task = TelegramOperator(
-    #     task_id=f"send_tg_sys_info_v{VERSION}",
-    #     telegram_conn_id="telegram_default",
-    #     token=get_token()[0],
-    #     chat_id=get_token()[1],
-    #     text=f"at: {datetime.now().strftime('%y:%m:%d %H:%M:%S')}\n" + "{{ti.xcom_pull(task_ids='python_update_operator', key='updater_result')}}",
-    #     dag=dag
+    # virtualenv_task = PythonVirtualenvOperator(
+    #     task_id="virtualenv_sqlalchemy",
+    #     python_callable=python_sys_info_operator,
+    #     # requirements=["SQLAlchemy==2.0.28", "psutil==5.9.8"],
+    #     requirements=["psutil==5.9.8"],
+    #     system_site_packages=False,
+    #     provide_context=True,
+    #     # op_kwargs={'task_instance': '{{ task_instance }}'},
+    #     dag=dag,
     # )
-    #
-    # bash_updater = BashOperator(
-    #     task_id="bash_task_updater",
-    #     bash_command="./upd_air_test.sh",
-    #     dag=dag)
+
+
 
 
 
