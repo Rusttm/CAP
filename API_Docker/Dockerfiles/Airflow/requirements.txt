@@ -1,0 +1,17 @@
+# additional modules for airflow dags
+apache-airflow-providers-telegram
+apache-airflow-providers-slack
+apache-airflow-providers-http
+
+
+# CAP modules
+configparser
+requests
+pandas
+openpyxl
+psycopg2-binary
+tqdm==4.66.2
+psutil
+asyncpg
+#logging
+
