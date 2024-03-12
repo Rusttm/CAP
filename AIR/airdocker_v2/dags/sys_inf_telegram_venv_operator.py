@@ -41,7 +41,7 @@ cap_dir = os.path.join(CURRENT_DIR, "CAP")
 sys.path.append(cap_dir)
 
 # DAG configuration
-VERSION = 8
+VERSION = 10
 START_DATE = datetime(2024, 3, 12, 10, 30),  # only UTC time
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
 DAG_ID = f"telegram_sys_info_v{VERSION}"
@@ -137,13 +137,16 @@ with (DAG(default_args=default_args,
         telegram_conn_id="telegram_default",
         token=get_token()[0],
         chat_id=get_token()[1],
-        text='{{ti.xcom_pull(key="return_value")}}',
+        text='{{ti.xcom_pull(task_ids="airflow_python_sys_info", key="return_value")}}' + '{{ti.xcom_pull('
+                                                                                          'task_ids'
+                                                                                          '="virtualenv_sqlalchemy", '
+                                                                                          'key="return_value")}}',
         dag=dag
     )
 
 
     # python_sys_info >> telegram_sys_info
-    virtualenv_task >> python_sys_info >> telegram_sys_info
+    [virtualenv_task, python_sys_info] >> telegram_sys_info
 
 
 
