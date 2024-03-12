@@ -41,7 +41,7 @@ cap_dir = os.path.join(CURRENT_DIR, "CAP")
 sys.path.append(cap_dir)
 
 # DAG configuration
-VERSION = 8
+VERSION = 7
 START_DATE = datetime(2024, 3, 12, 10, 30),  # only UTC time
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
 DAG_ID = f"telegram_sys_info_v{VERSION}"
@@ -77,7 +77,6 @@ def python_sys_info_operator():
     info_text = f"MSI server system info\n at {now}:\n {memory_msg}\n {cpu_msg}\n"
     info_text += f"sqlalchemy_v{sqlalchemy.__version__}\n"
     info_text += f"psutil_v{psutil.__version__}\n"
-    print(f"{info_text=}")
     return info_text
 
 
@@ -106,7 +105,7 @@ default_args = {
     'on_failure_callback': telegram_on_fail
 }
 
-with (DAG(default_args=default_args,
+with DAG(default_args=default_args,
          dag_id=DAG_ID,
          tags=["example"],
          max_active_runs=1,
@@ -114,13 +113,13 @@ with (DAG(default_args=default_args,
          schedule_interval=timedelta(minutes=60),
          # or '@hourly'  # or '* */1 * * *' from https://crontab.guru/#0_1_*_*_*
          dagrun_timeout=timedelta(seconds=160)
-         ) as dag):
+         ) as dag:
 
-    python_sys_info = PythonOperator(
-        task_id=f'airflow_python_sys_info',
-        python_callable=python_sys_info_operator,
-        dag=dag
-    )
+    # python_sys_info = PythonOperator(
+    #     task_id=f'python_sys_info',
+    #     python_callable=python_sys_info_operator,
+    #     dag=dag
+    # )
     virtualenv_task = PythonVirtualenvOperator(
         task_id="virtualenv_sqlalchemy",
         python_callable=python_sys_info_operator,
@@ -141,9 +140,8 @@ with (DAG(default_args=default_args,
         dag=dag
     )
 
+    virtualenv_task >> telegram_sys_info
 
-    # python_sys_info >> telegram_sys_info
-    virtualenv_task >> python_sys_info >> telegram_sys_info
 
 
 
