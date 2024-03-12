@@ -41,8 +41,8 @@ cap_dir = os.path.join(CURRENT_DIR, "CAP")
 sys.path.append(cap_dir)
 
 # DAG configuration
-VERSION = 1
-START_DATE = datetime(2024, 3, 8, 19, 30),  # only UTC time
+VERSION = 7
+START_DATE = datetime(2024, 3, 12, 10, 30),  # only UTC time
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
 DAG_ID = f"telegram_sys_info_v{VERSION}"
 
@@ -66,30 +66,17 @@ def telegram_on_fail(context):
     return failed_alert.execute(context=context)
 
 
-def telegram_sys_info(context):
-    ti = context['task_instance']
-    sys_info_text = f"{ti.xcom_pull(task_ids='python_sys_info', key='sys_info_result')}"
-    send_sys_info = TelegramOperator(
-        task_id=f"task_telegram_sys_info_v{VERSION}",
-        telegram_conn_id="telegram_default",
-        token=get_token()[0],
-        chat_id=get_token()[1],
-        text=sys_info_text,
-        dag=dag
-    )
-    return send_sys_info.execute(context=context)
-
-
-def python_sys_info_operator(**kwargs):
-# def python_sys_info_operator(task_instance: TaskInstance):
+def python_sys_info_operator():
     import time
     import psutil
+    import sqlalchemy
     now = time.ctime()
     memory_used = round(psutil.virtual_memory().used / 1073741824, 2)
     memory_msg = f"memory usage: {psutil.virtual_memory().percent}% ({memory_used})Gb"
     cpu_msg = f"cpu usage: {psutil.cpu_percent(interval=None)}%"
-    info_text = f"MSI server system info\n at {now}:\n {memory_msg}\n {cpu_msg}"
-    kwargs['task_instance'].xcom_push(key='sys_info_result', value=info_text)
+    info_text = f"MSI server system info\n at {now}:\n {memory_msg}\n {cpu_msg}\n"
+    info_text += f"sqlalchemy_v{sqlalchemy.__version__}\n"
+    info_text += f"psutil_v{psutil.__version__}\n"
     return info_text
 
 
@@ -115,8 +102,7 @@ default_args = {
     'retry_delay': timedelta(minutes=5),
     'catchup': False,
     'provide_context': True,
-    'on_failure_callback': telegram_on_fail,
-    'on_success_callback': telegram_sys_info
+    'on_failure_callback': telegram_on_fail
 }
 
 with DAG(default_args=default_args,
@@ -129,21 +115,32 @@ with DAG(default_args=default_args,
          dagrun_timeout=timedelta(seconds=160)
          ) as dag:
 
-    python_sys_info = PythonOperator(
-        task_id=f'python_sys_info',
+    # python_sys_info = PythonOperator(
+    #     task_id=f'python_sys_info',
+    #     python_callable=python_sys_info_operator,
+    #     dag=dag
+    # )
+    virtualenv_task = PythonVirtualenvOperator(
+        task_id="virtualenv_sqlalchemy",
         python_callable=python_sys_info_operator,
+        requirements=["SQLAlchemy==2.0.28", "psutil"],
+        # requirements=["psutil==5.9.8"],
+        system_site_packages=False,
+        provide_context=True,
+        # op_kwargs={'sys_info_text': python_sys_info_operator},
+        dag=dag,
+    )
+
+    telegram_sys_info = TelegramOperator(
+        task_id=f"task_telegram_sys_info_v{VERSION}",
+        telegram_conn_id="telegram_default",
+        token=get_token()[0],
+        chat_id=get_token()[1],
+        text='{{ti.xcom_pull(key="return_value")}}',
         dag=dag
     )
-    # virtualenv_task = PythonVirtualenvOperator(
-    #     task_id="virtualenv_sqlalchemy",
-    #     python_callable=python_sys_info_operator,
-    #     # requirements=["SQLAlchemy==2.0.28", "psutil==5.9.8"],
-    #     requirements=["psutil==5.9.8"],
-    #     system_site_packages=False,
-    #     provide_context=True,
-    #     # op_kwargs={'task_instance': '{{ task_instance }}'},
-    #     dag=dag,
-    # )
+
+    virtualenv_task >> telegram_sys_info
 
 
 
