@@ -49,7 +49,8 @@ Docker dependencies installation
    2.2 run  $ DOCKER_BUILDKIT=1 docker build .
    2.3 To use Docker BuildKit by default, edit the Docker daemon configuration in /etc/docker/daemon.json as follows, and restart the daemon ({"features": {"buildkit": true } }).
 3. $ docker build . --tag extended_airflow:latest
-4. make changes in yaml: image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.6.2} to image: ${AIRFLOW_IMAGE_NAME:-extended_airflow:latest}
+4. make changes in yaml: 
+   image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.6.2} to image: ${AIRFLOW_IMAGE_NAME:-extended_airflow:latest}
 5. write test dag
 6. $ docker compose up airflow-init
 # this code not works cause no postgres base
