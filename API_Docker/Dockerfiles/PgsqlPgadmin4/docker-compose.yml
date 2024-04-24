@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: "${user_pass}"
       PGDATA: "/usr/share/postgres/bases"
     ports:
-      - "5432:5432"
+      - "${port}:5432"
     volumes:
       - ${data_path}:/usr/share/postgres
     restart: unless-stopped
