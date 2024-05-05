@@ -4,17 +4,16 @@ from Parser.ParserMainClass import ParserMainClass
 class ConnParserConfig(ParserMainClass):
     """ configfile connector"""
     conf = None
-    method = 'file'
     dir_name = "config"
     file_name = "parser_conf.json"
+
     def __init__(self):
         super().__init__()
 
     def get_config(self):
         """ return information from config file"""
         from Parser.ConnParser.ConnParserJson import ConnParserJson
-        if self.method == "file":
-            self.conf = ConnParserJson().get_data_from_json(file_name=self.file_name, dir_name=self.dir_name)
+        self.conf = ConnParserJson().get_data_from_json(file_name=self.file_name, dir_name=self.dir_name)
         return {"user_agents": self.conf.get("user_agents")}
 
 
