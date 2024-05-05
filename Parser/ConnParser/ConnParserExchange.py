@@ -76,16 +76,22 @@ class ConnParserExchange(ConnParserMainClass):
 
     def exchange_course_on_date(self, on_date: datetime = None, to_file: bool = False) -> pd.DataFrame:
         """ saves table of courses on date in csv table """
-
-        self.set_date(on_date)
-        self.exchange_parse()
-        if to_file:
-            file_name = f"exchange_{self.work_date.strftime('%Y_%m_%d')}.csv"
-            dir_file = os.path.dirname(os.path.dirname(__file__))
-            file_path = os.path.join(dir_file, self.data_dir, file_name)
-            self.df.to_csv(file_path)
-            print(f"Данные успешно записаны в файл '{file_name}'")
-        return self.df
+        try:
+            self.set_date(on_date)
+            self.exchange_parse()
+            self.logger.debug(f"{__class__.__name__} parsed site")
+        except Exception as e:
+            err_str = f"{__class__.__name__} Cannot parse, error, error: {e}"
+            print(err_str)
+            self.logger.error(err_str)
+        else:
+            if to_file:
+                file_name = f"exchange_{self.work_date.strftime('%Y_%m_%d')}.csv"
+                dir_file = os.path.dirname(os.path.dirname(__file__))
+                file_path = os.path.join(dir_file, self.data_dir, file_name)
+                self.df.to_csv(file_path)
+                print(f"Данные успешно записаны в файл '{file_name}'")
+            return self.df
 
 
 if __name__ == '__main__':
