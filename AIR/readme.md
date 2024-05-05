@@ -1,5 +1,23 @@
 New test module for scheduling updates
+* Installation with pip
+from https://airflow.apache.org/docs/apache-airflow/stable/installation/installing-from-pypi.html
 
+1. create venv for python versions 3.8 or 3.9 
+   1.1 $ sudo apt-get install python3.9-venv
+   1.2 $ python3.9 -m venv airflow_venv
+   1.3 $ source airflow_venv/bin/activate
+2. $ AIRFLOW_VERSION=2.9.0
+   $ PYTHON_VERSION="$(python -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
+   $ CONSTRAINT_URL="https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_VERSION}.txt"
+   $ pip install "apache-airflow[async,postgres,google]==${AIRFLOW_VERSION}" --constraint "${CONSTRAINT_URL}"
+3. $ airflow users create \
+          --username admin \
+          --firstname FIRST_NAME \
+          --lastname LAST_NAME \
+          --role Admin \
+          --email admin@example.org
+
+4. $ python -m airflow webserver
 
 * Installation with in venv 
 working directory /Users/johnlennon/RusttmGDrive/Python/CAP/Airflow/airhome* 

@@ -78,12 +78,14 @@ def telegram_sys_info(context):
 
 
 def python_sys_info_operator(**kwargs):
+    """ prepare information for telegram"""
     now = time.ctime()
     memory_used = round(psutil.virtual_memory().used / 1073741824, 2)
     memory_msg = f"memory usage: {psutil.virtual_memory().percent}% ({memory_used})Gb"
     cpu_msg = f"cpu usage: {psutil.cpu_percent(interval=None)}%"
     info_text = f"MSI server system info\n at {now}:\n {memory_msg}\n {cpu_msg}"
     ti = kwargs['ti']
+    # put this information to xcom
     ti.xcom_push(key='sys_info_result', value=info_text)
     return info_text
 

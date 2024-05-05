@@ -137,8 +137,8 @@ with (DAG(default_args=default_args,
         telegram_conn_id="telegram_default",
         token=get_token()[0],
         chat_id=get_token()[1],
-        text='{{ti.xcom_pull(task_ids="airflow_python_sys_info", key="return_value")}}' +
-             '{{ti.xcom_pull(task_ids="virtualenv_sqlalchemy", key="return_value")}}',
+        text='{{ti.xcom_pull(task_eids="airflow_python_sys_info", key="return_value")}}' +
+             '{{ti.xcom_pull(task_ids="virtualnv_sqlalchemy", key="return_value")}}',
         dag=dag
     )
 

@@ -23,6 +23,8 @@ Docker dependencies installation
 # 7. if changes permissions sudo chmod -R 777
 
 .env
+**
+`
 AIRFLOW_IMAGE_NAME=extended_airflow:latest
 AIR_USER=user
 AIR_PASSWORD=user_pass
@@ -33,3 +35,5 @@ AIRFLOW_UID=10050
 AIR_WEB_PORT=8081
 POSTGRESQL_IMG=postgres:13
 AIR_DB=airflow
+`
+**

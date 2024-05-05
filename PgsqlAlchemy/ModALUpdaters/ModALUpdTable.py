@@ -18,6 +18,7 @@ __url = ConnALMainClass().get_url()
 engine = create_engine(__url)
 
 class ModALUpdTable(ModALUpdaterMainClass, ContMSMain):
+    """ insert or update data in table"""
     # model_name = "customers_bal_model"
     # table_name = model_name
     model_config = None
@@ -51,6 +52,8 @@ class ModALUpdTable(ModALUpdaterMainClass, ContMSMain):
                         model_class: object = None,
                         model_unique_col: str = None,
                         model_class_table: str = None) -> dict:
+        """ model_class_table -name of table
+        model_class - class model """
         if not list_of_dicts:
             err_str = f"{__class__.__name__} cant get information for update {model_class_table} from MoiSklad"
             print(err_str)

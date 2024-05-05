@@ -36,5 +36,8 @@ def delete_table():
 	Base.metadata.drop_all(engine)
 
 if __name__ == '__main__':
-	create_new_table()
+	# create_new_table()
 	# delete_table()
+	my_dict = {'aed_784': 0.0, 'byn_933': 31.1093, 'cny_156': 9.54298, 'eur_978': 75.6817, 'jpy_392': 0.583901, 'kzt_398': 0.17796299999999998, 'on_date': '2018.11.08', 'qar_634': 0.0, 'try_949': 12.3069, 'usd_840': 66.0918}
+	new_obj = ModALBaseExchangeCourse(**my_dict)
+	print(new_obj)
