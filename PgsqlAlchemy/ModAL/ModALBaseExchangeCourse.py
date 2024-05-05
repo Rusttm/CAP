@@ -22,7 +22,7 @@ class ModALBaseExchangeCourse(Base):
 	usd_840 = Column(Double, unique=False, nullable=False, comment='Доллар США')
 	eur_978 = Column(Double, unique=False, nullable=False, comment='Евро')
 	cny_156 = Column(Double, unique=False, nullable=False, comment='Китайских юаней')
-	cny_398 = Column(Double, unique=False, nullable=False, comment='Казахстанских тенге')
+	kzt_398 = Column(Double, unique=False, nullable=False, comment='Казахстанских тенге')
 	jpy_392 = Column(Double, unique=False, nullable=False, comment='Японских иен')
 	try_949 = Column(Double, unique=False, nullable=False, comment='Турецких лир')
 	qar_634 = Column(Double, unique=False, nullable=False, comment='Катарский риал')

@@ -91,7 +91,7 @@ class ConnParserExchange(ConnParserMainClass):
                 file_path = os.path.join(dir_file, self.data_dir, file_name)
                 self.df.to_csv(file_path)
                 print(f"Данные успешно записаны в файл '{file_name}'")
-            return self.df
+        return self.df
 
 
 if __name__ == '__main__':
