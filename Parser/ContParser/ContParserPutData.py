@@ -42,6 +42,7 @@ class ContParserPutData(ContParserMainClass):
         return data_dict
 
     def put_exchange_data_2table(self, on_date: datetime = None):
+        """ test to put data handler"""
         data_dict = self.get_parsed_data_on_date(on_date)
         self.load_model_class_obj()
         from PgsqlAlchemy.ModALUpdaters.ModALUpdTable import ModALUpdTable
@@ -57,9 +58,9 @@ if __name__ == '__main__':
     import random
 
     connector = ContParserPutData()
-    start_date = datetime(year=2018, month=11, day=9)
-    end_date = datetime(year=2018, month=12, day=31)
+    start_date = datetime(year=2024, month=5, day=5)
+    end_date = datetime(year=2024, month=5, day=5)
     while start_date < end_date:
-        time.sleep(random.randint(0, 3))
+        time.sleep(random.randint(0, 4))
         start_date += timedelta(days=1)
         print(connector.put_exchange_data_2table(on_date=start_date))
