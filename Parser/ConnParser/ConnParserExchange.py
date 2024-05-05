@@ -9,9 +9,11 @@ import os
 
 class ConnParserExchange(ConnParserMainClass):
     tree = None
+    url = "https://cbr.ru/currency_base/daily/?UniDbQuery.Posted=True&UniDbQuery.To="
     data_dir = "data"
     df = pd.DataFrame()
     work_date = datetime.now()
+    columns_dict = None
     work_date_str = datetime.now().strftime("%d.%m.%Y")
     user_agents = [
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"]
@@ -24,11 +26,17 @@ class ConnParserExchange(ConnParserMainClass):
         if user_agents:
             self.user_agents = user_agents
 
+    def load_url(self):
+        url = self.get_config().get("cbr_url", None)
+        if url:
+            self.url = url
+
     def set_tree(self):
         self.load_user_agents()
+        self.load_url()
         try:
             # Определение целевого URL
-            url = f"https://cbr.ru/currency_base/daily/?UniDbQuery.Posted=True&UniDbQuery.To={self.work_date_str}"
+            url = self.url + self.work_date_str
             # Отправка HTTP GET запроса на целевой URL с пользовательским заголовком User-Agent
             response = requests.get(url, headers={'User-Agent': random.choice(self.user_agents)})
             if 200 <= response.status_code < 300:
@@ -45,14 +53,15 @@ class ConnParserExchange(ConnParserMainClass):
             # Использование выражения XPath для выбора всех строк таблицы в пределах таблицы с классом 'records-table'
             table_rows = self.tree.xpath(".//table[@class='data']/tbody")
             table_columns = table_rows[0].xpath("./tr//th/text()")
+            table_columns = self.get_config().get("df_columns")
             # Использование выражения XPath для выбора всего текстового содержимого элементов 'td' в первой строке таблицы
             rows = table_rows[0].xpath(".//tr[position() > 1]")
         except Exception as e:
             print(f"Cant parse tree for exchange course, error: {e}")
         else:
             # Запись даных в файл csv
-            data_rows = [row.xpath(".//td/text()") for row in rows]
-            self.df = pd.DataFrame(data_rows, columns=table_columns)
+            data_rows = [[str(s) for s in list(row.xpath(".//td/text()"))] for row in rows]
+            self.df = pd.DataFrame(data_rows, columns=table_columns, index=None)
 
     def set_date(self, use_date: datetime = None):
         """ sets  self.work_date after input, or today date"""
@@ -89,12 +98,12 @@ class ConnParserExchange(ConnParserMainClass):
                 file_name = f"exchange_{self.work_date.strftime('%Y_%m_%d')}.csv"
                 dir_file = os.path.dirname(os.path.dirname(__file__))
                 file_path = os.path.join(dir_file, self.data_dir, file_name)
-                self.df.to_csv(file_path)
+                self.df.to_csv(file_path, index=False)
                 print(f"Данные успешно записаны в файл '{file_name}'")
         return self.df
 
 
 if __name__ == '__main__':
     connector = ConnParserExchange()
-    my_date = datetime(year=2022, month=10, day=15)
+    my_date = datetime(year=2020, month=11, day=15)
     print(connector.exchange_course_on_date(on_date=my_date, to_file=True))
