@@ -3,6 +3,7 @@ from PgsqlAlchemy.ModAL.ModALGetModFromJson import ModALGetModFromJson
 
 
 class ModALMakeModFile(ModALMainClass, ModALGetModFromJson):
+    """ makes models py filee from json file in models directory"""
     models_dir = "config/models"
     def __init__(self):
         super().__init__()
@@ -62,5 +63,5 @@ if __name__ == '__main__':
     # res = connector.get_json_files_list(dir_name="config/models")
     # print(res)
 
-    res = connector.make_model_py_file_from_json(file_name='actual_customer_groups_model')
+    res = connector.make_model_py_file_from_json(file_name='exchange_courses_model')
     print(res)

@@ -47,7 +47,7 @@ class ConnParserJson(ConnParserMainClass):
 
 
 if __name__ == '__main__':
-    connector = ConnPgsqlJson()
+    connector = ConnParserJson()
     # ans = connector.get_fields_from_json("product_fields.json")
     # ans = connector.send_set_request("CREATE TABLE testtable (i integer);")
     # print(ans)
