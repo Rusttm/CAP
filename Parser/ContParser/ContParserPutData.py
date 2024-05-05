@@ -1,12 +1,13 @@
 from Parser.ContParser.ContParserMainClass import ContParserMainClass
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timedelta, date
 
 
 class ContParserPutData(ContParserMainClass):
     columns_dict = None
     table_name = "exchange_courses_model"
     model_class = None
+
     def __init__(self):
         super().__init__()
 
@@ -37,7 +38,7 @@ class ContParserPutData(ContParserMainClass):
                 print(err_str)
                 value = 0
                 multiplication = 1
-            data_dict[table_col_name] = value/multiplication
+            data_dict[table_col_name] = value / multiplication
         return data_dict
 
     def put_exchange_data_2table(self, on_date: datetime = None):
@@ -51,9 +52,14 @@ class ContParserPutData(ContParserMainClass):
                                                 model_unique_col="on_date")
 
 
-
-
 if __name__ == '__main__':
+    import time
+    import random
+
     connector = ContParserPutData()
-    my_date = datetime(year=2018, month=11, day=8)
-    print(connector.put_exchange_data_2table(on_date=my_date))
+    start_date = datetime(year=2018, month=11, day=9)
+    end_date = datetime(year=2018, month=12, day=31)
+    while start_date < end_date:
+        time.sleep(random.randint(0, 3))
+        start_date += timedelta(days=1)
+        print(connector.put_exchange_data_2table(on_date=start_date))
