@@ -4,29 +4,20 @@ from Parser.ParserMainClass import ParserMainClass
 
 class ConnParserMainClass(ParserMainClass):
     """ main class only create url string"""
-    # __url_no_db = None
-    __url = None
-    def __init__(self, name=None):
+    def __init__(self):
         super().__init__()
 
-    def get_url(self):
+    def get_config(self):
+        _conf = None
         from Parser.ConnParser.ConnParserConfig import ConnParserConfig
         try:
-            conf = dict(ConnParserConfig().get_config())
-            host = conf.get('url', '')
-            port = conf.get('port', '')
-            database = conf.get('db_name', '')
-            user = conf.get('user', '')
-            password = conf.get('user_pass', '')
+            _conf = dict(ConnParserConfig().load_config())
             self.logger.debug(f"{__class__.__name__} read data from config")
-            self.__url = f"postgresql://{user}:{password}@{host}:{port}/{database}"
-            # self.__url_no_db = f"postgresql://{user}:{password}@{host},{port}/"
         except Exception as e:
             print(f"configuration data not loaded {e}")
-            self.logger.error(f"{__class__.__name__} can't create connector in SQLAlchemy! {e}")
-        return self.__url
-
+            self.logger.error(f"{__class__.__name__} can't load parsing data! {e}")
+        return _conf
 
 if __name__ == '__main__':
-    connector = ParserMainClass()
-    print(connector.get_url())
+    connector = ConnParserMainClass()
+    print(connector.get_config())

@@ -43,8 +43,8 @@ class ConnATGBotMainClass(ATGBotMainClass):
             self.logger.debug(f"{__class__.__name__} runs TBot")
 
     def convert_users_2ids(self, config):
-        groups = config.get_config()['GROUPS']
-        users = config.get_config()['USERS']
+        groups = config.load_config()['GROUPS']
+        users = config.load_config()['USERS']
         for group in groups:
             temp_list_name = []
             temp_list_id = []

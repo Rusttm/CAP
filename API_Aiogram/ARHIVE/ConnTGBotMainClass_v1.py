@@ -23,7 +23,7 @@ class ConnTGBotMainClass(TGBotMainClass):
         self.dp = None
         try:
             config = ConnTGBConfig()
-            self.__token = config.get_config()['TELEGRAMBOT']['token']
+            self.__token = config.load_config()['TELEGRAMBOT']['token']
             self.convert_users_2ids(config=config)
             self.admin_id = self.users_group_ids_dict.get('admin', None)
             print(f"TelegramBot administrated by {self.admin_id}")
@@ -36,8 +36,8 @@ class ConnTGBotMainClass(TGBotMainClass):
             self.logger.debug(f"{__class__.__name__} runs TBot")
 
     def convert_users_2ids(self, config):
-        groups = config.get_config()['GROUPS']
-        users = config.get_config()['USERS']
+        groups = config.load_config()['GROUPS']
+        users = config.load_config()['USERS']
         for group in groups:
             temp_list_name = []
             temp_list_id = []

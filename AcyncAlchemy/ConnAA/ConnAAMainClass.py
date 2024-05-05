@@ -12,7 +12,7 @@ class ConnAAMainClass(AAMainClass):
     def get_url(self):
         from SQLAlchemy.ConnAlchem.ConnALConfig import ConnALConfig
         try:
-            conf = dict(ConnALConfig().get_config())
+            conf = dict(ConnALConfig().load_config())
             host = conf.get('url', '')
             port = conf.get('port', '')
             database = conf.get('db_name', '')
