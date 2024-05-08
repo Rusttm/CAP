@@ -18,8 +18,8 @@ class ConnMSFilter(ConnMSMainClass):
                                         to_date: datetime = None,
                                         filter_field_name: str = None,
                                         url_table_name: str = None) -> list:
-        """ return list with dicts of customers balances
-        has 'to_date' parameter
+        """ return list with dicts from MS requester
+        that has 'to_date' parameter
         date format '2022-12-08' or '2019-07-10 12:00:00'"""
         super().set_config(url_conf_key=url_table_name, token_conf_key=self.request_token)
         param = ""
