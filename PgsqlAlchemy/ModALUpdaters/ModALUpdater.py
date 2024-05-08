@@ -104,6 +104,9 @@ class ModALUpdater(ModALUpdaterMainClass):
     def ondemand_updater(self):
         return self.db_updater(period="ondemand")
 
+    def test_updater(self):
+        return self.db_updater(period="test")
+
 
 def main():
     allowed_arguments = ["daily", "hourly", "ondemand", "test"]
