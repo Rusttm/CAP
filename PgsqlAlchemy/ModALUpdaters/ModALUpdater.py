@@ -94,7 +94,7 @@ class ModALUpdater(ModALUpdaterMainClass):
 
 
 def main():
-    allowed_arguments = ["daily", "hourly", "ondemand"]
+    allowed_arguments = ["daily", "hourly", "ondemand", "test"]
     results_list = []
     start = time.time()
     updater = ModALUpdater()
@@ -137,7 +137,7 @@ if __name__ == '__main__':
     # print(f"daily updates ({round(time.time() - time1, 2)}sec) result: {res}")
 
     # res = updater.db_updater(period="test")
-    res = updater.db_updater(period="ondemand")
+    res = updater.db_updater(period="test")
     print(f"ondemand updates ({round(time.time() - time1, 2)}sec) result: {res}")
 
     print(f"function time = {round(time.time() - start, 2)}sec")

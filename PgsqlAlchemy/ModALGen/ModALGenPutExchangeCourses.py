@@ -47,7 +47,7 @@ class ModALGenPutExchangeCourses(ModALGenMainClass, ConnALTable):
             from_date = datetime.datetime(2023, 12, 31, 0, 0, 0)  #.strftime("%Y-%m-%d %H:%M:%S")
         return from_date
 
-    def put_data_to_exchange_course_table(self) -> list:
+    def put_data_to_exchange_course_table(self, **kwargs) -> list:
         # tables_list = self.get_all_tables_list()
         results_list = []
         from PgsqlAlchemy.ModALUpdaters.ModALUpdTable import ModALUpdTable
@@ -60,7 +60,7 @@ class ModALGenPutExchangeCourses(ModALGenMainClass, ConnALTable):
         # work_date = datetime.datetime.fromtimestamp(work_date_timestamp)
         now_date = datetime.datetime.now()
         data_list = []
-        while work_date <= now_date:
+        while work_date < now_date:
             work_date += datetime.timedelta(days=1)
             req_dict = parser_cont.get_parsed_data_on_date(on_date=work_date)
             data_list.append(req_dict)
