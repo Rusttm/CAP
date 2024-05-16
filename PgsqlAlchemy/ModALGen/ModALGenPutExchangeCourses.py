@@ -56,7 +56,7 @@ class ModALGenPutExchangeCourses(ModALGenMainClass, ConnALTable):
         from Parser.ContParser.ContParserPutData import ContParserPutData
         parser_cont = ContParserPutData()
         work_date_timestamp = self.request_last_update_date_from_event_table(self.table_base_name)
-        work_date = datetime.datetime.strptime(str(work_date_timestamp), "%Y-%m-%d %H:%M:%S.%f")
+        work_date = datetime.datetime.strptime(str(work_date_timestamp), "%Y-%m-%d %H:%M:%S")
         # work_date = datetime.datetime.fromtimestamp(work_date_timestamp)
         now_date = datetime.datetime.now()
         data_list = []
