@@ -1,4 +1,7 @@
 if you want to add table for updater:
+1. Three types of update in file ModALUpdater:
+   2. Hourly
+   3. Daily
 
 1. make model json file and pu it in config/models
 2. prepare model json file in ModALGetModFromJson, this handle your json file
