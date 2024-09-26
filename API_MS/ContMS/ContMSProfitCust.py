@@ -13,5 +13,5 @@ class ContMSProfitCust(ContMSMainClass, ConnMSProfitCust):
 
 if __name__ == '__main__':
     controller = ContMSProfitCust()
-    data = controller.get_profit_by_cust(from_date="2023-01-01", to_date="2023-02-01", to_file=True)
+    data = controller.get_profit_by_cust(from_date="2024-07-01", to_date="2024-07-31", to_file=True)
     print(data['sum'])
