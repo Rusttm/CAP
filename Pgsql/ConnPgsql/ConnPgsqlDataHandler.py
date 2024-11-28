@@ -50,6 +50,7 @@ class ConnPgsqlDataHandler(ConnPgsqlMainClass):
                         new_string_array.append(string_elem)
                 col_value = 'array' + f'{new_string_array}' + '::text[]'
             elif col_type == "JSON[]":
+                """ returns "array['{"meta": {"href": "https://api.moysklad.ru/api/remap/1.2/entity/product/068dc1cd-cf1a-11ee-0a80-132f003e93fe/files", "type": "files", "mediaType": "application/json", "size": 0, "limit": 1000, "offset": 0}}']::json[]" """
                 new_json_array = []
                 # single json[] not like list, but like json
                 if type(col_value) == list:
@@ -74,7 +75,7 @@ class ConnPgsqlDataHandler(ConnPgsqlMainClass):
                      'attributes': 'Array(Object)', 'barcodes': 'Array(Object)', 'buyPrice': 'Object',
                      'code': 'String(255)', 'country': 'Meta', 'description': 'String(4096)',
                      'discountProhibited': 'Boolean', 'effectiveVat': 'Int', 'effectiveVatEnabled': 'Boolean',
-                     'externalCode': 'String(255)', 'files': 'MetaArray', 'group': 'Meta', 'id': 'UUID',
+                     'externalCode': 'String(255)', 'files': 'JSON[]', 'group': 'Meta', 'id': 'UUID',
                      'images': 'MetaArray', 'isSerialTrackable': 'Boolean', 'meta': 'Meta', 'minPrice': 'Object',
                      'minimumBalance': 'Int', 'name': 'String(255)', 'owner': 'Meta', 'packs': 'Array(Object)',
                      'partialDisposal': 'Boolean', 'pathName': 'String', 'paymentItemType': 'Enum', 'ppeType': 'Enum',
