@@ -135,6 +135,6 @@ if __name__ == '__main__':
     #                                                       col_name='field_name',
     #                                                       col_value='attributes',
     #                                                       col_ans='field_pg_type')
-    data_from_table = connector.get_full_data(table_name='product_fields')
+    data_from_table = connector.get_full_data(table_name='product_model')
     # print(f"try to get data from table 'test' {connector.get_full_data(table_name='product_fields')}")
     print(f"try to get info from table 'product_fields' {data_from_table}")

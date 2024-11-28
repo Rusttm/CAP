@@ -32,11 +32,11 @@ class ContPgsqlUpdater(ContPgsqlMainClass, ConnPgsqlDataGet, ConnPgsqlDataPut, C
             request_func = getattr(ms_connector, table_data_function)
             # get information about last update for table
             try:
-                ans = self.get_last_update_date_from_service(event_table=table_name)
+                ans = self.get_last_update_date_from_service(evenst_table=table_name)
                 from_date = str(min(ans[0][-1], ans[0][-2]))
             except:
                 self.logger.error(f"{__class__.__name__} cant get last data update")
-                from_date = "2018-01-01"
+                from_date = "2024-01-01"
             to_date = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}"
             # req_data = request_func()
             req_data = request_func(from_date=from_date, to_date=to_date)

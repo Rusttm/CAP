@@ -63,8 +63,23 @@ class ConnPgsqlDataHandler(ConnPgsqlMainClass):
             col_values_list.append(col_value)
         return col_names_list, col_values_list
 
-    def get_pgtype_info_fields_table(self, field_table_name=None):
+    def get_pgtype_info_fields_table_bckp(self, field_table_name=None):
         from Pgsql.ConnPgsql.ConnPgsqlData import ConnPgsqlData
         connector = ConnPgsqlData()
         table_data = connector.get_cols_from_table(table_name=field_table_name, col_list=['field_name', 'field_pg_type'])
         return dict(table_data)
+
+    def  get_pgtype_info_fields_table(self, field_table_name=None):
+        temp_dict = {'accountId': 'UUID', 'alcoholic': 'Object', 'archived': 'Boolean', 'article': 'String(255)',
+                     'attributes': 'Array(Object)', 'barcodes': 'Array(Object)', 'buyPrice': 'Object',
+                     'code': 'String(255)', 'country': 'Meta', 'description': 'String(4096)',
+                     'discountProhibited': 'Boolean', 'effectiveVat': 'Int', 'effectiveVatEnabled': 'Boolean',
+                     'externalCode': 'String(255)', 'files': 'MetaArray', 'group': 'Meta', 'id': 'UUID',
+                     'images': 'MetaArray', 'isSerialTrackable': 'Boolean', 'meta': 'Meta', 'minPrice': 'Object',
+                     'minimumBalance': 'Int', 'name': 'String(255)', 'owner': 'Meta', 'packs': 'Array(Object)',
+                     'partialDisposal': 'Boolean', 'pathName': 'String', 'paymentItemType': 'Enum', 'ppeType': 'Enum',
+                     'productFolder': 'Meta', 'salePrices': 'Array(Object)', 'shared': 'Boolean', 'supplier': 'Meta',
+                     'syncId': 'UUID', 'taxSystem': 'Enum', 'things': 'Array(String)', 'tnved': 'String(255)',
+                     'trackingType': 'Enum', 'uom': 'Meta', 'updated': 'DateTime', 'useParentVat': 'Boolean',
+                     'variantsCount': 'Int', 'vat': 'Int', 'vatEnabled': 'Boolean', 'volume': 'Int', 'weight': 'Int'}
+        return temp_dict
